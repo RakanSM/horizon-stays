@@ -1,0 +1,22 @@
+{
+  "nav.home": "Inicio",
+  "nav.properties": "Propiedades",
+  "nav.booking": "Reserva",
+  "nav.contact": "Contacto",
+  "hero.title": "Estancias de lujo en Riad",
+  "hero.subtitle": "Unidades residenciales premium con gestión profesional",
+  "hero.cta": "Explorar propiedades",
+  "search.checkin": "Entrada",
+  "search.checkout": "Salida",
+  "search.guests": "Número de huéspedes",
+  "search.type": "Tipo de unidad",
+  "search.button": "Buscar",
+  "booking.title": "Reserva ahora",
+  "booking.submit": "Confirmar reserva",
+  "booking.name": "Nombre completo",
+  "booking.phone": "Número de móvil",
+  "booking.email": "Correo electrónico",
+  "footer.rights": "Todos los derechos reservados",
+  "common.loading": "Cargando...",
+  "common.error": "Ocurrió un error"
+}

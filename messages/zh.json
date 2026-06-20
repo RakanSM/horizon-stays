@@ -1,0 +1,22 @@
+{
+  "nav.home": "首页",
+  "nav.properties": "房源",
+  "nav.booking": "预订",
+  "nav.contact": "联系",
+  "hero.title": "利雅得奢华住宿",
+  "hero.subtitle": "由专业团队管理的优质住宅单元",
+  "hero.cta": "探索房源",
+  "search.checkin": "入住",
+  "search.checkout": "退房",
+  "search.guests": "客人人数",
+  "search.type": "房源类型",
+  "search.button": "搜索",
+  "booking.title": "立即预订",
+  "booking.submit": "确认预订",
+  "booking.name": "全名",
+  "booking.phone": "手机号码",
+  "booking.email": "电子邮箱",
+  "footer.rights": "版权所有",
+  "common.loading": "加载中...",
+  "common.error": "发生错误"
+}

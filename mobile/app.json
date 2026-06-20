@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Horizon Stays Admin",
+    "slug": "horizon-stays-admin",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "horizonstays",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0c0a08"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.horizonstays.admin"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0c0a08"
+      },
+      "package": "com.horizonstays.admin"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-local-authentication",
+      "expo-notifications"
+    ]
+  }
+}

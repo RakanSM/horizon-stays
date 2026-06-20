@@ -1,0 +1,22 @@
+{
+  "nav.home": "Accueil",
+  "nav.properties": "Logements",
+  "nav.booking": "Réservation",
+  "nav.contact": "Contact",
+  "hero.title": "Séjours de luxe à Riyad",
+  "hero.subtitle": "Unités résidentielles haut de gamme avec gestion professionnelle",
+  "hero.cta": "Explorer les logements",
+  "search.checkin": "Arrivée",
+  "search.checkout": "Départ",
+  "search.guests": "Nombre de voyageurs",
+  "search.type": "Type de logement",
+  "search.button": "Rechercher",
+  "booking.title": "Réservez maintenant",
+  "booking.submit": "Confirmer la réservation",
+  "booking.name": "Nom complet",
+  "booking.phone": "Numéro de mobile",
+  "booking.email": "Adresse e-mail",
+  "footer.rights": "Tous droits réservés",
+  "common.loading": "Chargement...",
+  "common.error": "Une erreur est survenue"
+}
