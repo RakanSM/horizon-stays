@@ -3,7 +3,7 @@
 // Called by Vercel Cron every 5 minutes
 
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServerClient } from "@/lib/supabase/server";
 
 const PROPERTY_MAP: Record<string, string> = {
   "1-Bd Luxury Spacious":       "1",
@@ -123,7 +123,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const supabase = createClient();
+  const supabase = createServerClient();
   const processed: string[] = [];
   const skipped: string[] = [];
 
