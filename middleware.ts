@@ -5,5 +5,5 @@ export default createMiddleware({
   localePrefix: 'as-needed'  // AR at root, others prefixed
 });
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+  matcher: ['/((?!api|_next|_vercel|admin|.*\\..*).*)']
 };
