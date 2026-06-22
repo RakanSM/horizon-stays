@@ -1,17 +1,16 @@
 import { getRequestConfig } from 'next-intl/server';
-import { notFound } from 'next/navigation';
 
 export const locales = ['ar', 'en', 'fr', 'zh', 'es'] as const;
 export type Locale = (typeof locales)[number];
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const locale = await requestLocale;
-  if (!locale || !locales.includes(locale as Locale)) {
-    notFound();
-  }
+  // Fall back to 'ar' for non-locale paths (admin, admin-login, api…)
+  // instead of calling notFound() which would 404 those pages.
+  const activeLocale = locale && locales.includes(locale as Locale) ? locale : 'ar';
 
   return {
-    locale,
-    messages: (await import(`./messages/${locale}.json`)).default,
+    locale: activeLocale,
+    messages: (await import(`./messages/${activeLocale}.json`)).default,
   };
 });
