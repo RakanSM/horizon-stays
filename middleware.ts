@@ -8,17 +8,17 @@ const intlMiddleware = createMiddleware({
 });
 
 export default function middleware(request: NextRequest) {
-  // For admin routes: pass through but inject pathname so layout can detect login page
+  // For admin routes: pass pathname in forwarded REQUEST headers
+  // so server components can read it via headers()
   if (request.nextUrl.pathname.startsWith('/admin')) {
-    const response = NextResponse.next();
-    response.headers.set('x-pathname', request.nextUrl.pathname);
-    return response;
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-pathname', request.nextUrl.pathname);
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
   // For all other routes: apply i18n locale routing
   return intlMiddleware(request);
 }
 
 export const config = {
-  // Include /admin/* in matcher (handled above); exclude only api, _next, _vercel, static files
   matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
 };
