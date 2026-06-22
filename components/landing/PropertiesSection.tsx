@@ -24,7 +24,7 @@ const formatType = (type: string, isAr: boolean) => {
   return map[type]?.[isAr ? 'ar' : 'en'] || type;
 };
 
-const propertyName  = (p: LandingProperty) => p.name || p.title || p.property_name || 'Horizon Residence';
+const propertyName  = (p: LandingProperty) => p.name || p.title || p.property_name || (p as unknown as Record<string,string>).internal_name || 'Horizon Residence';
 const propertyType  = (p: LandingProperty) => p.type  || p.property_type || 'suite';
 const propertyArea  = (p: LandingProperty) => p.area_sqm || p.area || 120;
 const propertyPrice = (p: LandingProperty) => Number(p.base_price_night || p.price_per_night || p.nightly_price || 900);
@@ -156,10 +156,10 @@ export function PropertiesSection({ properties, locale }: { properties: LandingP
                   >
                     {/* Image area */}
                     <div className="relative h-64 overflow-hidden bg-gradient-to-br from-hs-bg2 via-hs-bg3 to-hs-primary/20">
-                      {property.image_url ? (
+                      {(property.images?.[0] || property.image_url) ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={property.image_url}
+                          src={property.images?.[0] || property.image_url || ''}
                           alt={propertyName(property)}
                           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
