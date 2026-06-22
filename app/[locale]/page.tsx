@@ -7,8 +7,10 @@ import { PropertiesSection } from '@/components/landing/PropertiesSection';
 import { ReviewsSection } from '@/components/landing/ReviewsSection';
 import { ContactSection } from '@/components/landing/ContactSection';
 import { HeroSection, VideoTourSection, MapSection, FooterSection } from '@/components/landing/StaticSections';
-import { createServerClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import type { LandingProperty, LandingReview } from '@/components/landing/types';
+
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const isAr = params.locale === 'ar';
@@ -40,7 +42,10 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 
 async function getLandingData() {
   try {
-    const supabase = createServerClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
     const [{ data: properties }, { data: reviews }] = await Promise.all([
       supabase.from('properties').select('*').eq('status', 'available').order('base_price_night', { ascending: false }),
       supabase.from('guest_reviews' as never).select('*').order('created_at', { ascending: false }).limit(10),
