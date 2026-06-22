@@ -23,6 +23,7 @@
 
 html {
   background: var(--hs-bg);
+  scroll-behavior: smooth;
 }
 
 body {
@@ -35,4 +36,72 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* ── Transition polish on all buttons ── */
+button, [role="button"], .btn, a.btn {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── CTA pulse animation ── */
+@keyframes hs-pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 169, 110, 0.45); }
+  50%       { box-shadow: 0 0 0 12px rgba(201, 169, 110, 0); }
+}
+.hs-cta-pulse {
+  animation: hs-pulse-gold 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ── Hero gradient overlay animation ── */
+@keyframes hs-gradient-shift {
+  0%   { opacity: 0.7; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+.hs-hero-gradient-anim {
+  animation: hs-gradient-shift 8s ease-in-out infinite;
+}
+
+/* ── Shimmer skeleton ── */
+@keyframes hs-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.hs-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--hs-bg3) 25%,
+    rgba(201, 169, 110, 0.12) 50%,
+    var(--hs-bg3) 75%
+  );
+  background-size: 200% 100%;
+  animation: hs-shimmer 1.8s ease-in-out infinite;
+}
+
+/* ── Fade-in on scroll ── */
+.hs-fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.hs-fade-in.hs-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Mobile menu slide-down ── */
+@keyframes hs-slide-down {
+  from { opacity: 0; max-height: 0; }
+  to   { opacity: 1; max-height: 400px; }
+}
+.hs-menu-open {
+  animation: hs-slide-down 0.3s ease forwards;
+  overflow: hidden;
+}
+
+/* ── Property card gold shadow on hover ── */
+.hs-property-card:hover {
+  box-shadow: 0 16px 56px -8px rgba(201, 169, 110, 0.28), 0 4px 16px rgba(0,0,0,0.6);
 }
