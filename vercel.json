@@ -39,5 +39,14 @@
       "destination": "/robots"
     }
   ],
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/email-lock",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/sync-icals",
+      "schedule": "*/10 * * * *"
+    }
+  ]
 }
