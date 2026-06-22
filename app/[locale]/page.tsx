@@ -1,16 +1,29 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import nextDynamic from 'next/dynamic';
 import { NavBar } from '@/components/landing/NavBar';
 import { WhatsAppFloat } from '@/components/landing/WhatsAppFloat';
 import { SearchSection } from '@/components/landing/SearchSection';
 import { PropertiesSection } from '@/components/landing/PropertiesSection';
 import { ReviewsSection } from '@/components/landing/ReviewsSection';
 import { ContactSection } from '@/components/landing/ContactSection';
-import { HeroSection, VideoTourSection, MapSection, FooterSection } from '@/components/landing/StaticSections';
+import { HeroSection, VideoTourSection, FooterSection } from '@/components/landing/StaticSections';
 import { createClient } from '@supabase/supabase-js';
 import type { LandingProperty, LandingReview } from '@/components/landing/types';
 
 export const dynamic = 'force-dynamic';
+
+const PropertyMap = nextDynamic(() => import('@/components/landing/PropertyMap'), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="w-full rounded-2xl overflow-hidden flex items-center justify-center bg-hs-bg2 border border-hs-border"
+      style={{ height: '400px' }}
+    >
+      <span className="text-hs-muted text-sm">Loading map…</span>
+    </div>
+  ),
+});
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const isAr = params.locale === 'ar';
@@ -61,6 +74,7 @@ async function getLandingData() {
 
 export default async function LandingPage({ params }: { params: { locale: string } }) {
   const { properties, reviews } = await getLandingData();
+  const isAr = params.locale === 'ar';
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'LodgingBusiness',
@@ -85,7 +99,29 @@ export default async function LandingPage({ params }: { params: { locale: string
       </Suspense>
       <VideoTourSection locale={params.locale} />
       <ReviewsSection reviews={reviews} locale={params.locale} />
-      <MapSection locale={params.locale} />
+
+      {/* Interactive Price Map */}
+      <section className="bg-hs-bg2/40 px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 text-center">
+            <p className="mb-3 text-sm font-medium uppercase tracking-[0.35em] text-hs-primary">
+              {isAr ? 'الموقع' : 'Location'}
+            </p>
+            <h2 className="font-serif text-4xl font-semibold text-hs-text md:text-6xl">
+              {isAr ? 'وحداتنا على الخريطة' : 'Our Properties on the Map'}
+            </h2>
+            <p className="mt-3 text-hs-muted text-sm">
+              {isAr
+                ? 'اضغط على السعر لعرض تفاصيل الوحدة — قم بالتكبير لرؤية الأسماء'
+                : 'Tap a price pin for details — zoom in to see property names'}
+            </p>
+          </div>
+          <div className="overflow-hidden rounded-[2rem] border border-hs-border shadow-2xl shadow-black/30">
+            <PropertyMap locale={params.locale} />
+          </div>
+        </div>
+      </section>
+
       <ContactSection locale={params.locale} />
       <FooterSection locale={params.locale} />
       <WhatsAppFloat />
