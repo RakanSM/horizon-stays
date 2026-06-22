@@ -119,14 +119,14 @@ export async function GET(request: Request) {
             date: d,
             reason: `${PLATFORM_NAMES[platform]}:${ev.uid}`,
           }));
-          await supabase
+          await (supabase as any)
             .from("blocked_days")
             .upsert(blockRows, { onConflict: "property_id,date" });
 
           // Upsert booking record (skip Airbnb blocks — just date holds)
           if (!ev.summary?.toLowerCase().includes("not available") &&
               !ev.summary?.toLowerCase().includes("blocked")) {
-            await supabase
+            await (supabase as any)
               .from("bookings")
               .upsert({
                 property_id: pid,

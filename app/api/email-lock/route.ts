@@ -146,8 +146,8 @@ export async function GET(request: Request) {
     const dateMatches = body.match(/\w+ \d{1,2}, \d{4}/g) ?? [];
     if (dateMatches.length < 2) { skipped.push(`NO_DATES: ${title}`); continue; }
 
-    const ci = new Date(dateMatches[0]);
-    const co = new Date(dateMatches[1]);
+    const ci = new Date(dateMatches[0]!);
+    const co = new Date(dateMatches[1]!);
     if (isNaN(ci.getTime()) || isNaN(co.getTime()) || ci >= co) {
       skipped.push(`BAD_DATES: ${title}`);
       continue;
@@ -164,8 +164,8 @@ export async function GET(request: Request) {
     const blockRows = days.map(d => ({
       property_id: propId, date: d, reason: `airbnb_email:${confirmation}`,
     }));
-    await supabase.from("blocked_days").upsert(blockRows, { onConflict: "property_id,date" });
-    await supabase.from("bookings").upsert({
+    await (supabase as any).from("blocked_days").upsert(blockRows, { onConflict: "property_id,date" });
+    await (supabase as any).from("bookings").upsert({
       property_id: propId,
       guest_name: guest,
       check_in: ci.toISOString().split("T")[0],
