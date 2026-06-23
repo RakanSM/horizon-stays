@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
@@ -10,8 +9,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -19,7 +17,8 @@ export default function LoginPage() {
     setError('');
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { setError(error.message); setLoading(false); return; }
-    router.push('/admin');
+    // Hard redirect so the server re-reads the new session cookie
+    window.location.href = '/admin';
   }
 
   return (
