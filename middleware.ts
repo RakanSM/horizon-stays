@@ -1,12 +1,28 @@
-import createMiddleware from 'next-intl/middleware';
+import { NextResponse, type NextRequest } from 'next/server';
+import createIntlMiddleware from 'next-intl/middleware';
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 
-export default createMiddleware({
+const intlMiddleware = createIntlMiddleware({
   locales: ['ar', 'en', 'fr', 'zh', 'es'],
   defaultLocale: 'ar',
   localePrefix: 'as-needed',
 });
 
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+
+  // Refresh Supabase session cookie on every request (admin routes only)
+  const { pathname } = req.nextUrl;
+  if (pathname.startsWith('/admin')) {
+    const supabase = createMiddlewareClient({ req, res });
+    await supabase.auth.getSession();
+    return res;
+  }
+
+  // Run i18n middleware for all other routes
+  return intlMiddleware(req);
+}
+
 export const config = {
-  // Exclude api, _next, _vercel, admin, and static files from i18n locale routing
-  matcher: ['/((?!api|_next|_vercel|admin|admin-login|.*\\..*).*)'],
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
 };
