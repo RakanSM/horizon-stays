@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>جميع الوحدات | هورايزون ستيز</title>
+<link rel="stylesheet" href="assets/styles.css?v=b1bb5e646b"/>
+<style>
+/* ── Grain overlay ── */
+body::before {
+  content:"";
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size:180px;
+  opacity:.032;
+  pointer-events:none;
+  z-index:9999;
+  animation:grain 8s steps(10) infinite;
+}
+@keyframes grain{
+  0%,100%{transform:translate(0,0)}
+  10%{transform:translate(-2%,-1%)}
+  20%{transform:translate(1%,2%)}
+  30%{transform:translate(-1%,1%)}
+  40%{transform:translate(2%,-2%)}
+  50%{transform:translate(-2%,2%)}
+  60%{transform:translate(1%,-1%)}
+  70%{transform:translate(-1%,2%)}
+  80%{transform:translate(2%,1%)}
+  90%{transform:translate(-2%,-2%)}
+}
+
+/* ── Progress bar ── */
+#progress-bar {
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--accent);
+  width:0%;z-index:1000;
+  transition:width .1s linear;
+  box-shadow:0 0 12px var(--accent);
+}
+
+/* ── Property counter ── */
+#prop-counter {
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
+  font-family:var(--serif);font-size:.75rem;letter-spacing:.3em;
+  color:var(--accent);opacity:.7;z-index:100;
+  display:flex;align-items:center;gap:.8rem;
+}
+#prop-counter .c-cur {font-size:1.6rem;opacity:1;font-weight:500}
+#prop-counter .c-sep {opacity:.4}
+
+/* ── Page intro ── */
+.ap-intro {
+  height:100vh;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.ap-intro-bg {
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(198,161,91,.07) 0%, transparent 70%);
+}
+.ap-intro-text {text-align:center;position:relative;z-index:2}
+.ap-intro-text .eyebrow {margin-bottom:1.5rem}
+.ap-intro-num {
+  font-family:var(--serif);font-size:clamp(7rem,20vw,18rem);
+  line-height:.85;color:transparent;
+  -webkit-text-stroke:1px rgba(198,161,91,.2);
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;z-index:1;
+  animation:float 6s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-12px)}}
+.scroll-hint {
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  font-size:.68rem;letter-spacing:.35em;text-transform:uppercase;color:var(--text-dim);
+  animation:pulse-down 2s ease-in-out infinite;
+}
+.scroll-hint::after{content:"↓";font-size:1rem;color:var(--accent)}
+@keyframes pulse-down{0%,100%{opacity:.5;transform:translate(-50%,0)}50%{opacity:1;transform:translate(-50%,6px)}}
+
+/* ── Property sections ── */
+.prop-section {
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  position:relative;
+  overflow:hidden;
+}
+.prop-section.alt {direction:ltr}
+.prop-section.alt .prop-img-col {order:1}
+.prop-section.alt .prop-text-col {order:2;direction:rtl}
+
+/* Image column — always visible, scale animates on scroll */
+.prop-img-col {
+  position:relative;overflow:hidden;
+}
+.prop-img-col img {
+  width:100%;height:100%;object-fit:cover;
+  transform:scale(1.07) translateX(18px);
+  filter:brightness(.7);
+  transition:transform 1.6s cubic-bezier(.16,1,.3,1),
+             filter 1.4s cubic-bezier(.16,1,.3,1);
+  will-change:transform,filter;
+}
+.prop-section.alt .prop-img-col img {
+  transform:scale(1.07) translateX(-18px);
+}
+.prop-section.visible .prop-img-col img {
+  transform:scale(1) translateX(0);
+  filter:brightness(1);
+}
+
+/* Overlay on image */
+.prop-img-col::after {
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(11,11,13,.55) 0%, transparent 65%);
+  pointer-events:none;
+}
+.prop-section.alt .prop-img-col::after {
+  background:linear-gradient(225deg, rgba(11,11,13,.55) 0%, transparent 65%);
+}
+
+/* Property number watermark */
+.prop-num-watermark {
+  position:absolute;bottom:-1rem;right:-1rem;
+  font-family:var(--serif);font-size:clamp(6rem,12vw,11rem);
+  color:transparent;-webkit-text-stroke:1px rgba(198,161,91,.14);
+  line-height:1;pointer-events:none;z-index:3;
+  opacity:0;
+  transition:opacity 1s ease 0.8s;
+}
+.prop-section.alt .prop-num-watermark{right:auto;left:-1rem}
+.prop-section.visible .prop-num-watermark{opacity:1}
+
+/* Text column — always visible, slides in from side on scroll */
+.prop-text-col {
+  display:flex;align-items:center;
+  padding:5rem 4.5rem;
+  background:var(--bg);
+  position:relative;z-index:2;
+}
+.prop-text-inner {
+  max-width:42ch;
+  opacity:.7;
+  transform:translateX(45px);
+  transition:opacity 1s cubic-bezier(.16,1,.3,1) .25s,
+             transform 1s cubic-bezier(.16,1,.3,1) .25s;
+}
+.prop-section.alt .prop-text-inner {
+  transform:translateX(-45px);
+}
+.prop-section.visible .prop-text-inner {
+  opacity:1;
+  transform:translateX(0);
+}
+
+.prop-type-badge {
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-size:.68rem;letter-spacing:.35em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1.2rem;
+}
+.prop-type-badge::before{content:"";width:28px;height:1px;background:var(--accent)}
+
+.prop-title-ap {
+  font-family:var(--serif);
+  font-size:clamp(2rem,4vw,3.4rem);
+  line-height:.95;margin-bottom:1.4rem;
+  color:var(--text);
+}
+.prop-title-ap em{color:var(--accent);font-style:italic}
+
+.prop-summary {
+  font-size:.92rem;line-height:1.85;
+  color:var(--text-dim);margin-bottom:1.8rem;
+  max-width:36ch;
+}
+
+.prop-meta-row {
+  display:flex;gap:2rem;margin-bottom:2.2rem;
+}
+.prop-meta-item {
+  display:flex;flex-direction:column;gap:.25rem;
+}
+.prop-meta-label {
+  font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);opacity:.7;
+}
+.prop-meta-val {
+  font-family:var(--serif);font-size:1.3rem;color:var(--text);
+}
+
+.prop-price-ap {
+  font-family:var(--serif);font-size:2rem;color:var(--accent);
+  margin-bottom:2rem;line-height:1;
+}
+.prop-price-ap span{font-size:.75rem;color:var(--text-dim);font-family:var(--sans);font-weight:300}
+
+.prop-btns {
+  display:flex;gap:1rem;flex-wrap:wrap;
+}
+.btn-book-ap {
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--accent);color:#0b0b0d;
+  padding:.8rem 1.8rem;border-radius:99px;
+  font-size:.85rem;font-weight:500;letter-spacing:.05em;
+  transition:background .25s, transform .25s;
+  white-space:nowrap;
+}
+.btn-book-ap:hover{background:var(--accent-2);transform:translateY(-2px)}
+.btn-more-ap {
+  display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid var(--line);color:var(--text-dim);
+  padding:.8rem 1.8rem;border-radius:99px;
+  font-size:.85rem;letter-spacing:.05em;
+  transition:border-color .25s, color .25s, transform .25s;
+  white-space:nowrap;
+}
+.btn-more-ap:hover{border-color:var(--accent);color:var(--text);transform:translateY(-2px)}
+
+/* Divider between sections */
+.section-divider {
+  height:1px;background:var(--line);
+  transform:scaleX(0);transform-origin:right;
+  transition:transform 1.2s cubic-bezier(.77,0,.18,1);
+}
+.section-divider.visible{transform:scaleX(1)}
+
+/* Mobile */
+@media(max-width:860px){
+  .prop-section{grid-template-columns:1fr;min-height:auto}
+  .prop-img-col{height:55vw;min-height:260px}
+  .prop-text-col{padding:2.5rem 1.5rem}
+  .prop-section.alt{direction:rtl}
+  .prop-section.alt .prop-img-col{order:0}
+  .prop-section.alt .prop-text-col{order:1}
+  .prop-img-col{clip-path:inset(100% 0 0 0) !important}
+  .prop-section.alt .prop-img-col{clip-path:inset(100% 0 0 0) !important}
+  .prop-section.visible .prop-img-col{clip-path:inset(0 0 0 0) !important}
+  .prop-text-inner{transform:translateY(30px) !important}
+  .prop-section.visible .prop-text-inner{transform:translateY(0) !important}
+  #prop-counter{display:none}
+}
+
+
+/* ── Filter Bar ── */
+#filter-bar {
+  position:sticky;top:60px;z-index:500;
+  background:rgba(11,11,13,.92);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(198,161,91,.15);
+  padding:.9rem 2rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  transition:top .3s;
+}
+.filter-label {
+  font-size:.62rem;letter-spacing:.35em;text-transform:uppercase;
+  color:var(--accent);opacity:.7;white-space:nowrap;
+}
+.filter-select {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(198,161,91,.2);
+  color:var(--text);
+  font-family:var(--sans);font-size:.78rem;
+  padding:.45rem 1.1rem .45rem .7rem;
+  border-radius:6px;cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c6a15b'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left .5rem center;
+  padding-left:1.8rem;
+  transition:border-color .25s;min-width:130px;
+}
+.filter-select:focus{outline:none;border-color:var(--accent)}
+.filter-reset {
+  margin-right:auto;
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--text-dim);cursor:pointer;
+  border:none;background:none;padding:.4rem .8rem;
+  border-radius:4px;transition:color .2s;
+}
+.filter-reset:hover{color:var(--accent)}
+#filter-count {
+  font-size:.7rem;letter-spacing:.2em;
+  color:var(--text-dim);white-space:nowrap;
+}
+@media(max-width:600px){
+  #filter-bar{gap:.6rem;padding:.7rem 1rem}
+  .filter-select{min-width:110px;font-size:.72rem}
+}
+
+/* Nav override for this page */
+.nav{background:rgba(11,11,13,.6);backdrop-filter:blur(16px)}
+
+/* Closing CTA */
+.ap-cta {
+  min-height:80vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;position:relative;overflow:hidden;
+}
+.ap-cta-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 70% at 50% 50%, rgba(198,161,91,.06) 0%, transparent 70%);
+}
+.ap-cta-inner{position:relative;z-index:2;max-width:54ch}
+.ap-cta-inner p{font-size:1rem;line-height:1.85;color:var(--text-dim);margin:1.5rem 0 2.5rem}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<div id="prop-counter">
+  <span class="c-cur" id="counter-cur">1</span>
+  <span class="c-sep">/</span>
+  <span>16</span>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="index.html" class="brand" data-ar="هورايزون ستيز" data-en="Horizon Stays">هورايزون ستيز</a>
+  <ul class="nav-links">
+    <li><a href="index.html#properties" data-ar="الوحدات" data-en="Properties">الوحدات</a></li>
+    <li><a href="index.html#experience" data-ar="التجربة" data-en="Experience">التجربة</a></li>
+    <li><a href="index.html#reviews" data-ar="آراء العملاء" data-en="Reviews">آراء العملاء</a></li>
+    <li><a href="index.html#contact" data-ar="تواصل معنا" data-en="Contact">تواصل معنا</a></li>
+  </ul>
+  <div class="nav-controls">
+    <button class="nav-btn" id="lang-btn">EN</button>
+    <button class="nav-btn" id="theme-btn">☀️</button>
+    <a href="https://wa.me/966551648862" target="_blank" class="book-btn desktop-only" data-ar="احجز الآن" data-en="Book Now">احجز الآن</a>
+    <button class="burger" id="burger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<nav class="mobile-nav" id="mobile-nav">
+  <a href="index.html#properties">الوحدات</a>
+  <a href="index.html#experience">التجربة</a>
+  <a href="index.html#reviews">آراء العملاء</a>
+  <a href="https://wa.me/966551648862" class="book-btn">احجز الآن</a>
+</nav>
+
+
+<!-- @section: filter-bar -->
+<div id="filter-bar">
+  <span class="filter-label" data-ar="تصفية" data-en="Filter">تصفية</span>
+
+  <select class="filter-select" id="f-district" data-ar="الحي" data-en="District">
+    <option value="">كل الأحياء</option>
+    <option value="kafd">KAFD</option>
+    <option value="north">شمال الرياض</option>
+    <option value="east">شرق الرياض</option>
+  </select>
+
+  <select class="filter-select" id="f-beds">
+    <option value="">كل الغرف</option>
+    <option value="0">استوديو</option>
+    <option value="1">١ غرفة</option>
+    <option value="2">٢ غرف</option>
+    <option value="3">٣ غرف</option>
+    <option value="4">٤ غرف</option>
+    <option value="5">٥ غرف</option>
+  </select>
+
+  <select class="filter-select" id="f-price">
+    <option value="">كل الأسعار</option>
+    <option value="0-999">أقل من 1,000 ر.س</option>
+    <option value="1000-1999">1,000 – 2,000 ر.س</option>
+    <option value="2000-2999">2,000 – 3,000 ر.س</option>
+    <option value="3000-9999">أكثر من 3,000 ر.س</option>
+  </select>
+
+  <select class="filter-select" id="f-area">
+    <option value="">كل المساحات</option>
+    <option value="0-99">أقل من 100 م²</option>
+    <option value="100-199">100 – 200 م²</option>
+    <option value="200-399">200 – 400 م²</option>
+    <option value="400-9999">أكثر من 400 م²</option>
+  </select>
+
+  <select class="filter-select" id="f-sort">
+    <option value="">ترتيب افتراضي</option>
+    <option value="price-asc">السعر: الأقل أولاً</option>
+    <option value="price-desc">السعر: الأعلى أولاً</option>
+    <option value="area-asc">المساحة: الأصغر أولاً</option>
+    <option value="area-desc">المساحة: الأكبر أولاً</option>
+    <option value="beds-asc">الغرف: الأقل أولاً</option>
+    <option value="beds-desc">الغرف: الأكثر أولاً</option>
+  </select>
+
+  <button class="filter-reset" id="f-reset" data-ar="مسح الكل" data-en="Clear">مسح الكل</button>
+  <span id="filter-count">16 وحدة</span>
+</div>
+
+<!-- INTRO -->
+<section class="ap-intro">
+  <div class="ap-intro-bg"></div>
+  <div class="ap-intro-num">16</div>
+  <div class="ap-intro-text" style="position:relative;z-index:2">
+    <span class="eyebrow" data-ar="مجموعتنا الكاملة" data-en="Our Full Collection">مجموعتنا الكاملة</span>
+    <h1 class="display" style="margin-top:1rem;max-width:14ch">
+      <span data-ar-html="كل الوحدات<br><span class='gold serif-i'>الفاخرة</span>" data-en-html="All Luxury<br><span class='gold serif-i'>Residences</span>">كل الوحدات<br><span class="gold serif-i">الفاخرة</span></span>
+    </h1>
+    <p class="muted" style="margin-top:1.2rem;font-size:.9rem" data-ar="16 وحدة مصممة لتجربة استثنائية في قلب الرياض" data-en="16 residences designed for an exceptional experience in the heart of Riyadh">16 وحدة مصممة لتجربة استثنائية في قلب الرياض</p>
+  </div>
+  <div class="scroll-hint" data-ar="مرر للأسفل" data-en="Scroll down">مرر للأسفل</div>
+</section>
+
+<!-- PROPERTIES -->
+
+<div class="section-divider" id="div-0"></div>
+
+<section class="prop-section" id="ps-1" data-price="3500" data-beds="3" data-area="350" data-district="kafd" data-index="1">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1648881806148-e5c51179c826?w=1200&q=85" alt="KAFD Penthouse" loading="lazy"/>
+    <div class="prop-num-watermark">01</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="بنتهاوس" data-en="Penthouse">بنتهاوس</div>
+      <h2 class="prop-title-ap" data-ar-html="بنتهاوس KAFD<br>بـ <em>3 غرف</em>" data-en-html="KAFD View<br>Penthouse <em>3BD</em>">بنتهاوس KAFD<br>بـ <em>3 غرف</em></h2>
+      <p class="prop-summary" data-ar="إطلالة بانورامية مذهلة على أبراج الرياض. أثاث حصري وتفاصيل فندقية راقية تجعل منه تجربة لا تُنسى." data-en="Breathtaking panoramic views of Riyadh towers. Exclusive furniture and hotel-grade details make it an unforgettable experience.">إطلالة بانورامية مذهلة على أبراج الرياض. أثاث حصري وتفاصيل فندقية راقية تجعل منه تجربة لا تُنسى.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="غرف النوم" data-en="Beds">غرف النوم</div><div class="prop-meta-val">3</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="المساحة" data-en="Area">المساحة</div><div class="prop-meta-val" data-ar="350 م²" data-en="350 sqm">350 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="الطابق" data-en="Floor">الطابق</div><div class="prop-meta-val">28</div></div>
+      </div>
+      <div class="prop-price-ap">3,500 <span data-ar="ر.س / ليلة" data-en="SAR/night">ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز بنتهاوس KAFD" target="_blank" class="btn-book-ap" data-ar="احجز الآن" data-en="Book Now">احجز الآن</a>
+        <a href="properties/kafd-penthouse-3bd.html" class="btn-more-ap" data-ar="تفاصيل أكثر" data-en="More Info">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-1"></div>
+
+<section class="prop-section alt" id="ps-2" data-price="3200" data-beds="2" data-area="220" data-district="kafd" data-index="2">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1757924461488-ef9ad0670978?w=1200&q=85" alt="Towers Jacuzzi" loading="lazy"/>
+    <div class="prop-num-watermark">02</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="جناح" data-en="Suite">جناح</div>
+      <h2 class="prop-title-ap" data-ar-html="جناح جاكوزي<br><em>Towers View</em>" data-en-html="Towers View<br><em>Jacuzzi Suite</em>">جناح جاكوزي<br><em>Towers View</em></h2>
+      <p class="prop-summary" data-ar="إطلالة مباشرة على أبراج المملكة والفيصلية مع جاكوزي داخلي فاخر وديكور عصري استثنائي." data-en="Direct views of Kingdom and Faisaliah towers with a luxury indoor jacuzzi and exceptional modern decor.">إطلالة مباشرة على أبراج المملكة والفيصلية مع جاكوزي داخلي فاخر وديكور عصري استثنائي.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="غرف النوم" data-en="Beds">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="المساحة" data-en="Area">المساحة</div><div class="prop-meta-val" data-ar="220 م²" data-en="220 sqm">220 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="الطابق" data-en="Floor">الطابق</div><div class="prop-meta-val">22</div></div>
+      </div>
+      <div class="prop-price-ap">3,200 <span data-ar="ر.س / ليلة" data-en="SAR/night">ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز جناح جاكوزي" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/towers-jacuzzi-suite.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-2"></div>
+
+<section class="prop-section" id="ps-3" data-price="1800" data-beds="2" data-area="280" data-district="north" data-index="3">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1704040686413-2c607dbd2f06?w=1200&q=85" alt="Private Rooftop" loading="lazy"/>
+    <div class="prop-num-watermark">03</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="بنتهاوس" data-en="Penthouse">بنتهاوس</div>
+      <h2 class="prop-title-ap" data-ar-html="بنتهاوس<br><em>الروف الخاص</em>" data-en-html="Private<br><em>Rooftop Penthouse</em>">بنتهاوس<br><em>الروف الخاص</em></h2>
+      <p class="prop-summary" data-ar="سطح خاص مطل على سماء الرياض بخصوصية تامة. تراس واسع مجهز بأثاث خارجي فاخر ومنطقة باربيكيو." data-en="Private rooftop overlooking Riyadh's skyline with complete privacy. A spacious terrace with luxury outdoor furniture and BBQ area.">سطح خاص مطل على سماء الرياض بخصوصية تامة. تراس واسع مجهز بأثاث خارجي فاخر ومنطقة باربيكيو.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="غرف النوم" data-en="Beds">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="المساحة" data-en="Area">المساحة</div><div class="prop-meta-val" data-ar="280 م²" data-en="280 sqm">280 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label" data-ar="الطابق" data-en="Floor">الطابق</div><div class="prop-meta-val" data-ar="أخير" data-en="Top">أخير</div></div>
+      </div>
+      <div class="prop-price-ap">1,800 <span data-ar="ر.س / ليلة" data-en="SAR/night">ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز بنتهاوس الروف" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/private-rooftop-penthouse.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-3"></div>
+
+<section class="prop-section alt" id="ps-4" data-price="1600" data-beds="2" data-area="200" data-district="north" data-index="4">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1758448755778-90ebf4d0f1e7?w=1200&q=85" alt="Garden Suite" loading="lazy"/>
+    <div class="prop-num-watermark">04</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="جناح" data-en="Suite">جناح</div>
+      <h2 class="prop-title-ap" data-ar-html="جناح الحديقة<br><em>والجاكوزي</em>" data-en-html="Garden &<br><em>HotTub Suite</em>">جناح الحديقة<br><em>والجاكوزي</em></h2>
+      <p class="prop-summary" data-ar="حديقة خضراء خاصة مع حوض استحمام ساخن تحت النجوم. هدوء مطلق وخصوصية تامة لأجمل لحظات الراحة." data-en="A private green garden with a hot tub under the stars. Complete peace and privacy for the most beautiful moments of rest.">حديقة خضراء خاصة مع حوض استحمام ساخن تحت النجوم. هدوء مطلق وخصوصية تامة لأجمل لحظات الراحة.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">200 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val" data-ar="أرضي" data-en="Ground">أرضي</div></div>
+      </div>
+      <div class="prop-price-ap">1,600 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز جناح الحديقة" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/garden-hottub-suite.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-4"></div>
+
+<section class="prop-section" id="ps-5" data-price="1500" data-beds="2" data-area="190" data-district="east" data-index="5">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1682662046426-f7589013d25e?w=1200&q=85" alt="Cinema Suite" loading="lazy"/>
+    <div class="prop-num-watermark">05</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="جناح" data-en="Suite">جناح</div>
+      <h2 class="prop-title-ap" data-ar-html="جناح<br><em>السينما 2BR</em>" data-en-html="2BR<br><em>Cinema Suite</em>">جناح<br><em>السينما 2BR</em></h2>
+      <p class="prop-summary" data-ar="غرفة سينما خاصة بشاشة بروجكتور 120 بوصة داخل الجناح. تجربة ترفيهية استثنائية لم تعهدها من قبل." data-en="A private cinema room with a 120-inch projector screen inside the suite. An exceptional entertainment experience like no other.">غرفة سينما خاصة بشاشة بروجكتور 120 بوصة داخل الجناح. تجربة ترفيهية استثنائية لم تعهدها من قبل.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">190 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">15</div></div>
+      </div>
+      <div class="prop-price-ap">1,500 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز جناح السينما" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/cinema-suite-2br.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-5"></div>
+
+<section class="prop-section alt" id="ps-6" data-price="950" data-beds="1" data-area="85" data-district="east" data-index="6">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1757262798623-a215e869d708?w=1200&q=85" alt="1BD 70TV" loading="lazy"/>
+    <div class="prop-num-watermark">06</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="شقة" data-en="Apartment">شقة</div>
+      <h2 class="prop-title-ap" data-ar-html="شقة فاخرة<br>بتلفاز <em>70 بوصة</em>" data-en-html="Luxury 1BD<br>with <em>70in TV</em>">شقة فاخرة<br>بتلفاز <em>70 بوصة</em></h2>
+      <p class="prop-summary" data-ar="أناقة مدروسة لشخص أو زوجين. موقع مركزي ممتاز مع إضاءة ذكية وتلفاز بحجم 70 بوصة." data-en="Thoughtful elegance for one or two. Excellent central location with smart lighting and a 70-inch television.">أناقة مدروسة لشخص أو زوجين. موقع مركزي ممتاز مع إضاءة ذكية وتلفاز بحجم 70 بوصة.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">1</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">85 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">10</div></div>
+      </div>
+      <div class="prop-price-ap">950 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز شقة 70 بوصة" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/luxury-1bd-70tv.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-6"></div>
+
+<section class="prop-section" id="ps-7" data-price="2200" data-beds="2" data-area="240" data-district="kafd" data-index="7">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=85" alt="Sky Lounge" loading="lazy"/>
+    <div class="prop-num-watermark">07</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="جناح" data-en="Suite">جناح</div>
+      <h2 class="prop-title-ap" data-ar-html="جناح<br><em>سكاي لاونج</em>" data-en-html="Sky<br><em>Lounge Suite</em>">جناح<br><em>سكاي لاونج</em></h2>
+      <p class="prop-summary" data-ar="صالة استقبال بانورامية بإطلالة 270 درجة على أفق الرياض في الطابق الثلاثين. رقي لا يُضاهى." data-en="A panoramic lounge with 270-degree views of Riyadh's horizon on the 30th floor. Unmatched sophistication.">صالة استقبال بانورامية بإطلالة 270 درجة على أفق الرياض في الطابق الثلاثين. رقي لا يُضاهى.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">240 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">30</div></div>
+      </div>
+      <div class="prop-price-ap">2,200 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز جناح سكاي لاونج" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/sky-lounge-suite.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-7"></div>
+
+<section class="prop-section alt" id="ps-8" data-price="750" data-beds="0" data-area="65" data-district="east" data-index="8">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=85" alt="Executive Studio" loading="lazy"/>
+    <div class="prop-num-watermark">08</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="استوديو" data-en="Studio">استوديو</div>
+      <h2 class="prop-title-ap" data-ar-html="استوديو<br><em>إكزيكيوتف</em>" data-en-html="Executive<br><em>Studio</em>">استوديو<br><em>إكزيكيوتف</em></h2>
+      <p class="prop-summary" data-ar="تصميم عصري مدروس مجهز لرجال الأعمال. مكتب عمل، واي فاي فائق السرعة، ومطبخ صغير كامل." data-en="Thoughtful modern design equipped for business travelers. Work desk, ultra-fast WiFi, and a full kitchenette.">تصميم عصري مدروس مجهز لرجال الأعمال. مكتب عمل، واي فاي فائق السرعة، ومطبخ صغير كامل.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">65 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">8</div></div>
+      </div>
+      <div class="prop-price-ap">750 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز استوديو إكزيكيوتف" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/executive-studio.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-8"></div>
+
+<section class="prop-section" id="ps-9" data-price="4500" data-beds="4" data-area="420" data-district="kafd" data-index="9">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1617098900591-3f90928e8c54?w=1200&q=85" alt="Duplex Penthouse" loading="lazy"/>
+    <div class="prop-num-watermark">09</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="بنتهاوس" data-en="Penthouse">بنتهاوس</div>
+      <h2 class="prop-title-ap" data-ar-html="بنتهاوس دوبلكس<br><em>4 غرف</em>" data-en-html="Duplex Penthouse<br><em>4 Bedrooms</em>">بنتهاوس دوبلكس<br><em>4 غرف</em></h2>
+      <p class="prop-summary" data-ar="طابقان فاخران مع مسبح خاص ومشاهد خلابة لسماء الرياض. الخيار الأمثل للعائلات والمجموعات." data-en="Two luxury floors with a private pool and breathtaking Riyadh skyline views. The ideal choice for families and groups.">طابقان فاخران مع مسبح خاص ومشاهد خلابة لسماء الرياض. الخيار الأمثل للعائلات والمجموعات.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">4</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">420 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطوابق</div><div class="prop-meta-val">31-32</div></div>
+      </div>
+      <div class="prop-price-ap">4,500 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز بنتهاوس دوبلكس" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/duplex-penthouse-4bd.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-9"></div>
+
+<section class="prop-section alt" id="ps-10" data-price="1700" data-beds="2" data-area="175" data-district="north" data-index="10">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=85" alt="Designer Loft" loading="lazy"/>
+    <div class="prop-num-watermark">10</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="لوفت" data-en="Loft">لوفت</div>
+      <h2 class="prop-title-ap" data-ar-html="لوفت<br><em>ديزاينر 2BD</em>" data-en-html="Designer<br><em>Loft 2BD</em>">لوفت<br><em>ديزاينر 2BD</em></h2>
+      <p class="prop-summary" data-ar="مساحة مفتوحة بتصميم جريء من مصمم داخلي دولي. سقوف عالية وإضاءة درامية فريدة لا مثيل لها." data-en="Open-plan space with bold design by an international interior designer. High ceilings and unique dramatic lighting.">مساحة مفتوحة بتصميم جريء من مصمم داخلي دولي. سقوف عالية وإضاءة درامية فريدة لا مثيل لها.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">175 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">12</div></div>
+      </div>
+      <div class="prop-price-ap">1,700 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز لوفت ديزاينر" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/designer-loft-2bd.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-10"></div>
+
+<section class="prop-section" id="ps-11" data-price="1400" data-beds="2" data-area="165" data-district="north" data-index="11">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=85" alt="City View" loading="lazy"/>
+    <div class="prop-num-watermark">11</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="جناح" data-en="Suite">جناح</div>
+      <h2 class="prop-title-ap" data-ar-html="جناح<br><em>إطلالة المدينة</em>" data-en-html="City View<br><em>Suite</em>">جناح<br><em>إطلالة المدينة</em></h2>
+      <p class="prop-summary" data-ar="نوافذ بانورامية من السقف إلى الأرض تُطلّك على مدينة الرياض ليلاً ونهاراً. مشهد يسرق الأنفاس." data-en="Floor-to-ceiling panoramic windows overlooking Riyadh day and night. A breathtaking view that stays with you.">نوافذ بانورامية من السقف إلى الأرض تُطلّك على مدينة الرياض ليلاً ونهاراً. مشهد يسرق الأنفاس.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">165 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">18</div></div>
+      </div>
+      <div class="prop-price-ap">1,400 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز جناح إطلالة المدينة" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/city-view-suite.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-11"></div>
+
+<section class="prop-section alt" id="ps-12" data-price="850" data-beds="1" data-area="90" data-district="east" data-index="12">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1200&q=85" alt="Minimalist" loading="lazy"/>
+    <div class="prop-num-watermark">12</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="شقة" data-en="Apartment">شقة</div>
+      <h2 class="prop-title-ap" data-ar-html="شقة<br><em>مينيمال 1BD</em>" data-en-html="Minimalist<br><em>1BD Apartment</em>">شقة<br><em>مينيمال 1BD</em></h2>
+      <p class="prop-summary" data-ar="تصميم ياباني هادئ ونقي. كل تفصيلة مختارة بعناية لخلق بيئة استرخاء حقيقية بعيدة عن ضجيج الحياة." data-en="A calm, pure Japanese design. Every detail carefully chosen to create a true relaxation environment away from life's noise.">تصميم ياباني هادئ ونقي. كل تفصيلة مختارة بعناية لخلق بيئة استرخاء حقيقية بعيدة عن ضجيج الحياة.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">1</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">90 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">7</div></div>
+      </div>
+      <div class="prop-price-ap">850 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز شقة مينيمال" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/minimalist-1bd.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-12"></div>
+
+<section class="prop-section" id="ps-13" data-price="2800" data-beds="3" data-area="310" data-district="kafd" data-index="13">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&q=85" alt="Royal Suite" loading="lazy"/>
+    <div class="prop-num-watermark">13</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="جناح" data-en="Suite">جناح</div>
+      <h2 class="prop-title-ap" data-ar-html="جناح<br><em>رويال 3BD</em>" data-en-html="Royal Suite<br><em>3 Bedrooms</em>">جناح<br><em>رويال 3BD</em></h2>
+      <p class="prop-summary" data-ar="الفخامة الكلاسيكية في أبهى صورها. تفاصيل ذهبية وأثاث إيطالي أصيل في جناح يُعيد تعريف مفهوم الرفاهية." data-en="Classic luxury at its finest. Gold details and authentic Italian furniture in a suite that redefines the concept of indulgence.">الفخامة الكلاسيكية في أبهى صورها. تفاصيل ذهبية وأثاث إيطالي أصيل في جناح يُعيد تعريف مفهوم الرفاهية.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">3</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">310 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">25</div></div>
+      </div>
+      <div class="prop-price-ap">2,800 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز جناح رويال" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/royal-suite-3bd.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-13"></div>
+
+<section class="prop-section alt" id="ps-14" data-price="1200" data-beds="2" data-area="140" data-district="north" data-index="14">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1586105251261-72a756497a11?w=1200&q=85" alt="Pool View" loading="lazy"/>
+    <div class="prop-num-watermark">14</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="شقة" data-en="Apartment">شقة</div>
+      <h2 class="prop-title-ap" data-ar-html="شقة<br><em>إطلالة المسبح</em>" data-en-html="Pool View<br><em>Apartment</em>">شقة<br><em>إطلالة المسبح</em></h2>
+      <p class="prop-summary" data-ar="إطلالة مباشرة على المسبح الخارجي المضاء ليلاً مع مدخل خاص ومساحات معيشة فسيحة." data-en="Direct view of the lit outdoor pool at night, with a private entrance and spacious living areas.">إطلالة مباشرة على المسبح الخارجي المضاء ليلاً مع مدخل خاص ومساحات معيشة فسيحة.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">140 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">3</div></div>
+      </div>
+      <div class="prop-price-ap">1,200 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز شقة إطلالة المسبح" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/pool-view-apartment.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-14"></div>
+
+<section class="prop-section" id="ps-15" data-price="1900" data-beds="2" data-area="210" data-district="east" data-index="15">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=1200&q=85" alt="Artistic Suite" loading="lazy"/>
+    <div class="prop-num-watermark">15</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="جناح" data-en="Suite">جناح</div>
+      <h2 class="prop-title-ap" data-ar-html="جناح<br><em>الفن والتصميم</em>" data-en-html="Artistic<br><em>Design Suite</em>">جناح<br><em>الفن والتصميم</em></h2>
+      <p class="prop-summary" data-ar="لوحات أصلية من فنانين سعوديين موهوبين في كل زاوية. جناح مستوحى من أرقى معارض الفن العالمية." data-en="Original paintings by talented Saudi artists in every corner. A suite inspired by the world's most prestigious art galleries.">لوحات أصلية من فنانين سعوديين موهوبين في كل زاوية. جناح مستوحى من أرقى معارض الفن العالمية.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">2</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">210 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val">14</div></div>
+      </div>
+      <div class="prop-price-ap">1,900 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز جناح الفن" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/artistic-design-suite.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" id="div-15"></div>
+
+<section class="prop-section alt" id="ps-16" data-price="6000" data-beds="5" data-area="580" data-district="kafd" data-index="16">
+  <div class="prop-img-col">
+    <img src="https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=1200&q=85" alt="Grand Penthouse" loading="lazy"/>
+    <div class="prop-num-watermark">16</div>
+  </div>
+  <div class="prop-text-col">
+    <div class="prop-text-inner">
+      <div class="prop-type-badge" data-ar="بنتهاوس" data-en="Penthouse">بنتهاوس</div>
+      <h2 class="prop-title-ap" data-ar-html="البنتهاوس<br><em>الكبير 5BD</em>" data-en-html="Grand<br><em>Penthouse 5BD</em>">البنتهاوس<br><em>الكبير 5BD</em></h2>
+      <p class="prop-summary" data-ar="التاج الحقيقي لهورايزون ستيز. مسبح لانهائي وسطح خاص وإطلالة 360 درجة على الرياض. ذروة الفخامة." data-en="The true crown of Horizon Stays. Infinity pool, private rooftop, and 360-degree views of Riyadh. The pinnacle of luxury.">التاج الحقيقي لهورايزون ستيز. مسبح لانهائي وسطح خاص وإطلالة 360 درجة على الرياض. ذروة الفخامة.</p>
+      <div class="prop-meta-row">
+        <div class="prop-meta-item"><div class="prop-meta-label">غرف النوم</div><div class="prop-meta-val">5</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">المساحة</div><div class="prop-meta-val">580 م²</div></div>
+        <div class="prop-meta-item"><div class="prop-meta-label">الطابق</div><div class="prop-meta-val" data-ar="أخير" data-en="Top">أخير</div></div>
+      </div>
+      <div class="prop-price-ap">6,000 <span>ر.س / ليلة</span></div>
+      <div class="prop-btns">
+        <a href="https://wa.me/966551648862?text=أريد حجز البنتهاوس الكبير" target="_blank" class="btn-book-ap">احجز الآن</a>
+        <a href="properties/grand-penthouse-5bd.html" class="btn-more-ap">تفاصيل أكثر</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<section class="ap-cta" id="contact">
+  <div class="ap-cta-bg"></div>
+  <div class="ap-cta-inner">
+    <span class="eyebrow" data-ar="احجز إقامتك" data-en="Book Your Stay">احجز إقامتك</span>
+    <h2 class="h2" style="margin-top:1rem" data-ar-html="ابدأ تجربتك<br><span class='gold serif-i'>الاستثنائية</span>" data-en-html="Start your<br><span class='gold serif-i'>exceptional stay</span>">ابدأ تجربتك<br><span class="gold serif-i">الاستثنائية</span></h2>
+    <p data-ar="تواصل معنا واتساب وسنرد خلال دقائق لتأمين وحدتك المثالية." data-en="Message us on WhatsApp and we'll respond in minutes to secure your ideal residence.">تواصل معنا واتساب وسنرد خلال دقائق لتأمين وحدتك المثالية.</p>
+    <a href="https://wa.me/966551648862" target="_blank" class="btn-wa" data-ar="💬 تواصل واتساب" data-en="💬 WhatsApp Us">💬 تواصل واتساب</a>
+  </div>
+</section>
+
+<script src="assets/main.js?v=c2eedb858e"></script>
+<script>
+// ── Scroll-triggered animations ──
+const sections    = document.querySelectorAll('.prop-section');
+const dividers    = document.querySelectorAll('.section-divider');
+const counterEl   = document.getElementById('counter-cur');
+const progressBar = document.getElementById('progress-bar');
+
+// Reveal sections on scroll — images/text are partially visible by default
+// (.visible class triggers full opacity+transform transition)
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const idx = entry.target.dataset.index;
+      if (idx && counterEl) counterEl.textContent = idx;
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+// Dividers
+const divObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.4 });
+dividers.forEach(d => divObserver.observe(d));
+
+// Progress bar
+function updateProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+updateProgress();
+
+// ── Filter & Sort Logic ──
+(function(){
+  const allSections = Array.from(document.querySelectorAll('.prop-section'));
+  const allDividers = Array.from(document.querySelectorAll('.section-divider'));
+  const fDistrict   = document.getElementById('f-district');
+  const fBeds       = document.getElementById('f-beds');
+  const fPrice      = document.getElementById('f-price');
+  const fArea       = document.getElementById('f-area');
+  const fSort       = document.getElementById('f-sort');
+  const fReset      = document.getElementById('f-reset');
+  const countEl     = document.getElementById('filter-count');
+  const container   = allSections[0]?.parentElement;
+
+  function parseRange(val) {
+    if (!val) return null;
+    const [a,b] = val.split('-').map(Number);
+    return {min:a, max:b};
+  }
+
+  function applyFilters() {
+    const district = fDistrict.value;
+    const beds     = fBeds.value;
+    const price    = parseRange(fPrice.value);
+    const area     = parseRange(fArea.value);
+    const sort     = fSort.value;
+
+    // Filter
+    let visible = allSections.filter(s => {
+      const d = s.dataset;
+      if (district && d.district !== district) return false;
+      if (beds !== '' && parseInt(d.beds) !== parseInt(beds)) return false;
+      if (price && (parseInt(d.price) < price.min || parseInt(d.price) > price.max)) return false;
+      if (area  && (parseInt(d.area)  < area.min  || parseInt(d.area)  > area.max))  return false;
+      return true;
+    });
+
+    // Sort
+    if (sort) {
+      const [key, dir] = sort.split('-');
+      visible.sort((a,b) => {
+        const va = parseInt(a.dataset[key]);
+        const vb = parseInt(b.dataset[key]);
+        return dir === 'asc' ? va - vb : vb - va;
+      });
+    }
+
+    // Hide all sections + dividers
+    allSections.forEach(s => {
+      s.style.display = 'none';
+      s.classList.remove('visible');
+    });
+    allDividers.forEach(d => d.style.display = 'none');
+
+    // Show filtered + re-order
+    if (visible.length === 0) {
+      countEl.textContent = 'لا توجد نتائج';
+      return;
+    }
+
+    visible.forEach((s, i) => {
+      s.style.display = '';
+      // Reorder via flex order or DOM reinsert
+      if (container) container.appendChild(s);
+      // Trigger animation
+      setTimeout(() => s.classList.add('visible'), 80 * i);
+      // Toggle alt class for proper alternation
+      if (i % 2 === 0) { s.classList.remove('alt'); }
+      else              { s.classList.add('alt'); }
+    });
+
+    countEl.textContent = visible.length + ' وحدة';
+  }
+
+  [fDistrict, fBeds, fPrice, fArea, fSort].forEach(el => {
+    el && el.addEventListener('change', applyFilters);
+  });
+
+  fReset && fReset.addEventListener('click', () => {
+    [fDistrict, fBeds, fPrice, fArea, fSort].forEach(el => { if(el) el.value = ''; });
+    // Restore original order
+    allSections.sort((a,b) => parseInt(a.dataset.index) - parseInt(b.dataset.index));
+    allSections.forEach(s => {
+      s.style.display = '';
+      if (container) container.appendChild(s);
+    });
+    allDividers.forEach(d => d.style.display = '');
+    // Reapply alt pattern
+    allSections.forEach((s,i) => {
+      s.classList.remove('visible','alt');
+      if (i % 2 !== 0) s.classList.add('alt');
+      setTimeout(() => s.classList.add('visible'), 60 * i);
+    });
+    countEl.textContent = '16 وحدة';
+  });
+})();
+
+</script>
+</body>
+</html>
