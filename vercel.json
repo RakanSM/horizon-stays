@@ -1,4 +1,25 @@
 {
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "installCommand": null,
+  "framework": null,
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/dashboard",
+      "destination": "/admin/dashboard",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/guest-portal",
+      "destination": "/guest-portal.html"
+    },
+    {
+      "source": "/cinematic",
+      "destination": "/cinematic.html"
+    }
+  ]
 }
