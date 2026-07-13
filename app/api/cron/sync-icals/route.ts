@@ -1,13 +1,5 @@
-// app/api/cron/sync-icals/route.ts
-// Called by Vercel Cron every 10 minutes
-// Polls iCal feeds from all platforms and writes to Supabase
-
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-
-// Each property's iCal URLs per platform (set in Supabase env or config table)
-// Format: { propertyId: { airbnb?: string, booking?: string, gatherin?: string, expedia?: string } }
-// These come from environment variables named: ICAL_<PROPERTY_ID>_AIRBNB, ICAL_<PROPERTY_ID>_BOOKING, etc.
 
 interface ICalEvent {
   uid: string;
@@ -17,7 +9,7 @@ interface ICalEvent {
   status: string;
 }
 
-function parseIcal(text: string): ICalEvent[] {
+export function parseIcal(text: string): ICalEvent[] {
   const events: ICalEvent[] = [];
   const blocks = text.split("BEGIN:VEVENT");
   for (let i = 1; i < blocks.length; i++) {
@@ -44,17 +36,6 @@ function icalDateToISO(d: string): string {
   return new Date(d).toISOString().split("T")[0];
 }
 
-function dateRange(checkIn: string, checkOut: string): string[] {
-  const days: string[] = [];
-  const d = new Date(checkIn);
-  const end = new Date(checkOut);
-  while (d < end) {
-    days.push(d.toISOString().split("T")[0]);
-    d.setDate(d.getDate() + 1);
-  }
-  return days;
-}
-
 async function fetchIcal(url: string): Promise<string | null> {
   try {
     const res = await fetch(url, {
@@ -70,9 +51,7 @@ async function fetchIcal(url: string): Promise<string | null> {
 
 const PLATFORM_NAMES: Record<string, string> = {
   airbnb: "airbnb",
-  booking: "booking_com",
   gatherin: "gatherin",
-  expedia: "expedia",
 };
 
 export async function GET(request: Request) {
@@ -89,13 +68,26 @@ export async function GET(request: Request) {
   const results: { property: string; platform: string; events: number; blocked: number }[] = [];
   const errors: string[] = [];
 
-  // Property IDs 1–16
-  const propertyIds = Array.from({ length: 16 }, (_, i) => String(i + 1));
+  const { data: properties, error: fetchPropertiesError } = await supabase
+    .from("properties")
+    .select("id, airbnb_ical_url, gatherin_ical_url");
 
-  for (const pid of propertyIds) {
-    for (const platform of ["airbnb", "booking", "gatherin", "expedia"]) {
-      const envKey = `ICAL_${pid}_${platform.toUpperCase()}`;
-      const icalUrl = process.env[envKey];
+  if (fetchPropertiesError) {
+    errors.push(`Failed to fetch properties: ${fetchPropertiesError.message}`);
+    return NextResponse.json({ errors }, { status: 500 });
+  }
+
+  for (const property of properties || []) {
+    const pid = property.id;
+
+    for (const platform of ["airbnb", "gatherin"]) {
+      let icalUrl: string | null = null;
+      if (platform === "airbnb") {
+        icalUrl = property.airbnb_ical_url;
+      } else if (platform === "gatherin") {
+        icalUrl = property.gatherin_ical_url;
+      }
+
       if (!icalUrl) continue;
 
       const text = await fetchIcal(icalUrl);
@@ -105,23 +97,42 @@ export async function GET(request: Request) {
       }
 
       const events = parseIcal(text).filter(e => e.status !== "CANCELLED");
-      let blocked = 0;
+      let blockedCount = 0;
 
       for (const ev of events) {
         try {
           const ci = icalDateToISO(ev.dtstart);
           const co = icalDateToISO(ev.dtend);
-          const days = dateRange(ci, co);
 
-          // Upsert blocked_days
-          const blockRows = days.map(d => ({
-            property_id: pid,
-            date: d,
-            reason: `${PLATFORM_NAMES[platform]}:${ev.uid}`,
-          }));
-          await (supabase as any)
+          // Upsert blocked_days as a date range
+          const { data: existingBlocks, error: existingBlocksError } = await (supabase as any)
             .from("blocked_days")
-            .upsert(blockRows, { onConflict: "property_id,date" });
+            .select("id")
+            .eq("property_id", pid)
+            .eq("start_date", ci)
+            .eq("end_date", co)
+            .limit(1);
+
+          if (existingBlocksError) {
+            errors.push(`${pid}:${platform}:${ev.uid} — Failed to check existing blocks: ${existingBlocksError.message}`);
+            continue;
+          }
+
+          if (!existingBlocks || existingBlocks.length === 0) {
+            const { error: insertBlockError } = await (supabase as any)
+              .from("blocked_days")
+              .insert({
+                property_id: pid,
+                start_date: ci,
+                end_date: co,
+                reason: `${PLATFORM_NAMES[platform]}:${ev.uid}`,
+                status: "approved", // iCal blocks are usually confirmed
+              });
+            if (insertBlockError) {
+              errors.push(`${pid}:${platform}:${ev.uid} — Failed to insert block: ${insertBlockError.message}`);
+              continue;
+            }
+          }
 
           // Upsert booking record (skip Airbnb blocks — just date holds)
           if (!ev.summary?.toLowerCase().includes("not available") &&
@@ -139,19 +150,19 @@ export async function GET(request: Request) {
                 guest_name: ev.summary || "Guest",
               }, { onConflict: "confirmation_code" });
           }
-          blocked += days.length;
+          blockedCount += 1; // Count as one block entry, not individual days
         } catch (e) {
           errors.push(`${pid}:${platform}:${ev.uid} — ${String(e)}`);
         }
       }
 
-      results.push({ property: pid, platform, events: events.length, blocked });
+      results.push({ property: pid, platform, events: events.length, blocked: blockedCount });
     }
   }
 
   return NextResponse.json({
     synced_at: new Date().toISOString(),
-    properties_checked: propertyIds.length,
+    properties_checked: properties?.length || 0,
     platform_feeds: results.length,
     total_events: results.reduce((s, r) => s + r.events, 0),
     total_dates_blocked: results.reduce((s, r) => s + r.blocked, 0),

@@ -40,6 +40,9 @@ export interface Property {
   base_price_night: number;
   images: string[];
   platform_names: Record<string, { name: string; url: string }>;
+  airbnb_ical_url?: string;
+  gatherin_ical_url?: string;
+  description?: string;
   lock_id?: string;
   lock_status: LockStatus;
   owner_id?: string;
@@ -63,6 +66,8 @@ export interface Booking {
   nights: number;
   guests_count: number;
   amount_sar: number;
+  source?: string;
+  confirmation_code?: string;
   status: BookingStatus;
   payment_method?: PaymentMethod;
   payment_status: PaymentStatus;
