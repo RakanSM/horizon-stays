@@ -12,26 +12,102 @@ import { usePropertyOwners } from '@/hooks/usePropertyOwners';
 import { formatCurrency } from '@/lib/utils';
 import type { Property } from '@/types';
 
-export default function PropertiesPage() {
-  const { data: properties, isLoading } = useProperties();
+export default function EnhancedPropertiesPage() {
+  const { data: properties, isLoading, refetch } = useProperties();
   const { data: owners } = usePropertyOwners();
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [editTab, setEditTab] = useState('overview');
+  const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState<any>({});
 
   const statusLabel: Record<string, string> = { available: 'متاح', occupied: 'مشغول', maintenance: 'صيانة', blocked: 'مقيّد' };
   const statusVariant: Record<string, string> = { available: 'confirmed', occupied: 'checked_in', maintenance: 'high', blocked: 'cancelled' };
 
+  const handlePropertySelect = (prop: Property) => {
+    setSelectedProperty(prop);
+    setFormData({
+      id: prop.id,
+      internal_name: prop.internal_name,
+      type: prop.type,
+      area_sqm: prop.area_sqm,
+      bedrooms: prop.bedrooms,
+      bathrooms: prop.bathrooms,
+      floor: prop.floor,
+      base_price_night: prop.base_price_night,
+      status: prop.status,
+      description: prop.description || '',
+      airbnb_ical_url: prop.airbnb_ical_url || '',
+      gatherin_ical_url: prop.gatherin_ical_url || '',
+      property_type: prop.property_type,
+      owner_id: prop.owner_id,
+    });
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/properties', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save property');
+      }
+
+      await refetch();
+      setSelectedProperty(null);
+      alert('تم حفظ التغييرات بنجاح');
+    } catch (error) {
+      alert('حدث خطأ: ' + (error as Error).message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!selectedProperty) return;
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/properties/booking-status', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ propertyId: selectedProperty.id, status: newStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update status');
+      }
+
+      await refetch();
+      setFormData({ ...formData, status: newStatus });
+      alert('تم تحديث الحالة بنجاح');
+    } catch (error) {
+      alert('حدث خطأ: ' + (error as Error).message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div dir="rtl">
-      <TopBar title="الوحدات" breadcrumb={[{ label: 'الرئيسية', href: '/admin' }, { label: 'الوحدات' }]}
-        actions={<Button size="sm">+ وحدة جديدة</Button>} />
+      <TopBar 
+        title="إدارة الوحدات" 
+        breadcrumb={[{ label: 'الرئيسية', href: '/admin' }, { label: 'الوحدات' }]}
+        actions={<Button size="sm">+ وحدة جديدة</Button>} 
+      />
       <div className="p-6">
         {isLoading ? (
           <div className="text-center text-hs-muted py-20">جاري التحميل...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {(properties ?? []).map(prop => (
-              <div key={prop.id} className="bg-hs-bg2 border border-hs-border rounded-xl overflow-hidden hover:border-hs-primary/40 transition-colors cursor-pointer" onClick={() => setSelectedProperty(prop)}>
+              <div 
+                key={prop.id} 
+                className="bg-hs-bg2 border border-hs-border rounded-xl overflow-hidden hover:border-hs-primary/40 transition-colors cursor-pointer" 
+                onClick={() => handlePropertySelect(prop)}
+              >
                 <div className="h-40 bg-gradient-to-br from-hs-bg3 to-hs-bg2 flex items-center justify-center">
                   <span className="text-4xl opacity-30">🏢</span>
                 </div>
@@ -64,59 +140,140 @@ export default function PropertiesPage() {
           <div>
             <Tabs tabs={[
               { key: 'overview', label: 'نظرة عامة' },
+              { key: 'pricing', label: 'الأسعار' },
+              { key: 'ical', label: 'روابط التقويم' },
+              { key: 'description', label: 'الوصف' },
               { key: 'ownership', label: 'الملكية' },
-              { key: 'platforms', label: 'المنصات' },
-              { key: 'financials', label: 'المالية' },
             ]} active={editTab} onChange={setEditTab} className="mb-6" />
             
             {editTab === 'overview' && (
               <div className="grid grid-cols-2 gap-4">
-                <Input label="اسم الوحدة" defaultValue={selectedProperty.internal_name} />
-                <Select label="النوع" defaultValue={selectedProperty.type}
-                  options={[{value:'penthouse',label:'بنتهاوس'},{value:'suite',label:'سويت'},{value:'loft',label:'لوفت'},{value:'studio',label:'استوديو'}]} />
-                <Input label="المساحة (م²)" type="number" defaultValue={String(selectedProperty.area_sqm ?? '')} />
-                <Input label="غرف النوم" type="number" defaultValue={String(selectedProperty.bedrooms ?? '')} />
-                <Input label="الحمامات" type="number" defaultValue={String(selectedProperty.bathrooms ?? '')} />
-                <Input label="الطابق" type="number" defaultValue={String(selectedProperty.floor ?? '')} />
-                <Input label="السعر/ليلة (ريال)" type="number" defaultValue={String(selectedProperty.base_price_night)} className="col-span-2" />
+                <Input 
+                  label="اسم الوحدة" 
+                  value={formData.internal_name} 
+                  onChange={(e) => setFormData({ ...formData, internal_name: e.target.value })}
+                />
+                <Select 
+                  label="النوع" 
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  options={[{value:'penthouse',label:'بنتهاوس'},{value:'suite',label:'سويت'},{value:'loft',label:'لوفت'},{value:'studio',label:'استوديو'}]} 
+                />
+                <Input 
+                  label="المساحة (م²)" 
+                  type="number" 
+                  value={formData.area_sqm}
+                  onChange={(e) => setFormData({ ...formData, area_sqm: parseFloat(e.target.value) })}
+                />
+                <Input 
+                  label="غرف النوم" 
+                  type="number" 
+                  value={formData.bedrooms}
+                  onChange={(e) => setFormData({ ...formData, bedrooms: parseInt(e.target.value) })}
+                />
+                <Input 
+                  label="الحمامات" 
+                  type="number" 
+                  value={formData.bathrooms}
+                  onChange={(e) => setFormData({ ...formData, bathrooms: parseInt(e.target.value) })}
+                />
+                <Input 
+                  label="الطابق" 
+                  type="number" 
+                  value={formData.floor}
+                  onChange={(e) => setFormData({ ...formData, floor: parseInt(e.target.value) })}
+                />
+                <Select 
+                  label="حالة الحجز" 
+                  value={formData.status}
+                  onChange={(e) => handleStatusChange(e.target.value)}
+                  options={[
+                    {value:'available',label:'متاح'},
+                    {value:'occupied',label:'مشغول'},
+                    {value:'maintenance',label:'صيانة'},
+                    {value:'blocked',label:'مقيّد'}
+                  ]} 
+                />
                 <div className="col-span-2 flex gap-3">
-                  <Button>حفظ التغييرات</Button>
-                  <Button variant="ghost">إلغاء</Button>
+                  <Button onClick={handleSave} disabled={isSaving}>
+                    {isSaving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setSelectedProperty(null)}>إلغاء</Button>
                 </div>
+              </div>
+            )}
+
+            {editTab === 'pricing' && (
+              <div className="flex flex-col gap-4">
+                <Input 
+                  label="السعر/ليلة (ريال)" 
+                  type="number" 
+                  value={formData.base_price_night}
+                  onChange={(e) => setFormData({ ...formData, base_price_night: parseFloat(e.target.value) })}
+                />
+                <Button onClick={handleSave} disabled={isSaving}>
+                  {isSaving ? 'جاري الحفظ...' : 'حفظ السعر'}
+                </Button>
+              </div>
+            )}
+
+            {editTab === 'ical' && (
+              <div className="flex flex-col gap-4">
+                <Input 
+                  label="رابط Airbnb iCal" 
+                  value={formData.airbnb_ical_url}
+                  onChange={(e) => setFormData({ ...formData, airbnb_ical_url: e.target.value })}
+                  placeholder="https://www.airbnb.com/calendar/ical/..."
+                />
+                <Input 
+                  label="رابط Gatherin iCal" 
+                  value={formData.gatherin_ical_url}
+                  onChange={(e) => setFormData({ ...formData, gatherin_ical_url: e.target.value })}
+                  placeholder="https://gatherin.com/calendar/ical/..."
+                />
+                <Button onClick={handleSave} disabled={isSaving}>
+                  {isSaving ? 'جاري الحفظ...' : 'حفظ روابط التقويم'}
+                </Button>
+              </div>
+            )}
+
+            {editTab === 'description' && (
+              <div className="flex flex-col gap-4">
+                <textarea 
+                  className="w-full p-3 border border-hs-border rounded-lg bg-hs-bg3 text-hs-text focus:outline-none focus:border-hs-primary"
+                  rows={6}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="أدخل وصف الوحدة..."
+                />
+                <Button onClick={handleSave} disabled={isSaving}>
+                  {isSaving ? 'جاري الحفظ...' : 'حفظ الوصف'}
+                </Button>
               </div>
             )}
 
             {editTab === 'ownership' && (
               <div className="flex flex-col gap-4">
-                <Select label="نوع الوحدة" defaultValue={selectedProperty.property_type}
-                  options={[{value:'owned',label:'مملوكة للمؤسسة'},{value:'third_party_managed',label:'تشغيل للغير'}]} />
-                {selectedProperty.property_type === 'third_party_managed' && (
+                <Select 
+                  label="نوع الوحدة" 
+                  value={formData.property_type}
+                  onChange={(e) => setFormData({ ...formData, property_type: e.target.value })}
+                  options={[{value:'owned',label:'مملوكة للمؤسسة'},{value:'third_party_managed',label:'تشغيل للغير'}]} 
+                />
+                {formData.property_type === 'third_party_managed' && (
                   <>
-                    <Select label="المالك" defaultValue={selectedProperty.owner_id ?? ''}
-                      options={(owners ?? []).map(o => ({ value: o.id, label: o.owner_name }))} placeholder="اختر مالك" />
-                    <Input label="نسبة عمولة الإدارة (%)" type="number" defaultValue="15" />
+                    <Select 
+                      label="المالك" 
+                      value={formData.owner_id ?? ''}
+                      onChange={(e) => setFormData({ ...formData, owner_id: e.target.value })}
+                      options={(owners ?? []).map(o => ({ value: o.id, label: o.owner_name }))} 
+                      placeholder="اختر مالك" 
+                    />
                   </>
                 )}
-                <Button>حفظ</Button>
-              </div>
-            )}
-
-            {editTab === 'platforms' && (
-              <div className="flex flex-col gap-4">
-                <p className="text-sm text-hs-muted">أسماء الوحدة على كل منصة:</p>
-                {['airbnb', 'booking', 'gatherin', 'expedia'].map(p => (
-                  <div key={p} className="grid grid-cols-2 gap-3">
-                    <Input label={`اسم على ${p}`} defaultValue={selectedProperty.platform_names?.[p]?.name ?? ''} />
-                    <Input label="رابط الإعلان" defaultValue={selectedProperty.platform_names?.[p]?.url ?? ''} />
-                  </div>
-                ))}
-                <Button>حفظ أسماء المنصات</Button>
-              </div>
-            )}
-
-            {editTab === 'financials' && (
-              <div className="text-center py-8 text-hs-muted text-sm">
-                تقارير مالية مفصلة متاحة في قسم المالية
+                <Button onClick={handleSave} disabled={isSaving}>
+                  {isSaving ? 'جاري الحفظ...' : 'حفظ'}
+                </Button>
               </div>
             )}
           </div>
