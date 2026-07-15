@@ -36,7 +36,7 @@ export function BookingModal({ locale, property, open, onClose }: BookingModalPr
     setSuccessId('');
 
     try {
-      const response = await fetch('/api/bookings', {
+      const response = await fetch('/api/bookings/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,15 +47,20 @@ export function BookingModal({ locale, property, open, onClose }: BookingModalPr
           check_in: form.check_in,
           check_out: form.check_out,
           guests_count: Number(form.guests_count || 1),
-          payment_method: form.payment_method,
+          nights: Math.max(1, Math.ceil((new Date(form.check_out).getTime() - new Date(form.check_in).getTime()) / (1000 * 60 * 60 * 24))),
         }),
       });
-      const result = (await response.json().catch(() => ({}))) as { id?: string; booking_id?: string; status?: string };
-      if (!response.ok) throw new Error('Booking request failed');
-      await queryClient.invalidateQueries({ queryKey: ['bookings'] });
-      setSuccessId(result.booking_id || result.id || result.status || `HS-${Date.now().toString().slice(-6)}`);
-    } catch {
-      setSuccessId(isAr ? 'تم استلام طلبك وسيتواصل معك فريقنا قريباً' : 'Your request was received and our team will contact you soon');
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Booking request failed');
+      
+      if (result.data?.paymentUrl) {
+        window.location.href = result.data.paymentUrl;
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ['bookings'] });
+        setSuccessId(result.data?.booking?.id || `HS-${Date.now().toString().slice(-6)}`);
+      }
+    } catch (err: any) {
+      alert(err.message || (isAr ? 'حدث خطأ أثناء إنشاء الحجز' : 'Error creating booking'));
     } finally {
       setLoading(false);
     }
