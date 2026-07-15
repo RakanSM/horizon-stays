@@ -31,22 +31,27 @@ export function BookingSidebar({ property, locale }: BookingSidebarProps) {
     if (!guestName || !guestPhone || !checkIn || !checkOut) return;
     setLoading(true);
     try {
-      const res = await fetch('/api/bookings', {
+      const res = await fetch('/api/bookings/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           property_id: property.id, guest_name: guestName, guest_phone: guestPhone,
           guest_email: guestEmail, check_in: checkIn, check_out: checkOut,
-          nights, guests_count: 1, amount_sar: total,
-          payment_method: paymentMethod, status: 'pending',
+          nights, guests_count: 1,
         }),
       });
       const data = await res.json();
-      setSuccess(data.data?.id ?? 'success');
-      qc.invalidateQueries({ queryKey: ['bookings'] });
-      setModalOpen(false);
+      
+      if (data.data?.paymentUrl) {
+        window.location.href = data.data.paymentUrl;
+      } else if (data.data?.booking?.id) {
+        setSuccess(data.data.booking.id);
+        qc.invalidateQueries({ queryKey: ['bookings'] });
+        setModalOpen(false);
+      }
     } catch (e) {
       console.error(e);
+      alert(isAr ? 'حدث خطأ أثناء إنشاء الحجز' : 'Error creating booking');
     } finally {
       setLoading(false);
     }
