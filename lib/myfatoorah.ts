@@ -24,18 +24,16 @@ export interface InitiatePaymentParams {
 
 export async function initiatePayment(params: InitiatePaymentParams) {
   const body = {
-    InvoiceAmount: params.amount,
-    CurrencyIso: 'SAR',
     CustomerName: params.guestName,
-    CustomerEmail: params.guestEmail,
-    CustomerMobile: params.guestPhone,
+    NotificationOption: 'ALL',
+    InvoiceValue: params.amount,
+    DisplayCurrencyIso: 'SAR',
     CallBackUrl: params.callbackUrl,
     ErrorUrl: params.errorUrl,
     Language: params.lang ?? 'ar',
     CustomerReference: params.bookingId,
-    DisplayCurrencyIso: 'SAR',
-    UserDefinedField: params.bookingId,
-    PaymentMethodId: null,
+    CustomerEmail: params.guestEmail,
+    CustomerMobile: params.guestPhone.replace(/\D/g, '').slice(-10),
   };
   const res = await fetch(`${MF_BASE}/v2/SendPayment`, { method: 'POST', headers: getMFHeaders() as unknown as HeadersInit, body: JSON.stringify(body) });
   if (!res.ok) throw new Error(`MyFatoorah SendPayment failed: ${res.status}`);
