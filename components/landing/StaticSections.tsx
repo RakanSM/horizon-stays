@@ -34,30 +34,40 @@ export function HeroSection({ locale }: { locale: string }) {
       id="hero"
       className="relative flex min-h-screen items-center justify-center overflow-hidden"
     >
-      {/* Animated background layers */}
+      {/* Animated background layers with enhanced gradients */}
       <div className="absolute inset-0 bg-hs-bg">
-        <div className="hs-hero-gradient-anim absolute inset-0 bg-[linear-gradient(135deg,rgba(201,169,110,0.18),rgba(12,10,8,0.25)_34%,rgba(12,10,8,0.97)),radial-gradient(circle_at_70%_20%,rgba(201,169,110,0.32),transparent_28%),linear-gradient(120deg,#221c14,#0c0a08_58%,#17120d)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-hs-bg/40 via-hs-bg/55 to-hs-bg" />
-        <div className="absolute inset-0 opacity-25 bg-[radial-gradient(ellipse_at_center,_var(--hs-primary)_0%,_transparent_68%)]" />
-        <div className="absolute bottom-0 left-0 right-0 h-44 bg-gradient-to-t from-hs-bg to-transparent" />
-        {/* Gold divider line */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-hs-primary to-transparent opacity-60" />
+        {/* Primary gradient animation */}
+        <div className="hs-hero-gradient-anim absolute inset-0 bg-[linear-gradient(135deg,rgba(212,175,55,0.12),rgba(12,10,8,0.3)_34%,rgba(12,10,8,0.95)),radial-gradient(circle_at_70%_20%,rgba(212,175,55,0.25),transparent_28%),linear-gradient(120deg,#1a1815,#050403_58%,#0f0d0a)]" />
+        
+        {/* Overlay gradients */}
+        <div className="absolute inset-0 bg-gradient-to-b from-hs-bg/30 via-hs-bg/50 to-hs-bg" />
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--hs-primary)_0%,_transparent_68%)]" />
+        
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-hs-bg to-transparent" />
+        
+        {/* Animated accent line */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-hs-primary to-transparent opacity-50" />
       </div>
 
-      {/* Hero content */}
+      {/* Hero content with enhanced typography */}
       <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-        <p className="mb-6 text-sm font-medium uppercase tracking-[0.45em] text-hs-primary">
+        <p className="mb-6 text-sm font-medium uppercase tracking-[0.45em] text-hs-primary animate-fade-in">
           {isAr ? 'الرياض · المملكة العربية السعودية' : 'RIYADH · SAUDI ARABIA'}
         </p>
-        <h1 className="mb-6 font-serif text-5xl font-bold leading-none tracking-tight text-hs-text md:text-7xl lg:text-9xl">
+        
+        <h1 className="mb-6 font-serif text-5xl font-bold leading-none tracking-tight text-hs-text md:text-7xl lg:text-8xl animate-slide-up" style={{ animationDelay: '0.1s' }}>
           Horizon<br /><span className="text-hs-primary">Stays</span>
         </h1>
-        <p className="mb-10 text-lg font-light text-hs-muted md:text-2xl">
+        
+        <p className="mb-10 text-lg font-light text-hs-text-secondary md:text-2xl animate-slide-up" style={{ animationDelay: '0.2s' }}>
           {isAr ? 'وحدات سكنية فاخرة · إقامة استثنائية' : 'Luxury Living · Exceptional Experience'}
         </p>
+        
         <a
           href="#properties"
-          className="hs-cta-pulse inline-flex items-center gap-3 rounded-full bg-hs-primary px-8 py-4 text-base font-semibold text-hs-bg transition-all duration-300 hover:scale-105 hover:bg-hs-primary2 md:text-lg"
+          className="hs-cta-pulse inline-flex items-center gap-3 rounded-full bg-hs-primary px-8 py-4 text-base font-semibold text-hs-bg transition-all duration-300 hover:scale-110 md:text-lg shadow-lg hover:shadow-gold-lg"
+          style={{ animationDelay: '0.3s' }}
         >
           {isAr ? 'استكشف الوحدات' : 'Explore Properties'}
           <span>↓</span>
@@ -78,7 +88,7 @@ export function VideoTourSection({ locale }: { locale: string }) {
   const isAr = locale === 'ar';
   const ref = useFadeIn();
   return (
-    <section ref={ref as React.RefObject<HTMLElement>} className="bg-hs-bg2/40 px-6 py-24">
+    <section ref={ref as React.RefObject<HTMLElement>} className="bg-hs-bg px-6 py-24">
       <div className="mx-auto max-w-5xl text-center">
         <p className="mb-3 text-sm font-medium uppercase tracking-[0.35em] text-hs-primary">
           {isAr ? 'شاهد التجربة' : 'See the experience'}
@@ -86,11 +96,12 @@ export function VideoTourSection({ locale }: { locale: string }) {
         <h2 className="mb-8 font-serif text-4xl font-semibold text-hs-text md:text-6xl">
           {isAr ? 'جولة افتراضية' : 'Virtual Tour'}
         </h2>
-        <div className="group relative aspect-video overflow-hidden rounded-[2rem] border border-hs-border bg-gradient-to-br from-hs-bg3 via-hs-bg2 to-hs-primary/20 shadow-2xl shadow-black/40">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,169,110,0.22),transparent_34%)]" />
+        
+        <div className="group relative aspect-video overflow-hidden rounded-[2rem] border border-hs-border bg-gradient-to-br from-hs-bg4 via-hs-bg3 to-hs-primary/10 shadow-2xl shadow-black/40">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.15),transparent_34%)]" />
           <div className="absolute inset-0 flex items-center justify-center">
             <button
-              className="flex h-24 w-24 items-center justify-center rounded-full border border-hs-primary/40 bg-hs-bg/70 text-4xl text-hs-primary shadow-xl backdrop-blur transition-all duration-300 group-hover:scale-110 group-hover:border-hs-primary"
+              className="flex h-24 w-24 items-center justify-center rounded-full border border-hs-primary/40 bg-hs-bg/70 text-4xl text-hs-primary shadow-xl backdrop-blur transition-all duration-300 group-hover:scale-110 group-hover:border-hs-primary group-hover:shadow-gold-lg"
               aria-label={isAr ? 'تشغيل الجولة' : 'Play tour'}
             >
               ▶
@@ -113,14 +124,14 @@ export function MapSection({ locale }: { locale: string }) {
   const isAr = locale === 'ar';
   const ref = useFadeIn();
   return (
-    <section ref={ref as React.RefObject<HTMLElement>} className="bg-hs-bg2/40 px-6 py-24">
+    <section ref={ref as React.RefObject<HTMLElement>} className="bg-hs-bg px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 text-center">
           <p className="mb-3 text-sm font-medium uppercase tracking-[0.35em] text-hs-primary">
             {isAr ? 'الموقع' : 'Location'}
           </p>
           <h2 className="font-serif text-4xl font-semibold text-hs-text md:text-6xl">
-            {isAr ? 'موقعنا في الرياض' : 'Our Riyadh Location'}
+            {isAr ? 'وحداتنا على الخريطة' : 'Our Properties on the Map'}
           </h2>
         </div>
         <div className="overflow-hidden rounded-[2rem] border border-hs-border bg-hs-bg3 shadow-2xl shadow-black/30">
@@ -145,7 +156,7 @@ export function FooterSection({ locale }: { locale: string }) {
     <footer
       id="contact"
       className="bg-hs-bg px-6 py-12"
-      style={{ borderTop: '1px solid rgba(201,169,110,0.40)' }}
+      style={{ borderTop: '1px solid rgba(212,175,55,0.25)' }}
     >
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
@@ -170,7 +181,7 @@ export function FooterSection({ locale }: { locale: string }) {
                 <a
                   key={social}
                   href="#"
-                  className="rounded-full border border-hs-border px-4 py-2 text-sm transition-all duration-300 hover:border-hs-primary hover:text-hs-primary"
+                  className="rounded-full border border-hs-border px-4 py-2 text-sm transition-all duration-300 hover:border-hs-primary hover:text-hs-primary hover:bg-hs-bg3"
                 >
                   {social}
                 </a>
