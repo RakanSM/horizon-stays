@@ -137,7 +137,7 @@ export async function GET(request: Request) {
           // Upsert booking record (skip Airbnb blocks — just date holds)
           if (!ev.summary?.toLowerCase().includes("not available") &&
               !ev.summary?.toLowerCase().includes("blocked")) {
-            await (supabase as any)
+            const { data: upsertedBooking, error: upsertError } = await (supabase as any)
               .from("bookings")
               .upsert({
                 property_id: pid,
@@ -148,7 +148,22 @@ export async function GET(request: Request) {
                 status: "confirmed",
                 confirmation_code: ev.uid,
                 guest_name: ev.summary || "Guest",
-              }, { onConflict: "confirmation_code" });
+              }, { onConflict: "confirmation_code" })
+              .select("id")
+              .single();
+
+            if (!upsertError && upsertedBooking) {
+              // Trigger Odoo sync for the new/updated booking
+              try {
+                await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/integrations/odoo`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ action: 'sync_booking', bookingId: upsertedBooking.id }),
+                });
+              } catch (e) {
+                console.error(`Failed to trigger Odoo sync for booking ${upsertedBooking.id}:`, e);
+              }
+            }
           }
           blockedCount += 1; // Count as one block entry, not individual days
         } catch (e) {
