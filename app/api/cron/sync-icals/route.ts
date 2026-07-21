@@ -70,7 +70,7 @@ export async function GET(request: Request) {
 
   const { data: properties, error: fetchPropertiesError } = await supabase
     .from("properties")
-    .select("id, airbnb_ical_url, gatherin_ical_url");
+    .select("id, airbnb_id, gathern_id, ical_url_airbnb, ical_url_gathern");
 
   if (fetchPropertiesError) {
     errors.push(`Failed to fetch properties: ${fetchPropertiesError.message}`);
@@ -86,6 +86,17 @@ export async function GET(request: Request) {
         icalUrl = property.airbnb_ical_url;
       } else if (platform === "gatherin") {
         icalUrl = property.gatherin_ical_url;
+      }
+
+      // If iCal URL is not set, generate the export URL for this property
+      if (!icalUrl) {
+        icalUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/ical/export/${pid}`;
+        // Update the property with the generated iCal URL
+        if (platform === "airbnb") {
+          await supabase.from("properties").update({ ical_url_airbnb: icalUrl }).eq("id", pid);
+        } else if (platform === "gatherin") {
+          await supabase.from("properties").update({ ical_url_gathern: icalUrl }).eq("id", pid);
+        }
       }
 
       if (!icalUrl) continue;
@@ -148,7 +159,7 @@ export async function GET(request: Request) {
                 status: "confirmed",
                 confirmation_code: ev.uid,
                 guest_name: ev.summary || "Guest",
-              }, { onConflict: "confirmation_code" })
+              }, { onConflict: "confirmation_code", ignoreDuplicates: false })
               .select("id")
               .single();
 
