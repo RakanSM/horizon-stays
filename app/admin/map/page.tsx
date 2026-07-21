@@ -11,6 +11,7 @@ interface Property {
   latitude: number;
   longitude: number;
   base_price_night: number;
+  price?: number;
 }
 
 export default function AdminMapPage() {

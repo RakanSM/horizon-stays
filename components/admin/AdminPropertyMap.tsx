@@ -8,7 +8,8 @@ interface Property {
   name: string;
   latitude: number;
   longitude: number;
-  price: number;
+  base_price_night: number;
+  price?: number;
 }
 
 interface AdminPropertyMapProps {
@@ -66,7 +67,7 @@ export default function AdminPropertyMap({ properties, onPinUpdate, locale }: Ad
               <div style="background:#1a1814;color:#f5f0e8;border-radius:12px;padding:12px 14px;font-family:inherit;min-width:200px;">
                 <div style="font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#c9a96e;margin-bottom:4px;font-weight:600;">Horizon Stays</div>
                 <div style="font-weight:700;font-size:14px;margin-bottom:6px;line-height:1.3;">${p.name}</div>
-                <div style="background:#c9a96e;color:#0c0a08;display:inline-block;border-radius:999px;padding:3px 10px;font-weight:700;font-size:13px;margin-bottom:10px;">SAR ${p.price.toLocaleString()} / night</div>
+                <div style="background:#c9a96e;color:#0c0a08;display:inline-block;border-radius:999px;padding:3px 10px;font-weight:700;font-size:13px;margin-bottom:10px;">SAR ${(p.base_price_night || p.price || 0).toLocaleString()} / night</div>
                 <div style="font-size:12px;color:#a8a090;margin-bottom:8px;">
                   <div>Lat: ${p.latitude.toFixed(6)}</div>
                   <div>Lng: ${p.longitude.toFixed(6)}</div>
