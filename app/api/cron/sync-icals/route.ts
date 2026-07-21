@@ -9,7 +9,7 @@ interface ICalEvent {
   status: string;
 }
 
-export function parseIcal(text: string): ICalEvent[] {
+function parseIcal(text: string): ICalEvent[] {
   const events: ICalEvent[] = [];
   const blocks = text.split("BEGIN:VEVENT");
   for (let i = 1; i < blocks.length; i++) {
