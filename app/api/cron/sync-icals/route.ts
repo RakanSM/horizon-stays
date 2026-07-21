@@ -77,7 +77,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ errors }, { status: 500 });
   }
 
-  for (const property of properties || []) {
+  for (const property of (properties as any[]) || []) {
     const pid = property.id;
 
     for (const platform of ["airbnb", "gatherin"]) {
