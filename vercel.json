@@ -1,8 +1,5 @@
 {
-  "buildCommand": null,
-  "outputDirectory": ".",
-  "installCommand": null,
-  "framework": null,
+  "framework": "nextjs",
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [

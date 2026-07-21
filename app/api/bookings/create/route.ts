@@ -1,122 +1,87 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
-import { initiatePayment } from '@/lib/myfatoorah';
+
+const DAY_MS = 86_400_000;
+
+function parseStay(checkIn: unknown, checkOut: unknown) {
+  if (typeof checkIn !== 'string' || typeof checkOut !== 'string') return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(checkIn) || !/^\d{4}-\d{2}-\d{2}$/.test(checkOut)) return null;
+  const start = Date.parse(`${checkIn}T00:00:00Z`);
+  const end = Date.parse(`${checkOut}T00:00:00Z`);
+  const nights = (end - start) / DAY_MS;
+  return Number.isInteger(nights) && nights > 0 ? { checkIn, checkOut, nights } : null;
+}
+
+function safeText(value: unknown, maxLength: number) {
+  return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
+}
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const {
-      property_id,
-      guest_name,
-      guest_email,
-      guest_phone,
-      check_in,
-      check_out,
-      nights,
-      guests_count,
-      platform = 'direct',
-      notes = '',
-    } = body;
+    const stay = parseStay(body.check_in, body.check_out);
+    const propertyId = Number(body.property_id);
+    const guestName = safeText(body.guest_name, 100);
+    const guestEmail = safeText(body.guest_email, 254);
+    const guestPhone = safeText(body.guest_phone, 30);
+    const notes = safeText(body.notes, 1000);
+    const guestsCount = Math.min(30, Math.max(1, Number.parseInt(String(body.guests_count ?? 1), 10) || 1));
 
-    // Validate required fields
-    if (!property_id || !guest_name || !check_in || !check_out) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    if (!Number.isInteger(propertyId) || propertyId <= 0 || !guestName || !stay) {
+      return NextResponse.json({ error: 'Valid property, guest name, check-in, and check-out are required.' }, { status: 400 });
     }
 
     const supabase = createServerClient() as any;
-
-    // Get property details to calculate price
     const { data: property, error: propertyError } = await supabase
       .from('properties')
-      .select('id, internal_name, base_price_night, status')
-      .eq('id', property_id)
+      .select('id, name_ar, name_en, price_per_night, is_active')
+      .eq('id', propertyId)
       .single();
-
-    if (propertyError || !property) {
-      return NextResponse.json(
-        { error: 'Property not found' },
-        { status: 404 }
-      );
+    if (propertyError || !property) return NextResponse.json({ error: 'Property not found.' }, { status: 404 });
+    if (!property.is_active) {
+      return NextResponse.json({ error: 'Property is not available for booking.' }, { status: 409 });
     }
 
-    // Check if property is available for booking
-    if (property.status === 'blocked' || property.status === 'maintenance') {
-      return NextResponse.json(
-        { error: 'Property is not available for booking' },
-        { status: 400 }
-      );
-    }
+    const { data: overlaps, error: overlapError } = await supabase
+      .from('bookings')
+      .select('id')
+      .eq('property_id', propertyId)
+      .in('status', ['pending', 'confirmed', 'checked_in'])
+      .lt('check_in', stay.checkOut)
+      .gt('check_out', stay.checkIn)
+      .limit(1);
+    if (overlapError) throw overlapError;
+    if (overlaps?.length) return NextResponse.json({ error: 'Those dates are no longer available.' }, { status: 409 });
 
-    // Calculate total amount
-    const amount_sar = nights * property.base_price_night;
+    const nightlyRate = Number(property.price_per_night);
+    if (!Number.isFinite(nightlyRate) || nightlyRate <= 0) throw new Error('Property pricing is not configured.');
+    const amountSar = Number((stay.nights * nightlyRate).toFixed(2));
 
-    // Create booking record
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
       .insert({
-        property_id,
-        guest_name,
-        guest_email,
-        guest_phone,
-        check_in,
-        check_out,
-        nights,
-        guests_count,
-        platform,
-        amount_sar,
+        property_id: propertyId,
+        guest_name: guestName,
+        guest_email: guestEmail || null,
+        guest_phone: guestPhone || null,
+        check_in: stay.checkIn,
+        check_out: stay.checkOut,
+        nights: stay.nights,
+        guests_count: guestsCount,
+        platform: 'direct',
+        amount_sar: amountSar,
         status: 'pending',
+        payment_method: 'myfatoorah',
         payment_status: 'pending',
         notes,
       })
-      .select()
+      .select('id, property_id, guest_name, guest_email, guest_phone, check_in, check_out, nights, guests_count, amount_sar, status, payment_status, property:properties(name_ar, name_en)')
       .single();
+    if (bookingError || !booking) throw bookingError ?? new Error('Failed to create booking.');
 
-    if (bookingError || !booking) {
-      return NextResponse.json(
-        { error: 'Failed to create booking' },
-        { status: 500 }
-      );
-    }
-
-    // Initiate MyFatoorah payment
-    try {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://horizonstays.com';
-      const paymentResult = await initiatePayment({
-        bookingId: booking.id,
-        amount: amount_sar,
-        guestEmail: guest_email || 'noemail@horizonstays.com',
-        guestName: guest_name,
-        guestPhone: guest_phone || '+966500000000',
-        callbackUrl: `${appUrl}/api/payments/callback`,
-        errorUrl: `${appUrl}/ar/booking?error=payment_failed`,
-        lang: 'ar',
-      });
-
-      return NextResponse.json({
-        data: {
-          booking,
-          paymentUrl: paymentResult.paymentUrl,
-          invoiceId: paymentResult.invoiceId,
-        },
-      });
-    } catch (paymentError) {
-      // If payment initiation fails, still return booking but with error
-      console.error('Payment initiation failed:', paymentError);
-      return NextResponse.json(
-        {
-          data: { booking },
-          warning: 'Booking created but payment initiation failed',
-        },
-        { status: 201 }
-      );
-    }
-  } catch (err: unknown) {
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Booking creation failed' },
-      { status: 500 }
-    );
+    return NextResponse.json({ data: { booking } }, { status: 201 });
+  } catch (error) {
+    console.error('Booking creation failed:', error);
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Booking creation failed.' }, { status: 500 });
   }
 }

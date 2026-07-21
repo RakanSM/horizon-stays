@@ -1,5 +1,5 @@
 import { createServerClient } from '@/lib/supabase/server';
-import { parseIcal } from '@/app/api/cron/sync-icals/route'; // Re-use the parsing logic
+import { parseIcal } from '@/lib/ical-parser';
 
 export async function generateICAL(propertyId: string, platform: 'airbnb' | 'gatherin'): Promise<string> {
   const supabase = createServerClient() as any;

@@ -6,7 +6,7 @@ export type PropertyStatus = 'available' | 'occupied' | 'maintenance' | 'blocked
 export type PropertyType = 'owned' | 'third_party_managed';
 export type Platform = 'airbnb' | 'booking' | 'gatherin' | 'expedia' | 'direct' | 'manual';
 export type PaymentMethod = 'myfatoorah' | 'bank_transfer' | 'card';
-export type PaymentStatus = 'pending' | 'pending_review' | 'paid' | 'failed' | 'refunded';
+export type PaymentStatus = 'pending' | 'pending_review' | 'paid' | 'canceled' | 'expired' | 'failed' | 'refunded';
 export type UserRole = 'admin' | 'operations' | 'cleaning';
 export type Severity = 'low' | 'medium' | 'high' | 'critical';
 export type MaintenanceStatus = 'open' | 'in_progress' | 'resolved';
@@ -71,6 +71,14 @@ export interface Booking {
   status: BookingStatus;
   payment_method?: PaymentMethod;
   payment_status: PaymentStatus;
+  payment_method_id?: number;
+  payment_invoice_id?: string;
+  payment_id?: string;
+  payment_environment?: 'test' | 'live';
+  payment_url?: string;
+  payment_initiated_at?: string;
+  payment_updated_at?: string;
+  payment_completed_at?: string;
   door_code?: string;
   door_code_expires?: string;
   odoo_invoice_id?: number;
@@ -182,8 +190,19 @@ export interface Payment {
   amount_sar: number;
   status: PaymentStatus;
   gateway_ref?: string;
+  invoice_id?: string;
+  payment_id?: string;
+  provider_transaction_id?: string;
+  gateway_method?: string;
+  provider_status?: string;
+  currency?: string;
+  environment?: 'test' | 'live';
+  event_reference?: string;
+  provider_created_at?: string;
   receipt_url?: string;
   created_at: string;
+  updated_at?: string;
+  completed_at?: string;
 }
 
 export interface GuestReview {

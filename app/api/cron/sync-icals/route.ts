@@ -1,34 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-
-interface ICalEvent {
-  uid: string;
-  summary: string;
-  dtstart: string;
-  dtend: string;
-  status: string;
-}
-
-function parseIcal(text: string): ICalEvent[] {
-  const events: ICalEvent[] = [];
-  const blocks = text.split("BEGIN:VEVENT");
-  for (let i = 1; i < blocks.length; i++) {
-    const block = blocks[i];
-    const get = (key: string) => {
-      const m = block.match(new RegExp(`${key}(?:;[^:]*)?:([^\\r\\n]+)`));
-      return m ? m[1].trim() : "";
-    };
-    const dtstart = get("DTSTART");
-    const dtend   = get("DTEND");
-    const uid     = get("UID");
-    const summary = get("SUMMARY");
-    const status  = get("STATUS") || "CONFIRMED";
-    if (dtstart && dtend && uid) {
-      events.push({ uid, summary, dtstart, dtend, status });
-    }
-  }
-  return events;
-}
+import { parseIcal } from "@/lib/ical-parser";
 
 function icalDateToISO(d: string): string {
   // Handles YYYYMMDD and YYYYMMDDTHHmmssZ
@@ -70,7 +42,7 @@ export async function GET(request: Request) {
 
   const { data: properties, error: fetchPropertiesError } = await supabase
     .from("properties")
-    .select("id, airbnb_id, gathern_id, ical_url_airbnb, ical_url_gathern");
+    .select("id, airbnb_ical_url, gatherin_ical_url");
 
   if (fetchPropertiesError) {
     errors.push(`Failed to fetch properties: ${fetchPropertiesError.message}`);
@@ -86,17 +58,6 @@ export async function GET(request: Request) {
         icalUrl = property.airbnb_ical_url;
       } else if (platform === "gatherin") {
         icalUrl = property.gatherin_ical_url;
-      }
-
-      // If iCal URL is not set, generate the export URL for this property
-      if (!icalUrl) {
-        icalUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/ical/export/${pid}`;
-        // Update the property with the generated iCal URL
-        if (platform === "airbnb") {
-          await supabase.from("properties").update({ ical_url_airbnb: icalUrl }).eq("id", pid);
-        } else if (platform === "gatherin") {
-          await supabase.from("properties").update({ ical_url_gathern: icalUrl }).eq("id", pid);
-        }
       }
 
       if (!icalUrl) continue;
@@ -148,7 +109,7 @@ export async function GET(request: Request) {
           // Upsert booking record (skip Airbnb blocks — just date holds)
           if (!ev.summary?.toLowerCase().includes("not available") &&
               !ev.summary?.toLowerCase().includes("blocked")) {
-            const { data: upsertedBooking, error: upsertError } = await (supabase as any)
+            await (supabase as any)
               .from("bookings")
               .upsert({
                 property_id: pid,
@@ -159,22 +120,7 @@ export async function GET(request: Request) {
                 status: "confirmed",
                 confirmation_code: ev.uid,
                 guest_name: ev.summary || "Guest",
-              }, { onConflict: "confirmation_code", ignoreDuplicates: false })
-              .select("id")
-              .single();
-
-            if (!upsertError && upsertedBooking) {
-              // Trigger Odoo sync for the new/updated booking
-              try {
-                await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/integrations/odoo`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ action: 'sync_booking', bookingId: upsertedBooking.id }),
-                });
-              } catch (e) {
-                console.error(`Failed to trigger Odoo sync for booking ${upsertedBooking.id}:`, e);
-              }
-            }
+              }, { onConflict: "confirmation_code" });
           }
           blockedCount += 1; // Count as one block entry, not individual days
         } catch (e) {

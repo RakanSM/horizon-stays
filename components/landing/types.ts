@@ -1,6 +1,8 @@
 export type LandingProperty = {
   id: string | number;
   name?: string | null;
+  name_ar?: string | null;
+  name_en?: string | null;
   title?: string | null;
   property_name?: string | null;
   type?: string | null;

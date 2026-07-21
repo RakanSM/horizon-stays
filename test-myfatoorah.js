@@ -1,48 +1,26 @@
-const MF_BASE = 'https://apitest.myfatoorah.com';
-const API_KEY = 'SK_KWT_vVZlnnAqu8jRByOWaRPNId4ShzEDNt256dvnjebuyzo52dXjAfRx2ixW5umjWSUx';
+'use strict';
 
-async function testInitiatePayment() {
-  console.log('--- Starting MyFatoorah Integration Test (JS) ---');
-  
-  const body = {
-    CustomerName: 'Test Guest',
-    NotificationOption: 'ALL',
-    InvoiceValue: 10,
-    DisplayCurrencyIso: 'SAR',
-    CallBackUrl: 'http://localhost:3000/api/payments/callback',
-    ErrorUrl: 'http://localhost:3000/ar/booking?error=payment_failed',
-    Language: 'ar',
-    CustomerReference: 'test-booking-' + Date.now(),
-    CustomerEmail: 'test@example.com',
-    CustomerMobile: '500000000',
-  };
-
-  try {
-    const res = await fetch(`${MF_BASE}/v2/SendPayment`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body)
-    });
-
-    const data = await res.json();
-    
-    if (data.IsSuccess) {
-      console.log('\n--- Success! ---');
-      console.log('Invoice ID:', data.Data.InvoiceId);
-      console.log('Payment URL:', data.Data.InvoiceURL);
-      console.log('\nYou can visit the Payment URL above to test the payment flow in the sandbox.');
-    } else {
-      console.error('\n--- MyFatoorah Error ---');
-      console.error('Message:', data.Message);
-      console.error('Errors:', data.ValidationErrors);
-    }
-  } catch (error) {
-    console.error('\n--- Network Error ---');
-    console.error(error);
-  }
+// Optional sandbox smoke test. It reads credentials from the environment and never embeds or prints them.
+const apiKey = process.env.MYFATOORAH_TEST_API_KEY;
+if (!apiKey) {
+  console.error('MYFATOORAH_TEST_API_KEY is required for the optional sandbox smoke test.');
+  process.exit(2);
+}
+if ((process.env.MYFATOORAH_ENV || 'test').toLowerCase() !== 'test') {
+  console.error('Refusing to run against a non-test environment.');
+  process.exit(2);
 }
 
-testInitiatePayment();
+fetch('https://apitest.myfatoorah.com/v2/InitiatePayment', {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+  body: JSON.stringify({ InvoiceAmount: 10, CurrencyIso: 'SAR' }),
+}).then(async (response) => {
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok || body.IsSuccess !== true) throw new Error(body.Message || `HTTP ${response.status}`);
+  const methods = Array.isArray(body.Data?.PaymentMethods) ? body.Data.PaymentMethods : [];
+  console.log(`Sandbox method discovery passed (${methods.length} methods).`);
+}).catch((error) => {
+  console.error(`Sandbox method discovery failed: ${error.message}`);
+  process.exitCode = 1;
+});

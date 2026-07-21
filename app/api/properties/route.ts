@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   
   let query = supabase
     .from('properties')
-    .select('*, owner:property_owners(*)')
+    .select('*')
     .order('created_at', { ascending: false });
 
   const propertyId = url.searchParams.get('id');

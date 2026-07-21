@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Badge, Button } from '@/components/ui';
 import { BookingModal } from './BookingModal';
 import type { LandingProperty } from './types';
@@ -25,19 +24,10 @@ const formatType = (type: string, isAr: boolean) => {
   return map[type]?.[isAr ? 'ar' : 'en'] || type;
 };
 
-const propertyName  = (p: LandingProperty) => p.name_en || p.name || p.title || p.property_name || (p as unknown as Record<string,string>).internal_name || 'Horizon Residence';
+const propertyName  = (p: LandingProperty, isAr = false) => (isAr ? p.name_ar : p.name_en) || p.name_ar || p.name_en || p.name || p.title || p.property_name || 'Horizon Residence';
 const propertyType  = (p: LandingProperty) => p.type  || p.property_type || 'suite';
-const propertyArea  = (p: LandingProperty) => p.area_m2 || p.area_sqm || p.area || 120;
-const propertyPrice = (p: LandingProperty) => Number(p.price_per_night || p.base_price_night || p.price_per_night || p.nightly_price || 900);
-const propertyImage = (p: LandingProperty) => {
-  // Try multiple image column names
-  if (typeof p.gallery_images === 'string') return p.gallery_images;
-  if (Array.isArray(p.gallery_images) && p.gallery_images.length > 0) return p.gallery_images[0];
-  if (p.hero_image) return p.hero_image;
-  if (p.images && Array.isArray(p.images) && p.images.length > 0) return p.images[0];
-  if (p.image_url) return p.image_url;
-  return null;
-};
+const propertyArea  = (p: LandingProperty) => p.area_sqm || p.area || 120;
+const propertyPrice = (p: LandingProperty) => Number(p.base_price_night || p.price_per_night || p.nightly_price || 900);
 
 /* ── Heart / save icon (UI only) ── */
 function HeartIcon() {
@@ -99,7 +89,6 @@ function useFadeIn() {
 
 export function PropertiesSection({ properties, locale }: { properties: LandingProperty[]; locale: string }) {
   const isAr = locale === 'ar';
-  const router = useRouter();
   const [filters, setFilters] = useState<SearchFilters>({});
   const [selectedProperty, setSelectedProperty] = useState<LandingProperty | null>(null);
   const [loading, setLoading] = useState(true);
@@ -163,18 +152,16 @@ export function PropertiesSection({ properties, locale }: { properties: LandingP
                 return (
                   <article
                     key={property.id}
-                    onClick={() => router.push(`/${locale}/property/${property.id}`)}
-                    className="hs-property-card group relative overflow-hidden rounded-3xl border border-hs-border bg-hs-bg2 shadow-xl shadow-black/30 transition-all duration-300 hover:-translate-y-2 hover:border-hs-primary/50 cursor-pointer"
+                    className="hs-property-card group relative overflow-hidden rounded-3xl border border-hs-border bg-hs-bg2 shadow-xl shadow-black/30 transition-all duration-300 hover:-translate-y-2 hover:border-hs-primary/50"
                   >
                     {/* Image area */}
                     <div className="relative h-64 overflow-hidden bg-gradient-to-br from-hs-bg2 via-hs-bg3 to-hs-primary/20">
-                      {propertyImage(property) ? (
+                      {(property.images?.[0] || property.image_url) ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={propertyImage(property) || ''}
-                          alt={propertyName(property)}
+                          src={property.images?.[0] || property.image_url || ''}
+                          alt={propertyName(property, isAr)}
                           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center">
@@ -202,8 +189,8 @@ export function PropertiesSection({ properties, locale }: { properties: LandingP
                     </div>
 
                     {/* Card body */}
-                    <div className="space-y-5 p-6" onClick={(e) => e.stopPropagation()}>
-                      <h3 className="font-serif text-2xl font-semibold text-hs-text cursor-pointer hover:text-hs-primary transition-colors" onClick={() => router.push(`/${locale}/property/${property.id}`)}>{propertyName(property)}</h3>
+                    <div className="space-y-5 p-6">
+                      <h3 className="font-serif text-2xl font-semibold text-hs-text">{propertyName(property, isAr)}</h3>
                       <div className="flex flex-wrap gap-2 text-sm text-hs-muted">
                         <span className="rounded-full border border-hs-border px-3 py-1">
                           {isAr ? `${bedrooms} غرف` : `${bedrooms} beds`}
@@ -224,21 +211,12 @@ export function PropertiesSection({ properties, locale }: { properties: LandingP
                           </p>
                           <p className="text-xs text-hs-muted">{isAr ? 'لليلة' : 'per night'}</p>
                         </div>
-                        <div className="flex gap-2">
-                          <Button
-                            onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/property/${property.id}`); }}
-                            variant="outline"
-                            className="rounded-full px-5 transition-all duration-300 hover:scale-105"
-                          >
-                            {isAr ? 'التفاصيل' : 'Details'}
-                          </Button>
-                          <Button
-                            onClick={(e) => { e.stopPropagation(); setSelectedProperty(property); }}
-                            className="rounded-full px-5 transition-all duration-300 hover:scale-105"
-                          >
-                            {isAr ? 'احجز الآن' : 'Book Now'}
-                          </Button>
-                        </div>
+                        <Button
+                          onClick={() => setSelectedProperty(property)}
+                          className="rounded-full px-5 transition-all duration-300 hover:scale-105"
+                        >
+                          {isAr ? 'احجز الآن' : 'Book Now'}
+                        </Button>
                       </div>
                     </div>
                   </article>

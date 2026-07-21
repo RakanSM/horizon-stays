@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 :root {
-  /* Dark mode (default) */
   --hs-bg: #050403;
   --hs-bg2: #0f0d0a;
   --hs-bg3: #1a1815;
@@ -23,61 +22,6 @@
   --hs-blue: #60a5fa;
   --hs-purple: #a78bfa;
   --hs-amber: #fbbf24;
-}
-
-/* Light mode */
-@media (prefers-color-scheme: light) {
-  :root {
-    --hs-bg: #faf8f3;
-    --hs-bg2: #f3f0e8;
-    --hs-bg3: #ebe7dd;
-    --hs-bg4: #e3dfd2;
-    --hs-primary: #b8860b;
-    --hs-primary2: #cd853f;
-    --hs-primary3: #daa520;
-    --hs-accent: #8b7355;
-    --hs-text: #1a1815;
-    --hs-text-secondary: #3a3530;
-    --hs-muted: rgba(26,24,21,0.50);
-    --hs-muted-dark: rgba(26,24,21,0.35);
-    --hs-border: rgba(184,134,11,0.20);
-    --hs-border-light: rgba(184,134,11,0.35);
-  }
-}
-
-/* Support for explicit dark mode toggle */
-html[data-theme="dark"] {
-  --hs-bg: #050403;
-  --hs-bg2: #0f0d0a;
-  --hs-bg3: #1a1815;
-  --hs-bg4: #242220;
-  --hs-primary: #d4af37;
-  --hs-primary2: #c9a96e;
-  --hs-primary3: #b8924f;
-  --hs-accent: #e8d5b7;
-  --hs-text: #faf8f3;
-  --hs-text-secondary: #e8e3d8;
-  --hs-muted: rgba(250,248,243,0.40);
-  --hs-muted-dark: rgba(250,248,243,0.25);
-  --hs-border: rgba(212,175,55,0.15);
-  --hs-border-light: rgba(212,175,55,0.25);
-}
-
-html[data-theme="light"] {
-  --hs-bg: #faf8f3;
-  --hs-bg2: #f3f0e8;
-  --hs-bg3: #ebe7dd;
-  --hs-bg4: #e3dfd2;
-  --hs-primary: #b8860b;
-  --hs-primary2: #cd853f;
-  --hs-primary3: #daa520;
-  --hs-accent: #8b7355;
-  --hs-text: #1a1815;
-  --hs-text-secondary: #3a3530;
-  --hs-muted: rgba(26,24,21,0.50);
-  --hs-muted-dark: rgba(26,24,21,0.35);
-  --hs-border: rgba(184,134,11,0.20);
-  --hs-border-light: rgba(184,134,11,0.35);
 }
 
 * {

@@ -60,7 +60,7 @@ async function getLandingData() {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
     const [{ data: properties }, { data: reviews }] = await Promise.all([
-      supabase.from('properties').select('*').eq('status', 'available').order('base_price_night', { ascending: false }),
+      supabase.from('properties').select('*').eq('is_active', true).order('price_per_night', { ascending: false }),
       supabase.from('guest_reviews' as never).select('*').order('created_at', { ascending: false }).limit(10),
     ]);
     return {

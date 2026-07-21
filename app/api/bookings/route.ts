@@ -4,7 +4,7 @@ import { createServerClient } from '@/lib/supabase/server';
 export async function GET(req: Request) {
   const supabase = createServerClient() as any;
   const url = new URL(req.url);
-  let query: any = supabase.from('bookings').select('*, property:properties(internal_name, type)').order('created_at', { ascending: false });
+  let query: any = supabase.from('bookings').select('*, property:properties(name_ar, name_en, type)').order('created_at', { ascending: false });
   const status = url.searchParams.get('status');
   const platform = url.searchParams.get('platform');
   const propertyId = url.searchParams.get('property_id');

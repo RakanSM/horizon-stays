@@ -1,25 +1,45 @@
-
-# dependencies
-# misc
-# next.js
-# production
-# testing
-# vercel
-*.pem
-.DS_Store
-.env.development.local
-.env.local
-.env.production.local
-.env.test.local
-.pnp.js
-.vercel
-/.next/
-/.pnp
-/build
-/coverage
-/out/
-node_modules
+# Dependencies and package-manager state
 node_modules/
+.pnp/
+.pnp.js
+
+# Next.js and build outputs
+.next/
+out/
+build/
+dist/
+coverage/
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# Vercel local project metadata
+.vercel/
+
+# Local secrets and credentials; keep documented templates
+.env
+.env.*
+!.env.example
+!.env.local.example
+!mobile/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and OS files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.DS_Store
+
+# Transient payment-provider/browser sessions
+.tmp/
+tmp/
+.payment-sessions/
+payment-session*.json
+*.payment-session.json
+myfatoorah_mpgs.html
+myfatoorah_3ds.html
+horizon_payment_url.json
+horizon-browser/
