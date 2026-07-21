@@ -10,7 +10,7 @@ const supabase = createClient(
 // Initialize Odoo integration
 const odooConfig = {
   url: process.env.ODOO_URL || 'https://demo.odoo.com',
-  database: process.env.ODOO_DATABASE || 'demo_db',
+  database: process.env.ODOO_DB || process.env.ODOO_DATABASE || 'demo_db',
   username: process.env.ODOO_USERNAME || 'admin@example.com',
   password: process.env.ODOO_PASSWORD || 'admin',
   apiKey: process.env.ODOO_API_KEY,
