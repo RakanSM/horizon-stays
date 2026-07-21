@@ -88,7 +88,7 @@ export async function POST(req: Request) {
         bookingId: booking.id,
         amount: amount_sar,
         guestEmail: guest_email || 'noemail@horizonstays.com',
-        guestName,
+        guestName: guest_name,
         guestPhone: guest_phone || '+966500000000',
         callbackUrl: `${appUrl}/api/payments/callback`,
         errorUrl: `${appUrl}/ar/booking?error=payment_failed`,
