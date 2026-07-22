@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const NAV_LINKS = [
   { href: '#hero',       arLabel: 'الرئيسية',  enLabel: 'Home' },
@@ -88,6 +89,9 @@ export function NavBar({ locale = 'ar' }: { locale?: string }) {
           >
             {locale === 'ar' ? 'EN' : 'AR'}
           </Link>
+
+          {/* Theme toggle */}
+          <ThemeToggle />
 
           {/* Book Now */}
           <Link
