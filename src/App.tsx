@@ -4,6 +4,10 @@ import Home from "./pages/Home";
 import PropertyDetail from "./pages/PropertyDetail";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Admin from "./pages/Admin";
+import ThemeEditor from "./pages/ThemeEditor";
+import { ThemeProvider, useTheme } from "./lib/ThemeContext";
+import { useScrollReveal } from "./lib/motion";
 
 const WHATSAPP = "https://wa.me/966560903335";
 
@@ -16,12 +20,34 @@ function ScrollToTop() {
 }
 
 export default function App() {
+  return (
+    <ThemeProvider>
+      <AppShell />
+    </ThemeProvider>
+  );
+}
+
+function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const { content } = useTheme();
+  const isEditor = location.pathname.startsWith("/admin/editor");
+  useScrollReveal(content.animationsEnabled && !isEditor);
 
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
+
+  if (isEditor) {
+    return (
+      <>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/admin/editor" element={<ThemeEditor />} />
+        </Routes>
+      </>
+    );
+  }
 
   return (
     <>
@@ -29,8 +55,8 @@ export default function App() {
       <header className="site-header">
         <div className="container header-inner">
           <Link to="/" className="brand">
-            <span className="brand-en">Horizon Stays</span>
-            <span className="brand-ar">إقامة فاخرة في الرياض</span>
+            <span className="brand-en">{content.brandEn}</span>
+            <span className="brand-ar">{content.brandAr}</span>
           </Link>
           <nav className={`nav ${menuOpen ? "open" : ""}`}>
             <NavLink to="/" end className={({ isActive }) => (isActive ? "active" : "")}>
@@ -43,7 +69,7 @@ export default function App() {
               تواصل معنا
             </NavLink>
             <a href={WHATSAPP} target="_blank" rel="noreferrer" className="cta">
-              احجز الآن
+              {content.ctaText}
             </a>
           </nav>
           <button className="menu-btn" onClick={() => setMenuOpen((v) => !v)} aria-label="القائمة">
@@ -58,6 +84,7 @@ export default function App() {
           <Route path="/property/:slug" element={<PropertyDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>
@@ -66,7 +93,7 @@ export default function App() {
         <div className="container">
           <div className="footer-inner">
             <div>
-              <span className="brand-en">Horizon Stays</span>
+              <span className="brand-en">{content.brandEn}</span>
               <p>
                 وحدات سكنية فاخرة في أرقى أحياء الرياض — بنتهاوس، شقق، وستوديوهات مصممة بعناية مع
                 تجربة ضيافة استثنائية وتقويم توفر محدث مباشرة.
