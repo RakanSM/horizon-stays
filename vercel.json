@@ -1,32 +1,17 @@
 {
-  "framework": "nextjs",
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/dashboard",
-      "destination": "/admin/dashboard",
-      "permanent": false
-    }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    { "path": "/api/sync", "schedule": "0 */3 * * *" }
   ],
   "rewrites": [
-    {
-      "source": "/guest-portal",
-      "destination": "/guest-portal.html"
-    },
-    {
-      "source": "/cinematic",
-      "destination": "/cinematic.html"
-    }
+    { "source": "/((?!api/|assets/|favicon).*)", "destination": "/index.html" }
   ],
-  "crons": [
+  "headers": [
     {
-      "path": "/api/cron/sync-bookings-to-odoo",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/sync-icals",
-      "schedule": "*/10 * * * *"
+      "source": "/assets/property-real/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, immutable" }
+      ]
     }
   ]
 }
