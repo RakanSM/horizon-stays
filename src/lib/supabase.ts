@@ -91,9 +91,26 @@ export function propertyPhotos(p: Property): string[] {
     "pool-view-apartment": [1, 2, 3, 4, 5, 6],
     "artistic-design-suite": [1, 2, 3, 4, 5, 6],
   };
+  // New webp galleries scraped from Airbnb (Jul 24)
+  const webpGalleries: Record<string, number> = {
+    "3br-apt-outdoor": 8,
+    "al-yasmeen-apt-self-checkin": 8,
+    "luxury-apt-3bd-gaming-area": 8,
+    "luxury-apt-al-yasmin": 8,
+    "luxury-apt-blvd-70-tv": 1,
+    "massive-3br-2floors": 1,
+    "self-checkin-apt-75tv-blvd": 8,
+    "spacious-2bd-cinema": 8,
+    "spacious-apt-luxury-bath-75tv": 8,
+    "tranquil-stay-luxury-bath": 1,
+  };
   const local = localGalleries[p.slug];
   if (local) {
-    return local.map((i) => `/assets/property-real/${p.slug}-${i}.jpg`);
+    return local.map((i) => `/assets/property-real/${p.slug}-${i}.webp`);
+  }
+  const webpCount = webpGalleries[p.slug];
+  if (webpCount) {
+    return Array.from({ length: webpCount }, (_, i) => `/assets/property-real/${p.slug}-${i + 1}.webp`);
   }
   const photos: string[] = [];
   if (p.hero_image) photos.push(p.hero_image);

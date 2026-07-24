@@ -2,16 +2,9 @@ import { useEffect, useMemo, useState, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 import { fetchProperties, propertyPhotos, type Property } from "../lib/supabase";
 import { useTheme } from "../lib/ThemeContext";
+import { useLang, propName } from "../lib/i18n";
 import { Reveal, Counter, useParallax } from "../lib/motion";
 import { EditorContentContext } from "./ThemeEditor";
-
-const FILTERS = [
-  { key: "all", label: "الكل" },
-  { key: "studio", label: "ستوديو" },
-  { key: "1", label: "غرفة" },
-  { key: "2", label: "غرفتان" },
-  { key: "3+", label: "٣ غرف أو أكثر" },
-];
 
 const WHATSAPP = "https://wa.me/966560903335";
 
@@ -19,6 +12,15 @@ export default function Home() {
   const { content: liveContent } = useTheme();
   const editorContent = useContext(EditorContentContext);
   const content = editorContent || liveContent;
+  const { lang, t } = useLang();
+
+  const FILTERS = [
+    { key: "all", label: lang === "ar" ? "الكل" : "All" },
+    { key: "studio", label: lang === "ar" ? "ستوديو" : "Studio" },
+    { key: "1", label: lang === "ar" ? "غرفة" : "1 Bedroom" },
+    { key: "2", label: lang === "ar" ? "غرفتان" : "2 Bedrooms" },
+    { key: "3+", label: lang === "ar" ? "٣ غرف أو أكثر" : "3+ Bedrooms" },
+  ];
 
   const [properties, setProperties] = useState<Property[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +43,12 @@ export default function Home() {
     return properties.filter((p) => p.bedrooms >= 3);
   }, [properties, filter]);
 
-  const heroImg = "/assets/property-real/kafd-penthouse-3bd-1.jpg";
+  const heroImg = "/assets/property-real/kafd-penthouse-3bd-1.webp";
+
+  // Theme content overrides are authored in Arabic; use them for AR, t() for EN
+  const heroBadge = lang === "ar" ? content.heroBadge : t("hero_badge");
+  const heroTitle = lang === "ar" ? content.heroTitle : t("hero_title");
+  const heroSubtitle = lang === "ar" ? content.heroSubtitle : t("hero_subtitle");
 
   return (
     <>
@@ -52,16 +59,16 @@ export default function Home() {
           <div className="hero-content">
             <span className="hero-eyebrow hero-anim-1">
               <span className="pulse-dot" />
-              {content.heroBadge}
+              {heroBadge}
             </span>
-            <h1 className="hero-anim-2">{content.heroTitle}</h1>
-            <p className="hero-anim-3">{content.heroSubtitle}</p>
+            <h1 className="hero-anim-2">{heroTitle}</h1>
+            <p className="hero-anim-3">{heroSubtitle}</p>
             <div className="hero-actions hero-anim-4">
               <a href="#properties" className="btn btn-gold">
-                استعرض الوحدات
+                {t("explore_units")}
               </a>
               <a href={WHATSAPP} target="_blank" rel="noreferrer" className="btn btn-outline">
-                تواصل واتساب
+                {lang === "ar" ? "تواصل واتساب" : "WhatsApp Us"}
               </a>
             </div>
           </div>
@@ -75,19 +82,19 @@ export default function Home() {
         <section className="stats">
           <Reveal className="stat" delay={0}>
             <b>{properties ? <Counter to={properties.length} /> : "—"}</b>
-            <span>وحدة فاخرة</span>
+            <span>{t("stat_units")}</span>
           </Reveal>
           <Reveal className="stat" delay={60}>
             <b><Counter to={7} suffix="+" /></b>
-            <span>أحياء راقية</span>
+            <span>{t("stat_districts")}</span>
           </Reveal>
           <Reveal className="stat" delay={120}>
             <b>24/7</b>
-            <span>دعم الضيوف</span>
+            <span>{t("stat_support")}</span>
           </Reveal>
           <Reveal className="stat" delay={180}>
-            <b>آلي</b>
-            <span>تزامن التقويم</span>
+            <b>{lang === "ar" ? "آلي" : "Auto"}</b>
+            <span>{lang === "ar" ? "تزامن التقويم" : "Calendar Sync"}</span>
           </Reveal>
         </section>
       )}
@@ -97,11 +104,11 @@ export default function Home() {
           <Reveal className="section-head">
             <div>
               <h2>
-                وحداتنا
+                {t("our_properties")}
                 <span className="gold-line" />
               </h2>
             </div>
-            <p>جميع الوحدات مدارة بالكامل من Horizon Stays مع توفر محدث تلقائياً من Airbnb وGathern.</p>
+            <p>{t("props_sub")}</p>
           </Reveal>
 
           <Reveal className="filters" delay={80}>
@@ -116,7 +123,7 @@ export default function Home() {
             ))}
           </Reveal>
 
-          {error && <div className="empty-state">تعذر تحميل الوحدات: {error}</div>}
+          {error && <div className="empty-state">{lang === "ar" ? "تعذر تحميل الوحدات: " : "Failed to load: "}{error}</div>}
 
           {!error && !filtered && (
             <div className="grid">
@@ -127,35 +134,42 @@ export default function Home() {
           )}
 
           {filtered && filtered.length === 0 && (
-            <div className="empty-state">لا توجد وحدات مطابقة لهذا الفلتر.</div>
+            <div className="empty-state">{t("no_results")}</div>
           )}
 
           {filtered && filtered.length > 0 && (
             <div className="grid">
               {filtered.map((p, i) => {
                 const photos = propertyPhotos(p);
+                const name = propName(p, lang);
                 return (
                   <Reveal key={p.id} delay={(i % 3) * 70} className="card-wrap">
                     <Link to={`/property/${p.slug}`} className="card">
                       <div className="card-img">
-                        {photos[0] && <img src={photos[0]} alt={p.name_ar} loading="lazy" />}
-                        <span className="card-badge">{p.type || "وحدة فاخرة"}</span>
+                        {photos[0] && <img src={photos[0]} alt={name} loading="lazy" />}
+                        <span className="card-badge">{p.type || (lang === "ar" ? "وحدة فاخرة" : "Luxury Unit")}</span>
                       </div>
                       <div className="card-body">
-                        <h3>{p.name_ar || p.name_en}</h3>
-                        <div className="card-loc">الرياض — {p.neighborhood || "حي راقٍ"}</div>
+                        <h3>{name}</h3>
+                        <div className="card-loc">
+                          {lang === "ar" ? "الرياض" : "Riyadh"} — {p.neighborhood || (lang === "ar" ? "حي راقٍ" : "Prime district")}
+                        </div>
                         <div className="card-meta">
-                          <span>{p.bedrooms === 0 ? "ستوديو" : `${p.bedrooms} غرف`}</span>
-                          <span>{p.bathrooms} حمام</span>
-                          <span>{p.max_guests} ضيوف</span>
-                          {p.area_m2 ? <span>{p.area_m2} م²</span> : null}
+                          <span>
+                            {p.bedrooms === 0
+                              ? lang === "ar" ? "ستوديو" : "Studio"
+                              : lang === "ar" ? `${p.bedrooms} غرف` : `${p.bedrooms} BR`}
+                          </span>
+                          <span>{p.bathrooms} {lang === "ar" ? "حمام" : "Bath"}</span>
+                          <span>{p.max_guests} {lang === "ar" ? "ضيوف" : "Guests"}</span>
+                          {p.area_m2 ? <span>{p.area_m2} {t("sqm")}</span> : null}
                         </div>
                         <div className="card-foot">
                           <div className="price">
                             <b>{p.price_per_night?.toLocaleString("en-US")} ﷼</b>{" "}
-                            <span>/ ليلة</span>
+                            <span>/ {t("night")}</span>
                           </div>
-                          <span className="card-link">التفاصيل ←</span>
+                          <span className="card-link">{t("view_details")} {lang === "ar" ? "←" : "→"}</span>
                         </div>
                       </div>
                     </Link>

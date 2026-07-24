@@ -46,8 +46,77 @@ function ThemeSwatch({ t, active, onActivate, busy }: { t: ThemePreset; active: 
   );
 }
 
+function OdooSection() {
+  const { odooUrl, setOdooUrl } = useTheme();
+  const [editing, setEditing] = useState(false);
+  const [url, setUrl] = useState(odooUrl);
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => setUrl(odooUrl), [odooUrl]);
+
+  const save = async () => {
+    const tok = getAdminToken();
+    if (!tok) return;
+    let clean = url.trim();
+    if (clean && !/^https?:\/\//i.test(clean)) clean = "https://" + clean;
+    setBusy(true);
+    setMsg("");
+    try {
+      await setOdooUrl(tok, clean);
+      setMsg(clean ? "تم حفظ رابط Odoo وربطه بالزر في الأعلى ✓" : "تم مسح الرابط");
+      setEditing(false);
+    } catch {
+      setMsg("فشل الحفظ — تحقق من الجلسة");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="odoo-card">
+      <div className="odoo-card-head">
+        <div>
+          <h2>تكامل Odoo (ERP)</h2>
+          <p>اربط نظام Odoo لإدارة الفواتير والمحاسبة والإيجارات — يظهر زر التبديل في أعلى لوحة التحكم</p>
+        </div>
+        <span className={`odoo-status ${odooUrl ? "on" : "off"}`}>{odooUrl ? "متصل ✓" : "غير مهيّأ"}</span>
+      </div>
+      {odooUrl && !editing ? (
+        <div className="odoo-row">
+          <code className="odoo-url">{odooUrl}</code>
+          <div className="theme-actions">
+            <a className="btn-activate" href={odooUrl} target="_blank" rel="noreferrer">فتح Odoo ↗</a>
+            <button className="btn-ghost" onClick={() => setEditing(true)}>تعديل</button>
+          </div>
+        </div>
+      ) : (
+        <div className="odoo-row">
+          <input
+            className="odoo-input"
+            dir="ltr"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://yourcompany.odoo.com"
+          />
+          <div className="theme-actions">
+            <button className="btn-activate" onClick={save} disabled={busy}>{busy ? "..." : "حفظ"}</button>
+            {editing && <button className="btn-ghost" onClick={() => { setEditing(false); setUrl(odooUrl); }}>إلغاء</button>}
+          </div>
+        </div>
+      )}
+      {!odooUrl && (
+        <p className="odoo-hint">
+          ليس لديك حساب Odoo بعد؟ أنشئ نسخة مجانية من <a href="https://www.odoo.com/trial" target="_blank" rel="noreferrer">odoo.com</a> (تطبيق واحد مجاناً — اختر Rental أو Invoicing)، ثم الصق رابط النسخة هنا. ولإضافة زر العودة إلى Horizon داخل Odoo: من Odoo فعّل وضع المطوّر ثم Settings ‹ Technical ‹ Menu Items وأضف قائمة برابط الموقع، أو ببساطة ثبّت الموقع كإشارة مرجعية.
+        </p>
+      )}
+      {msg && <div className="admin-toast inline">{msg}</div>}
+    </div>
+  );
+}
+
 export default function Admin() {
-  const { activeThemeId, overrides, saveSettings, refresh } = useTheme();
+  const { activeThemeId, overrides, saveSettings, refresh, odooUrl } = useTheme();
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
@@ -122,6 +191,11 @@ export default function Admin() {
           <p>اختر أحد {THEMES.length} طُبوع جاهزة، أو خصّص الطابع الحالي من محرر الطابع</p>
         </div>
         <div className="admin-head-actions">
+          {odooUrl && (
+            <a className="btn-odoo" href={odooUrl} target="_blank" rel="noreferrer">
+              ⇆ التبديل إلى Odoo
+            </a>
+          )}
           <button className="btn-editor" onClick={() => navigate("/admin/editor")}>
             ✨ محرر الطابع
           </button>
@@ -143,6 +217,7 @@ export default function Admin() {
           <ThemeSwatch key={t.id} t={t} active={t.id === activeThemeId} onActivate={() => activate(t.id)} busy={busyId === t.id} />
         ))}
       </div>
+      <OdooSection />
       <div className="admin-foot">
         <button className="btn-ghost" onClick={() => refresh()}>تحديث الحالة</button>
       </div>

@@ -11,6 +11,8 @@ type ThemeState = {
   content: SiteContent;
   theme: ThemePreset;
   loading: boolean;
+  odooUrl: string;
+  setOdooUrl: (token: string, url: string) => Promise<void>;
   /** preview mode: editor applies without saving */
   previewTheme: (id: string, ov?: ThemeOverrides) => void;
   /** persist via admin RPC */
@@ -36,6 +38,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [activeThemeId, setActiveThemeId] = useState(cached?.id || DEFAULT_THEME_ID);
   const [overrides, setOverrides] = useState<Record<string, ThemeOverrides>>(cached?.overrides || {});
   const [loading, setLoading] = useState(true);
+  const [odooUrl, setOdooUrlState] = useState("");
 
   // Apply immediately from cache (no flash), then refresh from Supabase
   useEffect(() => {
@@ -45,12 +48,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      const { data } = await supabase.from("site_settings").select("active_theme, overrides").eq("id", 1).maybeSingle();
+      const { data } = await supabase.from("site_settings").select("active_theme, overrides, odoo_url").eq("id", 1).maybeSingle();
       if (data) {
         const id = THEMES.some((t) => t.id === data.active_theme) ? data.active_theme : DEFAULT_THEME_ID;
         const ov = (data.overrides || {}) as Record<string, ThemeOverrides>;
         setActiveThemeId(id);
         setOverrides(ov);
+        setOdooUrlState((data as any).odoo_url || "");
         applyThemeToDOM(getTheme(id), ov[id]);
         localStorage.setItem(LS_KEY, JSON.stringify({ id, overrides: ov }));
       }
@@ -85,11 +89,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const setOdooUrl = useCallback(async (token: string, url: string) => {
+    const { error } = await supabase.rpc("admin_set_odoo_url", { p_token: token, p_url: url });
+    if (error) throw error;
+    setOdooUrlState(url);
+  }, []);
+
   const theme = getTheme(activeThemeId);
   const content: SiteContent = { ...DEFAULT_CONTENT, ...(overrides[activeThemeId]?.content || {}) };
 
   return (
-    <Ctx.Provider value={{ activeThemeId, overrides, content, theme, loading, previewTheme, saveSettings, refresh }}>
+    <Ctx.Provider value={{ activeThemeId, overrides, content, theme, loading, previewTheme, saveSettings, refresh, odooUrl, setOdooUrl }}>
       {children}
     </Ctx.Provider>
   );
