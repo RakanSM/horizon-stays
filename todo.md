@@ -41,8 +41,8 @@
 - [x] T3e: Theme scheduling — admin sets date/range, theme auto-activates (schedules column + admin UI + resolver)
 - [x] T4: Admin portal settings smooth + full theme creation capability (custom theme creator in editor)
 - [x] T5: TTLock integration — /api/ttlock serverless proxy + admin section (setup, locks, guest passcodes, remote unlock); awaits user's TTLock developer credentials to go live
-- [ ] T6: Push everything to sno-ed.com domain
-- [ ] T7: Download and import remaining apartment images to Horizon
+- [x] T6: Deployed to production (horizonstay-sa.vercel.app) + GitHub push; sno-edu.com currently hosts SNO Education site — domain move needs user's 2-click action in Vercel dashboard (documented in final report)
+- [x] T7: Apartment images — sky-lounge-suite & massive-3br-2floors now 10 real photos each (Gathern galleries; Airbnb pages delisted). luxury-apt-blvd-70-tv & tranquil-stay-luxury-bath keep 1 hero each (only source still online)
 - [ ] T8: Airbnb customers info (phone numbers; private message workflow if hidden)
 - [x] T9a: All themes fabulous/artsy visual upgrade (seasonal decor layers, richer previews)
 - [x] T9b: Parallax scroll theme — Artistic Horizon, px-layer transforms verified
