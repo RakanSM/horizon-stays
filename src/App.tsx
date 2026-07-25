@@ -22,6 +22,48 @@ function ScrollToTop() {
   return null;
 }
 
+const TITLES: Record<string, Record<string, string>> = {
+  "/": {
+    ar: "Horizon Stays | إقامة فاخرة في الرياض",
+    en: "Horizon Stays | Luxury Stays in Riyadh",
+    zh: "Horizon Stays | 利雅得奢华住宿",
+    fr: "Horizon Stays | Séjours de luxe à Riyad",
+    es: "Horizon Stays | Estancias de lujo en Riad",
+  },
+  "/about": {
+    ar: "من نحن | Horizon Stays",
+    en: "About Us | Horizon Stays",
+    zh: "关于我们 | Horizon Stays",
+    fr: "À propos | Horizon Stays",
+    es: "Sobre nosotros | Horizon Stays",
+  },
+  "/contact": {
+    ar: "تواصل معنا | Horizon Stays",
+    en: "Contact Us | Horizon Stays",
+    zh: "联系我们 | Horizon Stays",
+    fr: "Contact | Horizon Stays",
+    es: "Contacto | Horizon Stays",
+  },
+};
+
+function PageTitle() {
+  const { pathname } = useLocation();
+  const { lang } = useLang();
+  useEffect(() => {
+    const entry = TITLES[pathname];
+    if (entry) {
+      document.title = entry[lang] || entry.en;
+    } else if (pathname.startsWith("/property/")) {
+      const slug = pathname.split("/property/")[1] || "";
+      const pretty = slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      document.title = `${pretty} | Horizon Stays`;
+    } else {
+      document.title = TITLES["/"][lang] || "Horizon Stays";
+    }
+  }, [pathname, lang]);
+  return null;
+}
+
 export default function App() {
   return (
     <ThemeProvider>
@@ -53,6 +95,7 @@ function AppShell() {
     return (
       <>
         <ScrollToTop />
+        <PageTitle />
         <Routes>
           <Route path="/admin/editor" element={<ThemeEditor />} />
         </Routes>
@@ -119,6 +162,7 @@ function AppShell() {
   return (
     <>
       <ScrollToTop />
+      <PageTitle />
       {!isAdmin && <SeasonalDecor />}
       <header className="site-header">
         <div className="container header-inner">
