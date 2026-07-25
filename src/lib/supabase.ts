@@ -19,6 +19,7 @@ export type Property = {
   max_guests: number;
   neighborhood: string | null;
   airbnb_url: string | null;
+  gathern_url: string | null;
   hero_image: string | null;
   gallery_images: string[] | null;
   amenities: string[] | null;
@@ -40,7 +41,7 @@ export async function fetchProperties(): Promise<Property[]> {
   const { data, error } = await supabase
     .from("properties")
     .select(
-      "id, slug, name_ar, name_en, type, price_per_night, bedrooms, bathrooms, area_m2, floor, max_guests, neighborhood, airbnb_url, hero_image, gallery_images, amenities, description_ar, lat, lng, is_active"
+      "id, slug, name_ar, name_en, type, price_per_night, bedrooms, bathrooms, area_m2, floor, max_guests, neighborhood, airbnb_url, gathern_url, hero_image, gallery_images, amenities, description_ar, lat, lng, is_active"
     )
     .eq("is_active", true)
     .order("price_per_night", { ascending: false });
@@ -52,7 +53,7 @@ export async function fetchPropertyBySlug(slug: string): Promise<Property | null
   const { data, error } = await supabase
     .from("properties")
     .select(
-      "id, slug, name_ar, name_en, type, price_per_night, bedrooms, bathrooms, area_m2, floor, max_guests, neighborhood, airbnb_url, hero_image, gallery_images, amenities, description_ar, lat, lng, is_active"
+      "id, slug, name_ar, name_en, type, price_per_night, bedrooms, bathrooms, area_m2, floor, max_guests, neighborhood, airbnb_url, gathern_url, hero_image, gallery_images, amenities, description_ar, lat, lng, is_active"
     )
     .eq("slug", slug)
     .eq("is_active", true)

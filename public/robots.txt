@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://horizonstay-sa.vercel.app/sitemap.xml
+Sitemap: https://horizonstay-sa.com/sitemap.xml

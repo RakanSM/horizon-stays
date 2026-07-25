@@ -1635,6 +1635,32 @@ html[dir="ltr"] body {
   transform: scale(0.96);
 }
 
+/* Channels (Airbnb/Gathern) admin section */
+.channels-filter { margin: 0 0 14px; max-width: 340px; }
+.channels-stats { display: flex; gap: 8px; align-items: center; }
+.channels-list { display: flex; flex-direction: column; gap: 8px; }
+.channel-item { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--card); }
+.channel-row { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 12px 14px; background: none; border: none; cursor: pointer; color: var(--text); text-align: inherit; font-size: 0.9rem; }
+.channel-row:hover { background: var(--gold-soft); }
+.ch-name { display: flex; flex-direction: column; gap: 2px; }
+.ch-name small { color: var(--text-muted); font-size: 11px; }
+.ch-badges { display: flex; align-items: center; gap: 6px; }
+.ch-badges em { color: var(--text-muted); font-style: normal; font-size: 10px; }
+.ch-dot { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-style: normal; font-weight: 700; background: var(--bg-2); color: var(--text-muted); border: 1px solid var(--border); }
+.ch-dot.on { background: var(--gold-soft); color: var(--gold); border-color: var(--gold); }
+.ch-dot.g.on { background: rgba(33, 166, 122, 0.14); color: #21a67a; border-color: #21a67a; }
+.channel-detail { padding: 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
+.channel-endpoints { display: flex; flex-direction: column; gap: 6px; background: var(--bg-2); border-radius: 8px; padding: 10px 12px; }
+.ce-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ce-row code { cursor: pointer; font-size: 12px; color: var(--gold); background: none; word-break: break-all; }
+.ce-row code:hover { text-decoration: underline; }
+.ce-row small { color: var(--text-muted); font-size: 11px; }
+.ce-method { font-size: 10px; font-weight: 800; letter-spacing: 0.5px; padding: 2px 7px; border-radius: 5px; }
+.ce-method.get { background: rgba(46, 160, 67, 0.15); color: #3fb950; }
+.ce-method.post { background: rgba(210, 153, 34, 0.15); color: #d29922; }
+.btn-gathern { border-color: #21a67a; color: #21a67a; }
+.btn-gathern:hover { background: rgba(33, 166, 122, 0.1); border-color: #21a67a; color: #21a67a; }
+
 /* Language dropdown menu */
 .lang-menu {
   position: relative;

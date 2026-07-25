@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getAllThemes, getTheme, type ThemePreset, type ThemeSchedule } from "../lib/themes";
 import { useTheme, getAdminToken, adminLogin, adminCheck, clearAdminToken } from "../lib/ThemeContext";
 import TTLockSection from "../components/TTLockSection";
+import ChannelsSection from "../components/ChannelsSection";
 
 const DECOR_ICONS: Record<string, string> = {
   ramadan: "🏮",
@@ -506,6 +507,7 @@ export default function Admin() {
         ))}
       </div>
       <ScheduleSection />
+      <ChannelsSection />
       <CleaningSection />
       <TTLockSection />
       <OdooSection />

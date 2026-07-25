@@ -417,6 +417,11 @@ export default function PropertyDetail() {
                 {t("view_airbnb")}
               </a>
             )}
+            {property.gathern_url && (
+              <a href={property.gathern_url} target="_blank" rel="noreferrer" className="btn btn-outline btn-gathern">
+                {t("view_gathern")}
+              </a>
+            )}
             <div className="bb-note">{t("sync_note")}</div>
           </div>
         </aside>

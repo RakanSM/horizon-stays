@@ -107,6 +107,7 @@ const STR = {
   clear_dates: { ar: "مسح التواريخ", en: "Clear dates", zh: "清除日期", fr: "Effacer les dates", es: "Borrar fechas" },
   book_whatsapp: { ar: "احجز عبر واتساب", en: "Book via WhatsApp", zh: "通过 WhatsApp 预订", fr: "Réserver via WhatsApp", es: "Reservar por WhatsApp" },
   view_airbnb: { ar: "عرض على Airbnb", en: "View on Airbnb", zh: "在 Airbnb 查看", fr: "Voir sur Airbnb", es: "Ver en Airbnb" },
+  view_gathern: { ar: "عرض على جاذرين", en: "View on Gathern", zh: "在 Gathern 查看", fr: "Voir sur Gathern", es: "Ver en Gathern" },
   blocked_legend: { ar: "محجوز", en: "Booked", zh: "已订", fr: "Réservé", es: "Reservado" },
   available_legend: { ar: "متاح", en: "Available", zh: "可订", fr: "Disponible", es: "Disponible" },
   selected_legend: { ar: "المحدد", en: "Selected", zh: "已选", fr: "Sélectionné", es: "Seleccionado" },

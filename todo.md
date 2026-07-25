@@ -75,3 +75,19 @@
 - [ ] T28: MyFatoorah payment gateway — scope with user (needs merchant API key)
 - [ ] T29: Domain horizonstay-sa.com — set up in Vercel for one-click purchase
 - [ ] T30: Final consolidation QA + deploy + report
+
+## Status update (Jul 25 later)
+- [x] T22b: All 627 originals uploaded to CDN (RLS UPDATE/DELETE policies fix), maps updated, deployed + verified
+- [x] T26: 5-language support (AR/EN/ZH/FR/ES) live with dropdown
+- [x] T27: SEO complete — OG/Twitter/JSON-LD, robots.txt, sitemap.xml (28 URLs), favicon, localized per-route titles
+- [x] T30 (old): Consolidation QA + deploy + report delivered
+
+## New batch (user request Jul 25 evening)
+- [ ] T31: Bind horizonstay-sa.com in Vercel (user has it), verify DNS/SSL, update sitemap/robots/canonical/OG URLs, redeploy
+- [ ] T32: MyFatoorah — user says already live; verify live key wired in Supabase private_config + payment flow end-to-end
+- [ ] T33: Gathern.co as full channel like Airbnb: admin-visible API/iCal textfields per property, Gathern link button on property pages
+- [ ] T34: Per-property channel endpoints (user suggests 2 GET + 1 POST): implement GET availability + GET export + POST update/sync per property; verify actual Gathern API shape
+- [ ] T35: TTLock — clear setup steps for user; integration scaffolding already exists (T5), verify ready state + document
+- [ ] T36: Role-specific guidebooks: Admin, Cleaner, Guest — separate per role
+- [ ] T37: General site improvements pass
+- [ ] T38: Send new admin link https://horizonstay-sa.com/admin after domain live
