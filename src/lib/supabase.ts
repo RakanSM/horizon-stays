@@ -71,46 +71,42 @@ export async function fetchBlockedDates(propertyId: number): Promise<BlockedDate
   return (data || []) as BlockedDate[];
 }
 
-/** Photo resolution: local gallery (bundled) or remote hero URL. */
+/** High-quality photos served from Supabase Storage CDN (re-fetched from source at
+ * full resolution, T17). Falls back to hero/gallery URLs stored in the DB. */
+const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public/property-images`;
+
 export function propertyPhotos(p: Property): string[] {
-  // Local bundled galleries exist for these slugs (1..6 images each)
-  const localGalleries: Record<string, number[]> = {
-    "kafd-penthouse-3bd": [1, 2, 3, 6],
-    "towers-jacuzzi-suite": [1, 2, 3, 4, 5, 6],
-    "private-rooftop-penthouse": [1, 2, 3, 4, 5, 6],
-    "garden-hottub-suite": [1, 2, 3, 4, 5, 6],
-    "cinema-suite-2br": [1, 2, 3, 4, 5, 6],
-    "luxury-1bd-70tv": [1, 2, 3, 4, 5, 6],
-    "sky-lounge-suite": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    "executive-studio": [1, 2, 3, 4, 5, 6],
-    "duplex-penthouse-4bd": [1, 2, 3, 4, 5, 6],
-    "designer-loft-2bd": [1, 2, 3, 4, 5, 6],
-    "city-view-suite": [1, 2, 3, 4, 5, 6],
-    "minimalist-1bd": [1, 2, 3, 4, 5, 6],
-    "royal-suite-3bd": [1, 2, 3, 4, 5, 6],
-    "pool-view-apartment": [1, 2, 3, 4, 5, 6],
-    "artistic-design-suite": [1, 2, 3, 4, 5, 6],
-  };
-  // New webp galleries scraped from Airbnb (Jul 24)
-  const webpGalleries: Record<string, number> = {
-    "3br-apt-outdoor": 8,
-    "al-yasmeen-apt-self-checkin": 8,
-    "luxury-apt-3bd-gaming-area": 8,
-    "luxury-apt-al-yasmin": 8,
+  // Number of HQ images uploaded to storage per slug
+  const hqGalleries: Record<string, number> = {
+    "3br-apt-outdoor": 10,
+    "al-yasmeen-apt-self-checkin": 10,
+    "artistic-design-suite": 6,
+    "cinema-suite-2br": 6,
+    "city-view-suite": 6,
+    "designer-loft-2bd": 6,
+    "duplex-penthouse-4bd": 6,
+    "executive-studio": 6,
+    "garden-hottub-suite": 6,
+    "kafd-penthouse-3bd": 4,
+    "luxury-1bd-70tv": 6,
+    "luxury-apt-3bd-gaming-area": 10,
+    "luxury-apt-al-yasmin": 10,
     "luxury-apt-blvd-70-tv": 1,
     "massive-3br-2floors": 10,
-    "self-checkin-apt-75tv-blvd": 8,
-    "spacious-2bd-cinema": 8,
-    "spacious-apt-luxury-bath-75tv": 8,
+    "minimalist-1bd": 6,
+    "pool-view-apartment": 6,
+    "private-rooftop-penthouse": 6,
+    "royal-suite-3bd": 6,
+    "self-checkin-apt-75tv-blvd": 10,
+    "sky-lounge-suite": 10,
+    "spacious-2bd-cinema": 10,
+    "spacious-apt-luxury-bath-75tv": 10,
+    "towers-jacuzzi-suite": 6,
     "tranquil-stay-luxury-bath": 1,
   };
-  const local = localGalleries[p.slug];
-  if (local) {
-    return local.map((i) => `/assets/property-real/${p.slug}-${i}.webp`);
-  }
-  const webpCount = webpGalleries[p.slug];
-  if (webpCount) {
-    return Array.from({ length: webpCount }, (_, i) => `/assets/property-real/${p.slug}-${i + 1}.webp`);
+  const n = hqGalleries[p.slug];
+  if (n) {
+    return Array.from({ length: n }, (_, i) => `${STORAGE_BASE}/${p.slug}-${i + 1}.webp`);
   }
   const photos: string[] = [];
   if (p.hero_image) photos.push(p.hero_image);

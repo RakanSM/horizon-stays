@@ -43,10 +43,22 @@
 - [x] T5: TTLock integration — /api/ttlock serverless proxy + admin section (setup, locks, guest passcodes, remote unlock); awaits user's TTLock developer credentials to go live
 - [x] T6: Deployed to production (horizonstay-sa.vercel.app) + GitHub push; sno-edu.com currently hosts SNO Education site — domain move needs user's 2-click action in Vercel dashboard (documented in final report)
 - [x] T7: Apartment images — sky-lounge-suite & massive-3br-2floors now 10 real photos each (Gathern galleries; Airbnb pages delisted). luxury-apt-blvd-70-tv & tranquil-stay-luxury-bath keep 1 hero each (only source still online)
-- [ ] T8: Airbnb customers info (phone numbers; private message workflow if hidden)
+- [x] T8: Airbnb guests — scraped ALL 4,722 reservations via internal API; 3,757 unique guests (575 repeat), 35 phones (all still-visible ones); imported to Supabase guests table + Excel deliverable. Older phones permanently hidden by Airbnb post-checkout policy
 - [x] T9a: All themes fabulous/artsy visual upgrade (seasonal decor layers, richer previews)
 - [x] T9b: Parallax scroll theme — Artistic Horizon, px-layer transforms verified
 - [ ] T10: Two-way sync Horizon ↔ Odoo (needs Odoo instance from user)
 - [x] T12: Mobile view audit — all pages 375px clean (no overflow, tap targets fixed, admin login form fixed)
 - [x] T13: Cleaner role — /cleaner PIN portal + admin cleaning log & cleaner management, verified end-to-end
-- [ ] T14: Final thorough QA of everything
+- [x] T14: Final QA — all 7 routes 200 on production, new images live, theme bundle verified, ttlock API auth-gated, sync endpoint secured (401 w/o secret), DB state clean (royal-gold active, no stray schedules/custom themes)
+
+## Follow-up: Gathern guest data (user request Jul 24)
+- [x] T15: Extracted ALL 336 Gathern reservations — 100% phone coverage (260 unique guests)
+- [x] T15b: Merged into guests_master_v2.xlsx + Supabase guests table (4,017 guests, 295 phones total)
+
+## New batch (user feedback Jul 25)
+- [ ] T16: Fix booking bug — selecting dates in calendar doesn't let user book (WhatsApp CTA flow)
+- [ ] T17: Image quality — re-fetch originals from source links, serve full resolution
+- [ ] T18: Light mode variant for ALL themes (toggle)
+- [ ] T19: More themes + Shopify-style code/snippet editor (full editability incl. custom CSS/JS)
+- [ ] T20: Verify all connections (Gathern/Airbnb sync, Supabase, cron) end-to-end
+- [ ] T21: Deploy + verify live

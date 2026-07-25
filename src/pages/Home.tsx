@@ -43,7 +43,7 @@ export default function Home() {
     return properties.filter((p) => p.bedrooms >= 3);
   }, [properties, filter]);
 
-  const heroImg = "/assets/property-real/kafd-penthouse-3bd-1.webp";
+  const heroImg = "https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/kafd-penthouse-3bd-1.webp";
 
   // Theme content overrides are authored in Arabic; use them for AR, t() for EN
   const heroBadge = lang === "ar" ? content.heroBadge : t("hero_badge");

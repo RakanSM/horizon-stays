@@ -42,7 +42,7 @@ export default function About() {
       <section className="page-hero">
         <div
           className="page-hero-bg"
-          style={{ backgroundImage: "url(/assets/property-real/duplex-penthouse-4bd-1.webp)" }}
+          style={{ backgroundImage: "url(https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/duplex-penthouse-4bd-1.webp)" }}
         />
         <div className="container">
           <Reveal>
@@ -86,7 +86,7 @@ export default function About() {
             )}
           </Reveal>
           <Reveal className="about-img" delay={100}>
-            <img src="/assets/property-real/royal-suite-3bd-1.webp" alt="Horizon Stays" loading="lazy" />
+            <img src="https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/royal-suite-3bd-1.webp" alt="Horizon Stays" loading="lazy" />
           </Reveal>
         </div>
       </section>

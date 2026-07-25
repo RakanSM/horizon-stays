@@ -2573,3 +2573,133 @@ html[dir="ltr"] body {
   padding: 5px 12px;
   font-size: 0.78rem;
 }
+
+/* ==================================================================
+   Sticky mobile booking bar (T16 fix)
+   ================================================================== */
+.mobile-book-bar {
+  display: none;
+}
+@media (max-width: 900px) {
+  .mobile-book-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--card) 92%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.25);
+  }
+  .mobile-book-bar .mbb-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .mobile-book-bar .mbb-info b {
+    font-family: var(--font-display);
+    color: var(--gold);
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+  .mobile-book-bar .mbb-info b i {
+    font-style: normal;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+  .mobile-book-bar .mbb-info span {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mobile-book-bar .mbb-btn {
+    margin: 0;
+    flex-shrink: 0;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+  /* keep page content from hiding behind the sticky bar */
+  .detail-cols {
+    padding-bottom: 84px;
+  }
+}
+
+/* ===== Light/Dark mode toggle (T18) ===== */
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.18s var(--ease-out), border-color 0.18s var(--ease-out), transform 0.16s var(--ease-out);
+}
+.mode-toggle:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.mode-toggle:active {
+  transform: scale(0.94);
+}
+
+/* ===== Shopify-style code editor tab (T19) ===== */
+.ep-code-area {
+  width: 100%;
+  background: #0d1117;
+  color: #c9d1d9;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  padding: 10px 12px;
+  resize: vertical;
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+}
+.ep-code-area:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+.ep-code .ep-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ===== Light-mode hero contrast fix (hero always sits on a photo) ===== */
+html[data-mode="light"] .hero h1 {
+  color: #ffffff;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+html[data-mode="light"] .hero p {
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+}
+html[data-mode="light"] .hero-eyebrow {
+  color: #ffe9b8;
+  border-color: rgba(255, 233, 184, 0.55);
+  background: rgba(13, 12, 11, 0.45);
+}
+html[data-mode="light"] .hero-bg::after {
+  background: linear-gradient(180deg, rgba(13, 12, 11, 0.5), rgba(13, 12, 11, 0.78));
+}
+html[data-mode="light"] .hero .btn-ghost,
+html[data-mode="light"] .hero-actions a:not(.btn-gold) {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.55);
+}

@@ -286,9 +286,273 @@ export const THEMES: ThemePreset[] = [
       headerBg: "rgba(11,11,18,0.65)", ctaText: "#160e02",
     },
   },
+  {
+    id: "kafd-futurist",
+    nameAr: "مستقبل المركز المالي",
+    nameEn: "KAFD Futurist",
+    mode: "dark",
+    description: "مستوحى من أبراج المركز المالي — فولاذي حديث مع أخضر ليزري",
+    tokens: {
+      bg: "#07090b", bg2: "#0c0f13", card: "#12161b", card2: "#171c23",
+      border: "#242b35", text: "#eef4f8", textMuted: "#8b99a8",
+      accent: "#4ade80", accent2: "#22c55e", accentSoft: "rgba(74,222,128,0.12)",
+      radius: "4px", fontBody: arabicFonts, fontDisplay: cairoDisplay,
+      fontLatin: `"Space Grotesk", sans-serif`,
+      heroOverlay: "linear-gradient(180deg, rgba(7,9,11,0.5), rgba(7,9,11,0.93))",
+      headerBg: "rgba(7,9,11,0.85)", ctaText: "#06130a",
+    },
+  },
+  {
+    id: "najdi-heritage",
+    nameAr: "التراث النجدي",
+    nameEn: "Najdi Heritage",
+    mode: "light",
+    description: "ألوان الأبواب النجدية التراثية — طيني دافئ مع أزرق وبرتقالي نجدي",
+    tokens: {
+      bg: "#f8f3ea", bg2: "#f0e8d9", card: "#fffcf5", card2: "#f8f2e5",
+      border: "#e0d4bd", text: "#3a2c1c", textMuted: "#8d7c62",
+      accent: "#c2410c", accent2: "#9a3412", accentSoft: "rgba(194,65,12,0.1)",
+      radius: "8px", fontBody: arabicFonts, fontDisplay: `"Amiri", "Cairo", serif`,
+      fontLatin: `"Cormorant Garamond", serif`,
+      heroOverlay: "linear-gradient(180deg, rgba(58,44,28,0.45), rgba(58,44,28,0.82))",
+      headerBg: "rgba(248,243,234,0.9)", ctaText: "#fffcf5",
+    },
+  },
+  {
+    id: "velvet-lounge",
+    nameAr: "المخمل الليلي",
+    nameEn: "Velvet Lounge",
+    mode: "dark",
+    description: "فخامة اللاونج — كحلي مخملي مع وردي ذهبي دافئ",
+    tokens: {
+      bg: "#100d16", bg2: "#161221", card: "#1e182c", card2: "#251e37",
+      border: "#372c50", text: "#f5eef7", textMuted: "#a795b5",
+      accent: "#f0abfc", accent2: "#d946ef", accentSoft: "rgba(240,171,252,0.13)",
+      radius: "22px", fontBody: arabicFonts, fontDisplay: cairoDisplay,
+      fontLatin: `"Cormorant Garamond", serif`,
+      heroOverlay: "linear-gradient(180deg, rgba(16,13,22,0.5), rgba(16,13,22,0.93))",
+      headerBg: "rgba(16,13,22,0.84)", ctaText: "#22081f",
+    },
+  },
+  {
+    id: "mono-editorial",
+    nameAr: "المجلة الفنية",
+    nameEn: "Mono Editorial",
+    mode: "light",
+    description: "طابع المجلات الفاخرة — أبيض ورقي مع أحمر تحريري جريء",
+    tokens: {
+      bg: "#fcfbf8", bg2: "#f4f2ec", card: "#ffffff", card2: "#faf8f3",
+      border: "#e6e2d8", text: "#191713", textMuted: "#75705f",
+      accent: "#dc2626", accent2: "#b91c1c", accentSoft: "rgba(220,38,38,0.08)",
+      radius: "0px", fontBody: arabicFonts, fontDisplay: cairoDisplay,
+      fontLatin: `"Cormorant Garamond", serif`,
+      heroOverlay: "linear-gradient(180deg, rgba(25,23,19,0.42), rgba(25,23,19,0.8))",
+      headerBg: "rgba(252,251,248,0.92)", ctaText: "#ffffff",
+    },
+  },
+  {
+    id: "riyadh-season",
+    nameAr: "موسم الرياض",
+    nameEn: "Riyadh Season",
+    mode: "dark",
+    description: "طاقة الموسم — بنفسجي كهربائي مع تدرجات نيون احتفالية",
+    tokens: {
+      bg: "#0d0618", bg2: "#140a24", card: "#1c1032", card2: "#241540",
+      border: "#3b2563", text: "#f4edff", textMuted: "#a893cf",
+      accent: "#22d3ee", accent2: "#a855f7", accentSoft: "rgba(34,211,238,0.13)",
+      radius: "14px", fontBody: arabicFonts, fontDisplay: cairoDisplay,
+      fontLatin: `"Space Grotesk", sans-serif`,
+      heroOverlay: "linear-gradient(160deg, rgba(168,85,247,0.25), rgba(13,6,24,0.92))",
+      headerBg: "rgba(13,6,24,0.82)", ctaText: "#081217",
+    },
+  },
 ];
 
 export const DEFAULT_THEME_ID = "royal-gold";
+
+/* ==================================================================
+   Light / dark variants (T18): every theme can flip to its opposite
+   mode. Dark themes get an auto-derived light palette that keeps the
+   accent identity; light themes get a matching dark palette.
+   ================================================================== */
+export type ThemeVariant = "default" | "flipped";
+
+/** Hand-tuned light counterparts for dark themes (keyed by theme id).
+ * Anything not listed falls back to a generated palette. */
+const LIGHT_COUNTERPARTS: Record<string, Partial<ThemeTokens>> = {
+  "royal-gold": {
+    bg: "#faf7f0", bg2: "#f2ecdf", card: "#ffffff", card2: "#faf5ea",
+    border: "#e4dac5", text: "#2b2416", textMuted: "#8a7d63",
+    accent: "#a97e1f", accent2: "#8a6414", accentSoft: "rgba(169,126,31,0.1)",
+    heroOverlay: "linear-gradient(180deg, rgba(43,36,22,0.45), rgba(43,36,22,0.8))",
+    headerBg: "rgba(250,247,240,0.9)", ctaText: "#ffffff",
+  },
+  "midnight-neon": {
+    bg: "#f5f9fc", bg2: "#eaf2f8", card: "#ffffff", card2: "#f2f8fc",
+    border: "#d7e5ef", text: "#0f2233", textMuted: "#587489",
+    accent: "#0891b2", accent2: "#0e7490", accentSoft: "rgba(8,145,178,0.1)",
+    heroOverlay: "linear-gradient(180deg, rgba(15,34,51,0.45), rgba(15,34,51,0.8))",
+    headerBg: "rgba(245,249,252,0.9)", ctaText: "#ffffff",
+  },
+  "emerald-oasis": {
+    bg: "#f4faf6", bg2: "#e8f4ec", card: "#ffffff", card2: "#f1f9f4",
+    border: "#d3e7da", text: "#122b1e", textMuted: "#5b7d68",
+    accent: "#059669", accent2: "#047857", accentSoft: "rgba(5,150,105,0.1)",
+    heroOverlay: "linear-gradient(180deg, rgba(18,43,30,0.45), rgba(18,43,30,0.8))",
+    headerBg: "rgba(244,250,246,0.9)", ctaText: "#ffffff",
+  },
+  "royal-purple": {
+    bg: "#faf8fd", bg2: "#f2eefa", card: "#ffffff", card2: "#f7f3fc",
+    border: "#e3daf1", text: "#291d3d", textMuted: "#77689a",
+    accent: "#7c3aed", accent2: "#6d28d9", accentSoft: "rgba(124,58,237,0.09)",
+    heroOverlay: "linear-gradient(180deg, rgba(41,29,61,0.45), rgba(41,29,61,0.8))",
+    headerBg: "rgba(250,248,253,0.9)", ctaText: "#ffffff",
+  },
+  "carbon-ember": {
+    bg: "#faf8f6", bg2: "#f2eee9", card: "#ffffff", card2: "#f8f4ef",
+    border: "#e5ded4", text: "#241c14", textMuted: "#82796d",
+    accent: "#ea580c", accent2: "#c2410c", accentSoft: "rgba(234,88,12,0.09)",
+    heroOverlay: "linear-gradient(180deg, rgba(36,28,20,0.45), rgba(36,28,20,0.8))",
+    headerBg: "rgba(250,248,246,0.9)", ctaText: "#ffffff",
+  },
+  "aurora-glass": {
+    bg: "#f8f7fc", bg2: "#efedf8", card: "#ffffff", card2: "#f5f3fb",
+    border: "#e0dcf0", text: "#221d38", textMuted: "#6f6892",
+    accent: "#c026d3", accent2: "#a21caf", accentSoft: "rgba(192,38,211,0.08)",
+    heroOverlay: "linear-gradient(180deg, rgba(34,29,56,0.45), rgba(34,29,56,0.8))",
+    headerBg: "rgba(248,247,252,0.88)", ctaText: "#ffffff",
+  },
+  "ramadan-nights": {
+    bg: "#f7f6f0", bg2: "#eeece1", card: "#ffffff", card2: "#f6f4ea",
+    border: "#ddd8c5", text: "#22263e", textMuted: "#6f7390",
+    accent: "#b8860b", accent2: "#976d05", accentSoft: "rgba(184,134,11,0.1)",
+    heroOverlay: "linear-gradient(180deg, rgba(34,38,62,0.5), rgba(34,38,62,0.82))",
+    headerBg: "rgba(247,246,240,0.9)", ctaText: "#ffffff",
+  },
+  "ramadan-serenity": {
+    bg: "#f5f8f3", bg2: "#eaf0e5", card: "#ffffff", card2: "#f2f6ec",
+    border: "#d8e2cf", text: "#1d2b1c", textMuted: "#64775f",
+    accent: "#8c6d1f", accent2: "#715614", accentSoft: "rgba(140,109,31,0.1)",
+    heroOverlay: "linear-gradient(180deg, rgba(29,43,28,0.48), rgba(29,43,28,0.82))",
+    headerBg: "rgba(245,248,243,0.9)", ctaText: "#ffffff",
+  },
+  "eid-adha": {
+    bg: "#faf5f2", bg2: "#f3eae4", card: "#ffffff", card2: "#f9f1ea",
+    border: "#e6d6cb", text: "#33191f", textMuted: "#8d6f66",
+    accent: "#9a3324", accent2: "#7c2318", accentSoft: "rgba(154,51,36,0.09)",
+    heroOverlay: "linear-gradient(180deg, rgba(51,25,31,0.45), rgba(51,25,31,0.8))",
+    headerBg: "rgba(250,245,242,0.9)", ctaText: "#ffffff",
+  },
+  "parallax-noir": {
+    bg: "#f9f8fc", bg2: "#f0eff7", card: "#ffffff", card2: "#f6f5fb",
+    border: "#e1dfee", text: "#211f33", textMuted: "#6e6a8c",
+    accent: "#d97706", accent2: "#b45309", accentSoft: "rgba(217,119,6,0.09)",
+    heroOverlay: "linear-gradient(180deg, rgba(33,31,51,0.42), rgba(33,31,51,0.78))",
+    headerBg: "rgba(249,248,252,0.85)", ctaText: "#ffffff",
+  },
+  "kafd-futurist": {
+    bg: "#f5f8f6", bg2: "#eaf1ec", card: "#ffffff", card2: "#f1f7f3",
+    border: "#d6e3da", text: "#14211a", textMuted: "#5f7568",
+    accent: "#16a34a", accent2: "#15803d", accentSoft: "rgba(22,163,74,0.09)",
+    heroOverlay: "linear-gradient(180deg, rgba(20,33,26,0.45), rgba(20,33,26,0.8))",
+    headerBg: "rgba(245,248,246,0.9)", ctaText: "#ffffff",
+  },
+  "velvet-lounge": {
+    bg: "#fbf8fc", bg2: "#f4edf7", card: "#ffffff", card2: "#f9f3fb",
+    border: "#e8daee", text: "#2c1e33", textMuted: "#7d6b8a",
+    accent: "#c026d3", accent2: "#a21caf", accentSoft: "rgba(192,38,211,0.08)",
+    heroOverlay: "linear-gradient(180deg, rgba(44,30,51,0.45), rgba(44,30,51,0.8))",
+    headerBg: "rgba(251,248,252,0.9)", ctaText: "#ffffff",
+  },
+  "riyadh-season": {
+    bg: "#f7f5fc", bg2: "#eeeaf8", card: "#ffffff", card2: "#f4f1fb",
+    border: "#ded7f0", text: "#231738", textMuted: "#6f6394",
+    accent: "#7c3aed", accent2: "#0891b2", accentSoft: "rgba(124,58,237,0.09)",
+    heroOverlay: "linear-gradient(160deg, rgba(124,58,237,0.2), rgba(35,23,56,0.85))",
+    headerBg: "rgba(247,245,252,0.9)", ctaText: "#ffffff",
+  },
+};
+
+/** Hand-tuned dark counterparts for light themes */
+const DARK_COUNTERPARTS: Record<string, Partial<ThemeTokens>> = {
+  "desert-rose": {
+    bg: "#171210", bg2: "#1e1815", card: "#261e1a", card2: "#2d2420",
+    border: "#3e322b", text: "#f4ece5", textMuted: "#b3a190",
+    accent: "#e08a76", accent2: "#c26d5c", accentSoft: "rgba(224,138,118,0.13)",
+    heroOverlay: "linear-gradient(180deg, rgba(23,18,16,0.5), rgba(23,18,16,0.92))",
+    headerBg: "rgba(23,18,16,0.86)", ctaText: "#1e1210",
+  },
+  "pearl-minimal": {
+    bg: "#111110", bg2: "#181817", card: "#1f1f1d", card2: "#262624",
+    border: "#333330", text: "#f4f4f0", textMuted: "#9d9d94",
+    accent: "#f4f4f0", accent2: "#d6d6cf", accentSoft: "rgba(244,244,240,0.08)",
+    heroOverlay: "linear-gradient(180deg, rgba(17,17,16,0.5), rgba(17,17,16,0.92))",
+    headerBg: "rgba(17,17,16,0.88)", ctaText: "#111110",
+  },
+  "ocean-breeze": {
+    bg: "#081521", bg2: "#0c1c2b", card: "#112438", card2: "#162c44",
+    border: "#22405c", text: "#e9f3fb", textMuted: "#8fa9c0",
+    accent: "#38bdf8", accent2: "#0ea5e9", accentSoft: "rgba(56,189,248,0.13)",
+    heroOverlay: "linear-gradient(180deg, rgba(8,21,33,0.5), rgba(8,21,33,0.92))",
+    headerBg: "rgba(8,21,33,0.86)", ctaText: "#081521",
+  },
+  "sand-dune": {
+    bg: "#171310", bg2: "#1f1a14", card: "#282118", card2: "#30281d",
+    border: "#43382a", text: "#f3ecdf", textMuted: "#b3a68e",
+    accent: "#d98e28", accent2: "#b8741a", accentSoft: "rgba(217,142,40,0.13)",
+    heroOverlay: "linear-gradient(180deg, rgba(23,19,16,0.5), rgba(23,19,16,0.92))",
+    headerBg: "rgba(23,19,16,0.86)", ctaText: "#171310",
+  },
+  "eid-fitr": {
+    bg: "#0c1810", bg2: "#112016", card: "#16291d", card2: "#1b3224",
+    border: "#28452f", text: "#eef6ea", textMuted: "#9cb8a1",
+    accent: "#4ade80", accent2: "#22c55e", accentSoft: "rgba(74,222,128,0.12)",
+    heroOverlay: "linear-gradient(180deg, rgba(12,24,16,0.5), rgba(12,24,16,0.92))",
+    headerBg: "rgba(12,24,16,0.86)", ctaText: "#0c1810",
+  },
+  "najdi-heritage": {
+    bg: "#171006", bg2: "#1f160a", card: "#281d10", card2: "#302415",
+    border: "#453521", text: "#f5ecdd", textMuted: "#b5a289",
+    accent: "#fb923c", accent2: "#f97316", accentSoft: "rgba(251,146,60,0.13)",
+    heroOverlay: "linear-gradient(180deg, rgba(23,16,6,0.5), rgba(23,16,6,0.92))",
+    headerBg: "rgba(23,16,6,0.86)", ctaText: "#171006",
+  },
+  "mono-editorial": {
+    bg: "#121110", bg2: "#191817", card: "#211f1e", card2: "#282625",
+    border: "#373431", text: "#f4f2ee", textMuted: "#9e9a93",
+    accent: "#f87171", accent2: "#ef4444", accentSoft: "rgba(248,113,113,0.11)",
+    heroOverlay: "linear-gradient(180deg, rgba(18,17,16,0.5), rgba(18,17,16,0.92))",
+    headerBg: "rgba(18,17,16,0.88)", ctaText: "#121110",
+  },
+};
+
+/** Returns tokens (and effective mode) for a theme + variant combination. */
+export function resolveVariantTokens(
+  theme: ThemePreset,
+  variant: ThemeVariant
+): { tokens: ThemeTokens; mode: "dark" | "light" } {
+  if (variant !== "flipped") return { tokens: theme.tokens, mode: theme.mode };
+  const table = theme.mode === "dark" ? LIGHT_COUNTERPARTS : DARK_COUNTERPARTS;
+  const override = table[theme.id];
+  const flippedMode = theme.mode === "dark" ? "light" : "dark";
+  if (override) return { tokens: { ...theme.tokens, ...override }, mode: flippedMode };
+  // Generic fallback for custom themes: derive a neutral opposite palette
+  const generic: Partial<ThemeTokens> =
+    flippedMode === "light"
+      ? {
+          bg: "#faf9f6", bg2: "#f1efe9", card: "#ffffff", card2: "#f7f5f0",
+          border: "#e3e0d6", text: "#26231d", textMuted: "#7d786b",
+          heroOverlay: "linear-gradient(180deg, rgba(38,35,29,0.45), rgba(38,35,29,0.8))",
+          headerBg: "rgba(250,249,246,0.9)", ctaText: "#ffffff",
+        }
+      : {
+          bg: "#111013", bg2: "#18171b", card: "#201f24", card2: "#28262c",
+          border: "#37343d", text: "#f2f1f5", textMuted: "#9c98a6",
+          heroOverlay: "linear-gradient(180deg, rgba(17,16,19,0.5), rgba(17,16,19,0.92))",
+          headerBg: "rgba(17,16,19,0.86)", ctaText: "#111013",
+        };
+  return { tokens: { ...theme.tokens, ...generic }, mode: flippedMode };
+}
 
 /** Custom themes created by the admin (stored in Supabase site_settings.custom_themes) */
 let CUSTOM_THEMES: ThemePreset[] = [];
@@ -360,8 +624,13 @@ export type ThemeOverrides = {
   tokens?: Partial<ThemeTokens>;
 };
 
-export function applyThemeToDOM(theme: ThemePreset, overrides?: ThemeOverrides) {
-  const tokens = { ...theme.tokens, ...(overrides?.tokens || {}) };
+export function applyThemeToDOM(
+  theme: ThemePreset,
+  overrides?: ThemeOverrides,
+  variant: ThemeVariant = "default"
+) {
+  const resolved = resolveVariantTokens(theme, variant);
+  const tokens = { ...resolved.tokens, ...(variant === "default" ? overrides?.tokens || {} : {}) };
   const r = document.documentElement;
   r.style.setProperty("--bg", tokens.bg);
   r.style.setProperty("--bg-2", tokens.bg2);
@@ -381,7 +650,8 @@ export function applyThemeToDOM(theme: ThemePreset, overrides?: ThemeOverrides) 
   r.style.setProperty("--header-bg", tokens.headerBg);
   r.style.setProperty("--cta-text", tokens.ctaText);
   r.dataset.theme = theme.id;
-  r.dataset.mode = theme.mode;
+  r.dataset.mode = resolved.mode;
+  r.dataset.variant = variant;
   if (theme.decor) r.dataset.decor = theme.decor;
   else delete r.dataset.decor;
   if (theme.parallax) r.dataset.parallax = "on";

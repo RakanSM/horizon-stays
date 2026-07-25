@@ -66,6 +66,7 @@ export default function ThemeEditor() {
   const {
     activeThemeId, overrides, saveSettings, previewTheme,
     customThemes, saveCustomThemes,
+    customCss, customJs, saveCode, previewCss,
   } = useTheme();
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -80,7 +81,19 @@ export default function ThemeEditor() {
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState("");
-  const [panel, setPanel] = useState<"theme" | "colors" | "fonts" | "content">("theme");
+  const [panel, setPanel] = useState<"theme" | "colors" | "fonts" | "content" | "code">("theme");
+  const [cssDraft, setCssDraft] = useState(customCss);
+  const [jsDraft, setJsDraft] = useState(customJs);
+  const [codeDirty, setCodeDirty] = useState(false);
+
+  // Sync code drafts when settings load from Supabase
+  useEffect(() => {
+    if (!codeDirty) {
+      setCssDraft(customCss);
+      setJsDraft(customJs);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customCss, customJs]);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
 
   useEffect(() => {
@@ -225,6 +238,10 @@ export default function ThemeEditor() {
         const all = { ...overrides, [themeId]: draft };
         await saveSettings(tok, themeId, all);
       }
+      if (codeDirty) {
+        await saveCode(tok, cssDraft, jsDraft);
+        setCodeDirty(false);
+      }
       setDirty(false);
       setToast("تم النشر بنجاح ✓");
       setTimeout(() => setToast(""), 2500);
@@ -256,7 +273,7 @@ export default function ThemeEditor() {
             <button className={device === "mobile" ? "on" : ""} onClick={() => setDevice("mobile")}>📱</button>
           </div>
           <button className="btn-ghost sm" onClick={resetTheme}>استعادة الافتراضي</button>
-          <button className="btn-publish" onClick={publish} disabled={saving || !dirty}>
+          <button className="btn-publish" onClick={publish} disabled={saving || (!dirty && !codeDirty)}>
             {saving ? "جارٍ النشر..." : customDraft ? "حفظ ونشر الطابع" : "نشر"}
           </button>
         </div>
@@ -270,6 +287,7 @@ export default function ThemeEditor() {
             <button className={panel === "colors" ? "on" : ""} onClick={() => setPanel("colors")}>الألوان</button>
             <button className={panel === "fonts" ? "on" : ""} onClick={() => setPanel("fonts")}>الخطوط</button>
             <button className={panel === "content" ? "on" : ""} onClick={() => setPanel("content")}>المحتوى</button>
+            <button className={panel === "code" ? "on" : ""} onClick={() => setPanel("code")}>{"</>"} كود</button>
           </div>
 
           {panel === "theme" && (
@@ -387,6 +405,48 @@ export default function ThemeEditor() {
                 <input type="checkbox" checked={content.animationsEnabled} onChange={(e) => setContent("animationsEnabled", e.target.checked)} />
                 تفعيل الحركات والانتقالات
               </label>
+            </div>
+          )}
+
+          {panel === "code" && (
+            <div className="ep-section ep-code">
+              <p className="ep-hint">
+                مثل Shopify — أضف أكواد CSS و JavaScript مخصصة تُطبّق على كامل الموقع.
+                معاينة CSS فورية أثناء الكتابة.
+              </p>
+              <label className="ep-label">CSS مخصص (custom.css)</label>
+              <textarea
+                className="ep-code-area"
+                dir="ltr"
+                rows={12}
+                spellCheck={false}
+                placeholder={"/* مثال */\n.hero h1 { letter-spacing: 2px; }"}
+                value={cssDraft}
+                onChange={(e) => {
+                  setCssDraft(e.target.value);
+                  setCodeDirty(true);
+                  previewCss(e.target.value);
+                }}
+              />
+              <label className="ep-label">JavaScript مخصص (custom.js)</label>
+              <textarea
+                className="ep-code-area"
+                dir="ltr"
+                rows={10}
+                spellCheck={false}
+                placeholder={"// مثال\nconsole.log('Horizon Stays');"}
+                value={jsDraft}
+                onChange={(e) => {
+                  setJsDraft(e.target.value);
+                  setCodeDirty(true);
+                }}
+              />
+              <p className="ep-hint">ملاحظة: يعمل كود JavaScript بعد النشر عند تحميل الصفحة التالي.</p>
+              {codeDirty && (
+                <button className="btn-ghost sm" onClick={() => { setCssDraft(customCss); setJsDraft(customJs); previewCss(customCss); setCodeDirty(false); }}>
+                  تراجع عن تغييرات الكود
+                </button>
+              )}
             </div>
           )}
         </aside>

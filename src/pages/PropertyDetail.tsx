@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   fetchPropertyBySlug,
@@ -31,6 +31,7 @@ export default function PropertyDetail() {
   const [checkIn, setCheckIn] = useState<string | null>(null);
   const [checkOut, setCheckOut] = useState<string | null>(null);
   const [rangeError, setRangeError] = useState<string | null>(null);
+  const bookBoxRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -102,6 +103,13 @@ export default function PropertyDetail() {
         return;
       }
       setCheckOut(dstr);
+      // On phones the booking box lives below the calendar — bring it into view
+      // so the user immediately sees the total + WhatsApp button after picking dates.
+      setTimeout(() => {
+        if (window.innerWidth <= 900 && bookBoxRef.current) {
+          bookBoxRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 150);
     },
     [checkIn, checkOut, rangeIsFree, t]
   );
@@ -364,7 +372,7 @@ export default function PropertyDetail() {
         </div>
 
         <aside>
-          <div className="book-box">
+          <div className="book-box" ref={bookBoxRef}>
             <div className="bb-price">
               {property.price_per_night?.toLocaleString("en-US")} ﷼ <span>/ {t("night")}</span>
             </div>
@@ -421,6 +429,35 @@ export default function PropertyDetail() {
             </div>
           </div>
         </aside>
+      </div>
+
+      {/* Sticky mobile booking bar — always-visible CTA on phones */}
+      <div className="mobile-book-bar" dir={lang === "ar" ? "rtl" : "ltr"}>
+        <div className="mbb-info">
+          {nights > 0 ? (
+            <>
+              <b>{total.toLocaleString("en-US")} ﷼</b>
+              <span>
+                {nights} {lang === "ar" ? "ليالٍ" : "nights"} · {checkIn} → {checkOut}
+              </span>
+            </>
+          ) : (
+            <>
+              <b>
+                {property.price_per_night?.toLocaleString("en-US")} ﷼ <i>/ {t("night")}</i>
+              </b>
+              <span>{checkIn ? (lang === "ar" ? "اختر تاريخ المغادرة" : "Select check-out date") : lang === "ar" ? "اختر التواريخ من التقويم" : "Pick dates from the calendar"}</span>
+            </>
+          )}
+        </div>
+        <a
+          href={`https://wa.me/966560903335?text=${encodeURIComponent(waText)}`}
+          target="_blank"
+          rel="noreferrer"
+          className="btn btn-gold mbb-btn"
+        >
+          {t("book_whatsapp")}
+        </a>
       </div>
     </div>
   );
