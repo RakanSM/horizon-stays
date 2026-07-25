@@ -1635,6 +1635,58 @@ html[dir="ltr"] body {
   transform: scale(0.96);
 }
 
+/* Language dropdown menu */
+.lang-menu {
+  position: relative;
+  display: inline-flex;
+}
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-end: 0;
+  min-width: 140px;
+  background: var(--surface, var(--bg-2, #16161c));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 300;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  animation: langDropIn 180ms var(--ease-out);
+}
+@keyframes langDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.lang-dropdown button {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  text-align: start;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 140ms var(--ease-out), color 140ms var(--ease-out);
+}
+.lang-dropdown button:hover {
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  color: var(--gold);
+}
+.lang-dropdown button.active {
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 18%, transparent);
+}
+
 /* ============ Photo strip + lightbox ============ */
 .photo-strip {
   display: flex;

@@ -155,15 +155,10 @@ export default function PropertyDetail() {
   const total = nights * (property.price_per_night || 0);
 
   const waText =
-    lang === "ar"
-      ? `مرحباً، أرغب بحجز: ${name}` +
-        (checkIn && checkOut
-          ? `\n${t("wa_from")}: ${checkIn}\n${t("wa_to")}: ${checkOut}\n${t("wa_nights")}: ${nights}\n${t("total")}: ${total.toLocaleString("en-US")} ﷼`
-          : "")
-      : `Hello, I would like to book: ${name}` +
-        (checkIn && checkOut
-          ? `\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nNights: ${nights}\nTotal: ${total.toLocaleString("en-US")} SAR`
-          : "");
+    `${t("wa_greeting")}: ${name}` +
+    (checkIn && checkOut
+      ? `\n${t("check_in")}: ${checkIn}\n${t("check_out")}: ${checkOut}\n${t("wa_nights")}: ${nights}\n${t("total")}: ${total.toLocaleString("en-US")} ${lang === "ar" ? "﷼" : "SAR"}`
+      : "");
 
   /** Determine day cell class for the range calendar */
   const dayClass = (dstr: string, isPast: boolean, isBlocked: boolean) => {
@@ -259,14 +254,14 @@ export default function PropertyDetail() {
           <div className="detail-title">
             <h1>{name}</h1>
             <div className="detail-sub">
-              {lang === "ar" ? "الرياض" : "Riyadh"} — {property.neighborhood || (lang === "ar" ? "حي راقٍ" : "Prime district")} ·{" "}
-              {property.type || (lang === "ar" ? "وحدة فاخرة" : "Luxury unit")}
+              {t("riyadh")} — {property.neighborhood || t("prime_district")} ·{" "}
+              {property.type || t("luxury_unit_type")}
             </div>
           </div>
 
           <div className="spec-row">
             <span>
-              <b>{property.bedrooms === 0 ? (lang === "ar" ? "ستوديو" : "Studio") : property.bedrooms}</b>{" "}
+              <b>{property.bedrooms === 0 ? t("studio") : property.bedrooms}</b>{" "}
               {property.bedrooms === 0 ? "" : t("bedrooms")}
             </span>
             <span>
@@ -392,7 +387,7 @@ export default function PropertyDetail() {
               <div className="bb-summary">
                 <div>
                   <span>
-                    {property.price_per_night?.toLocaleString("en-US")} ﷼ × {nights} {lang === "ar" ? "ليالٍ" : "nights"}
+                    {property.price_per_night?.toLocaleString("en-US")} ﷼ × {nights} {t("nights_word")}
                   </span>
                   <b>{total.toLocaleString("en-US")} ﷼</b>
                 </div>
@@ -422,11 +417,7 @@ export default function PropertyDetail() {
                 {t("view_airbnb")}
               </a>
             )}
-            <div className="bb-note">
-              {lang === "ar"
-                ? "التوفر محدث تلقائياً من Airbnb وGathern كل ٣ ساعات"
-                : "Availability auto-synced from Airbnb & Gathern every 3 hours"}
-            </div>
+            <div className="bb-note">{t("sync_note")}</div>
           </div>
         </aside>
       </div>
@@ -438,7 +429,7 @@ export default function PropertyDetail() {
             <>
               <b>{total.toLocaleString("en-US")} ﷼</b>
               <span>
-                {nights} {lang === "ar" ? "ليالٍ" : "nights"} · {checkIn} → {checkOut}
+                {nights} {t("nights_word")} · {checkIn} → {checkOut}
               </span>
             </>
           ) : (
@@ -446,7 +437,7 @@ export default function PropertyDetail() {
               <b>
                 {property.price_per_night?.toLocaleString("en-US")} ﷼ <i>/ {t("night")}</i>
               </b>
-              <span>{checkIn ? (lang === "ar" ? "اختر تاريخ المغادرة" : "Select check-out date") : lang === "ar" ? "اختر التواريخ من التقويم" : "Pick dates from the calendar"}</span>
+              <span>{checkIn ? t("pick_checkout") : t("pick_dates")}</span>
             </>
           )}
         </div>

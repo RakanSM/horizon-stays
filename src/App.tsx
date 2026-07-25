@@ -8,7 +8,7 @@ import Admin from "./pages/Admin";
 import ThemeEditor from "./pages/ThemeEditor";
 import Cleaner from "./pages/Cleaner";
 import { ThemeProvider, useTheme } from "./lib/ThemeContext";
-import { LangProvider, useLang } from "./lib/i18n";
+import { LangProvider, useLang, LANGS } from "./lib/i18n";
 import { useScrollReveal, useParallaxSections } from "./lib/motion";
 import SeasonalDecor from "./components/SeasonalDecor";
 
@@ -34,6 +34,7 @@ export default function App() {
 
 function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const location = useLocation();
   const { content } = useTheme();
   const { lang, t, setLang } = useLang();
@@ -45,6 +46,7 @@ function AppShell() {
 
   useEffect(() => {
     setMenuOpen(false);
+    setLangOpen(false);
   }, [location.pathname]);
 
   if (isEditor) {
@@ -80,18 +82,38 @@ function AppShell() {
   );
 
   const langToggle = (
-    <button
-      className="lang-toggle"
-      onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-      aria-label={lang === "ar" ? "Switch to English" : "التبديل إلى العربية"}
-      title={lang === "ar" ? "English" : "العربية"}
-    >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-      </svg>
-      <span>{lang === "ar" ? "EN" : "عربي"}</span>
-    </button>
+    <div className={`lang-menu ${langOpen ? "open" : ""}`}>
+      <button
+        className="lang-toggle"
+        onClick={() => setLangOpen((v) => !v)}
+        aria-label="Change language"
+        aria-expanded={langOpen}
+        title="Language"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+        <span>{lang === "ar" ? "عربي" : lang.toUpperCase()}</span>
+      </button>
+      {langOpen && (
+        <div className="lang-dropdown" role="menu">
+          {LANGS.map((l) => (
+            <button
+              key={l.code}
+              role="menuitem"
+              className={l.code === lang ? "active" : ""}
+              onClick={() => {
+                setLang(l.code);
+                setLangOpen(false);
+              }}
+            >
+              {l.native}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 
   return (
@@ -115,7 +137,7 @@ function AppShell() {
               {t("nav_contact")}
             </NavLink>
             <a href={WHATSAPP} target="_blank" rel="noreferrer" className="cta">
-              {lang === "ar" ? content.ctaText : t("book_now")}
+              {lang === "ar" && content.ctaText ? content.ctaText : t("book_now")}
             </a>
           </nav>
           <div className="header-actions">

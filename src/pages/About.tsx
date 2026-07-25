@@ -4,26 +4,44 @@ import { Reveal } from "../lib/motion";
 
 const WHATSAPP = "https://wa.me/966560903335";
 
-const VALUES = [
+type ValueLoc = { title: string; body: string };
+type ValueEntry = Record<string, ValueLoc | undefined> & { ar: ValueLoc; en: ValueLoc };
+
+const VALUES: ValueEntry[] = [
   {
     ar: { title: "الإتقان في التفاصيل", body: "كل تفصيلة صغيرة نحرص عليها تصنع فرقاً كبيراً في تجربة كل ضيف." },
     en: { title: "Mastery of Detail", body: "Every small detail we perfect makes a big difference in each guest's experience." },
+    zh: { title: "匠心细节", body: "我们精雕细琢的每一个小细节，都会在每位宾客的体验中带来巨大不同。" },
+    fr: { title: "La maîtrise du détail", body: "Chaque petit détail que nous peaufinons fait une grande différence dans l'expérience de chaque hôte." },
+    es: { title: "Maestría en los detalles", body: "Cada pequeño detalle que perfeccionamos marca una gran diferencia en la experiencia de cada huésped." },
   },
   {
     ar: { title: "ضيافة بروح سعودية", body: "طاقم أفق سعودي 100% يجمع بين الاحترافية والضيافة الأصيلة." },
     en: { title: "Saudi-Spirited Hospitality", body: "Our 100% Saudi team combines professionalism with authentic hospitality." },
+    zh: { title: "沙特精神的款待", body: "我们 100% 沙特本土的团队，将专业精神与地道的款待之道融为一体。" },
+    fr: { title: "Hospitalité à l'âme saoudienne", body: "Notre équipe 100 % saoudienne allie professionnalisme et hospitalité authentique." },
+    es: { title: "Hospitalidad de espíritu saudí", body: "Nuestro equipo 100 % saudí combina profesionalidad con hospitalidad auténtica." },
   },
   {
     ar: { title: "الشفافية والثقة", body: "شراكتنا مع الملاك مبنية على وضوح كامل وموثوقية في كل خطوة." },
     en: { title: "Transparency & Trust", body: "Our owner partnerships are built on full clarity and reliability at every step." },
+    zh: { title: "透明与信任", body: "我们与业主的合作建立在完全透明与每一步的可靠之上。" },
+    fr: { title: "Transparence et confiance", body: "Nos partenariats avec les propriétaires reposent sur une clarté totale et une fiabilité à chaque étape." },
+    es: { title: "Transparencia y confianza", body: "Nuestras alianzas con propietarios se basan en total claridad y fiabilidad en cada paso." },
   },
   {
     ar: { title: "التجربة أولاً", body: "دائماً في قلب كل قرار نتخذه لضمان تجربة سلسة ومميزة للعميل." },
     en: { title: "Experience First", body: "At the heart of every decision we make — a seamless, memorable guest experience." },
+    zh: { title: "体验至上", body: "流畅、难忘的宾客体验，始终是我们每个决策的核心。" },
+    fr: { title: "L'expérience d'abord", body: "Au cœur de chacune de nos décisions : une expérience client fluide et mémorable." },
+    es: { title: "La experiencia primero", body: "En el corazón de cada decisión: una experiencia de huésped fluida y memorable." },
   },
   {
     ar: { title: "التطوير المستمر", body: "نواكب السوق ونبتكر حلولاً ذكية لزيادة عائد الاستثمار وتحسين الأداء." },
     en: { title: "Continuous Improvement", body: "We track the market and innovate smart solutions to raise ROI and performance." },
+    zh: { title: "持续改进", body: "我们紧跟市场，不断创新智能方案，提升投资回报与运营表现。" },
+    fr: { title: "Amélioration continue", body: "Nous suivons le marché et innovons avec des solutions intelligentes pour augmenter le rendement et la performance." },
+    es: { title: "Mejora continua", body: "Seguimos el mercado e innovamos con soluciones inteligentes para aumentar el ROI y el rendimiento." },
   },
 ];
 
@@ -46,7 +64,7 @@ export default function About() {
         />
         <div className="container">
           <Reveal>
-            <h1>{lang === "ar" ? "من نحن — شركة أفق" : "About Us — Ofoq (Horizon)"}</h1>
+            <h1>{t("about_h1")}</h1>
             <p>{t("about_lead")}</p>
           </Reveal>
         </div>
@@ -55,35 +73,8 @@ export default function About() {
       <section className="section">
         <div className="container about-grid">
           <Reveal className="about-text">
-            {lang === "ar" ? (
-              <>
-                <p className="prose">
-                  نحن في شركة أفق نؤمن أن الضيافة تبدأ من التفاصيل الصغيرة وتصنع فرقاً كبيراً في
-                  تجربة كل ضيف. طاقمنا سعودي 100% بخبرة واسعة في إدارة الضيافة والحجوزات، نفهم
-                  السوق المحلي واحتياجاته، ونجيد التعامل مع الضيوف بمختلف ثقافاتهم وتوقعاتهم.
-                </p>
-                <p className="prose" style={{ marginTop: 14 }}>
-                  نحن لا ندير الحجوزات فحسب، بل نجهز الشقق بالكامل — من تأثيث وتصميم داخلي وتنفيذ
-                  وتشغيل — لضمان تقديم تجربة ضيافة استثنائية تجمع بين الاحترافية والود، مع متابعة
-                  دقيقة لكل تفاصيل الحجز.
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="prose">
-                  At Ofoq (Horizon), we believe hospitality begins with the smallest details — and
-                  those details transform every guest's experience. Our 100% Saudi team brings deep
-                  expertise in hospitality and reservations management, an intimate understanding of
-                  the local market, and fluency in serving guests of every culture and expectation.
-                </p>
-                <p className="prose" style={{ marginTop: 14 }}>
-                  We don't just manage bookings — we prepare apartments end to end: furnishing,
-                  interior design, fit-out, and operations — delivering an exceptional hospitality
-                  experience that blends professionalism with warmth, and meticulous attention to
-                  every booking detail.
-                </p>
-              </>
-            )}
+            <p className="prose">{t("about_body1")}</p>
+            <p className="prose" style={{ marginTop: 14 }}>{t("about_body2")}</p>
           </Reveal>
           <Reveal className="about-img" delay={100}>
             <img src="https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/royal-suite-3bd-1.webp" alt="Horizon Stays" loading="lazy" />
@@ -95,19 +86,11 @@ export default function About() {
         <div className="container mv-grid">
           <Reveal className="mv-card">
             <h3>{t("about_mission_t")}</h3>
-            <p>
-              {lang === "ar"
-                ? "نضع الضيف في قلب كل قرار، والمالك في قلب كل استثمار. مهمتنا أن نحوّل العقارات إلى تجارب إقامة متكاملة — من تصميم داخلي راقٍ وتشغيل احترافي — لنخلق توازناً مثالياً بين راحة الضيف وعائد المالك."
-                : "We put the guest at the heart of every decision, and the owner at the heart of every investment. Our mission is to turn properties into complete stay experiences — refined interiors and professional operations — striking the perfect balance between guest comfort and owner returns."}
-            </p>
+            <p>{t("about_mission")}</p>
           </Reveal>
           <Reveal className="mv-card" delay={90}>
             <h3>{t("about_vision_t")}</h3>
-            <p>
-              {lang === "ar"
-                ? "أن نكون الوجهة السعودية الأولى في تصميم وتشغيل عقارات الضيافة الذكية، حيث يلتقي الإتقان المحلي مع المعايير العالمية لصناعة تجارب ضيافة تُحكى وتُستثمر."
-                : "To become Saudi Arabia's leading name in designing and operating smart hospitality properties — where local mastery meets global standards to craft stay experiences worth telling and worth investing in."}
-            </p>
+            <p>{t("about_vision")}</p>
           </Reveal>
         </div>
       </section>
@@ -116,17 +99,20 @@ export default function About() {
         <div className="container">
           <Reveal className="section-head">
             <h2>
-              {lang === "ar" ? "قيمنا" : "Our Values"}
+              {t("our_values")}
               <span className="gold-line" />
             </h2>
           </Reveal>
           <div className="value-grid">
-            {VALUES.map((v, i) => (
-              <Reveal key={v.ar.title} className="value-card" delay={i * 60}>
-                <h3>{v[lang].title}</h3>
-                <p>{v[lang].body}</p>
-              </Reveal>
-            ))}
+            {VALUES.map((v, i) => {
+              const loc = v[lang] || v.en;
+              return (
+                <Reveal key={v.ar.title} className="value-card" delay={i * 60}>
+                  <h3>{loc.title}</h3>
+                  <p>{loc.body}</p>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -162,9 +148,7 @@ export default function About() {
                 marginBottom: 18,
               }}
             >
-              {lang === "ar"
-                ? "ابدأ تجربتك مع أفق — ضيافة استثنائية واستثمار ناجح"
-                : "Start your journey with Horizon — exceptional hospitality, successful investment"}
+              {t("about_cta")}
             </p>
             <div className="hero-actions" style={{ justifyContent: "center" }}>
               <Link to="/" className="btn btn-gold">

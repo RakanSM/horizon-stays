@@ -15,11 +15,11 @@ export default function Home() {
   const { lang, t } = useLang();
 
   const FILTERS = [
-    { key: "all", label: lang === "ar" ? "الكل" : "All" },
-    { key: "studio", label: lang === "ar" ? "ستوديو" : "Studio" },
-    { key: "1", label: lang === "ar" ? "غرفة" : "1 Bedroom" },
-    { key: "2", label: lang === "ar" ? "غرفتان" : "2 Bedrooms" },
-    { key: "3+", label: lang === "ar" ? "٣ غرف أو أكثر" : "3+ Bedrooms" },
+    { key: "all", label: t("filter_all") },
+    { key: "studio", label: t("filter_studio") },
+    { key: "1", label: t("filter_1br") },
+    { key: "2", label: t("filter_2br") },
+    { key: "3+", label: t("filter_3br") },
   ];
 
   const [properties, setProperties] = useState<Property[] | null>(null);
@@ -45,10 +45,10 @@ export default function Home() {
 
   const heroImg = "https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/kafd-penthouse-3bd-1.webp";
 
-  // Theme content overrides are authored in Arabic; use them for AR, t() for EN
-  const heroBadge = lang === "ar" ? content.heroBadge : t("hero_badge");
-  const heroTitle = lang === "ar" ? content.heroTitle : t("hero_title");
-  const heroSubtitle = lang === "ar" ? content.heroSubtitle : t("hero_subtitle");
+  // Theme content overrides are authored in Arabic; use them for AR, t() for other languages
+  const heroBadge = lang === "ar" && content.heroBadge ? content.heroBadge : t("hero_badge");
+  const heroTitle = lang === "ar" && content.heroTitle ? content.heroTitle : t("hero_title");
+  const heroSubtitle = lang === "ar" && content.heroSubtitle ? content.heroSubtitle : t("hero_subtitle");
 
   return (
     <>
@@ -68,7 +68,7 @@ export default function Home() {
                 {t("explore_units")}
               </a>
               <a href={WHATSAPP} target="_blank" rel="noreferrer" className="btn btn-outline">
-                {lang === "ar" ? "تواصل واتساب" : "WhatsApp Us"}
+                {t("whatsapp_us")}
               </a>
             </div>
           </div>
@@ -93,8 +93,8 @@ export default function Home() {
             <span>{t("stat_support")}</span>
           </Reveal>
           <Reveal className="stat" delay={180}>
-            <b>{lang === "ar" ? "آلي" : "Auto"}</b>
-            <span>{lang === "ar" ? "تزامن التقويم" : "Calendar Sync"}</span>
+            <b>{t("stat_auto")}</b>
+            <span>{t("stat_cal_sync")}</span>
           </Reveal>
         </section>
       )}
@@ -123,7 +123,7 @@ export default function Home() {
             ))}
           </Reveal>
 
-          {error && <div className="empty-state">{lang === "ar" ? "تعذر تحميل الوحدات: " : "Failed to load: "}{error}</div>}
+          {error && <div className="empty-state">{t("load_failed")}{error}</div>}
 
           {!error && !filtered && (
             <div className="grid">
@@ -147,21 +147,19 @@ export default function Home() {
                     <Link to={`/property/${p.slug}`} className="card">
                       <div className="card-img">
                         {photos[0] && <img src={photos[0]} alt={name} loading="lazy" />}
-                        <span className="card-badge">{p.type || (lang === "ar" ? "وحدة فاخرة" : "Luxury Unit")}</span>
+                        <span className="card-badge">{p.type || t("luxury_unit")}</span>
                       </div>
                       <div className="card-body">
                         <h3>{name}</h3>
                         <div className="card-loc">
-                          {lang === "ar" ? "الرياض" : "Riyadh"} — {p.neighborhood || (lang === "ar" ? "حي راقٍ" : "Prime district")}
+                          {t("riyadh")} — {p.neighborhood || t("prime_district")}
                         </div>
                         <div className="card-meta">
                           <span>
-                            {p.bedrooms === 0
-                              ? lang === "ar" ? "ستوديو" : "Studio"
-                              : lang === "ar" ? `${p.bedrooms} غرف` : `${p.bedrooms} BR`}
+                            {p.bedrooms === 0 ? t("studio") : `${p.bedrooms} ${t("br_short")}`}
                           </span>
-                          <span>{p.bathrooms} {lang === "ar" ? "حمام" : "Bath"}</span>
-                          <span>{p.max_guests} {lang === "ar" ? "ضيوف" : "Guests"}</span>
+                          <span>{p.bathrooms} {t("bath_short")}</span>
+                          <span>{p.max_guests} {t("guests_short")}</span>
                           {p.area_m2 ? <span>{p.area_m2} {t("sqm")}</span> : null}
                         </div>
                         <div className="card-foot">
