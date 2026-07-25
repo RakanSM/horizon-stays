@@ -56,9 +56,22 @@
 - [x] T15b: Merged into guests_master_v2.xlsx + Supabase guests table (4,017 guests, 295 phones total)
 
 ## New batch (user feedback Jul 25)
-- [ ] T16: Fix booking bug — selecting dates in calendar doesn't let user book (WhatsApp CTA flow)
-- [ ] T17: Image quality — re-fetch originals from source links, serve full resolution
-- [ ] T18: Light mode variant for ALL themes (toggle)
-- [ ] T19: More themes + Shopify-style code/snippet editor (full editability incl. custom CSS/JS)
-- [ ] T20: Verify all connections (Gathern/Airbnb sync, Supabase, cron) end-to-end
-- [ ] T21: Deploy + verify live
+- [x] T16: Fix booking bug — sticky mobile booking bar + auto-scroll to booking box on range completion + hint guard
+- [x] T17: Image quality — 174 HQ originals re-fetched (Airbnb im_w=1440 / Gathern 1920), q85 webp max1600px, served from Supabase Storage CDN (property-images bucket)
+- [x] T18: Light mode for ALL themes — header sun/moon toggle, hand-tuned light palettes, hero contrast fix, persisted in localStorage
+- [x] T19: 5 new themes (kafd-futurist, najdi-heritage, velvet-lounge, mono-editorial, riyadh-season — 20 total) + Shopify-style Code tab in editor (custom CSS live preview + custom JS, saved to site_settings)
+- [x] T20: Connections verified — ical-relay ok, live sync 45/45 feeds 0 failed, blocked_dates fresh (airbnb+gathern), VM cron active
+- [x] T21: Deployed (dpl_BRWj3QJFqt2RymGz3dQwz8ixZSbC READY) — all 6 routes 200, CDN images live, GitHub master+main pushed
+
+## Follow-up: true original photos (user request Jul 25)
+- [x] T22: Downloaded 627 ORIGINAL full-res photos from Airbnb host photo manager (24 slugs, q88 max1920px, 0 failures)
+- [ ] T22b: Upload originals to Supabase Storage CDN, update photo maps, deploy + verify
+
+## A-Z consolidation batch (Jul 25 — Skywork session = same project; preserve original backend/landing design)
+- [x] T24: Verified — horizon-stays-olive.vercel.app and horizonstay-sa.vercel.app serve the IDENTICAL bundle (index-CwJA_KeW.js); the original landing design IS the current design, preserved throughout
+- [x] T25: No split-brain — both deployments point to Supabase Hstays (bwffhalzuvvmuzjfmdyp); the old Ireland project (jnodurinvfljjcexrmlp) was superseded
+- [ ] T26: Add Chinese/French/Spanish languages (Skywork request) on top of AR/EN
+- [ ] T27: SEO + meta tags audit (Skywork request)
+- [ ] T28: MyFatoorah payment gateway — scope with user (needs merchant API key)
+- [ ] T29: Domain horizonstay-sa.com — set up in Vercel for one-click purchase
+- [ ] T30: Final consolidation QA + deploy + report
