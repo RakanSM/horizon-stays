@@ -64,6 +64,14 @@
 - [x] T21: Deployed (dpl_BRWj3QJFqt2RymGz3dQwz8ixZSbC READY) — all 6 routes 200, CDN images live, GitHub master+main pushed
 
 ## Scrollytelling landing section (user request Jul 27 — brought Gemini reference code + hybrid layout brief; I choose the approach)
-- [ ] T39: Build 3-phase hybrid scrollytelling section on landing page (Phase 1 fixed canvas hook, Phase 2 stacking value cards, Phase 3 pinned horizontal showcase), adapted to Horizon gold/dark luxury design with real property photos/content — NOT the generic Gemini demo copy
-- [ ] T40: i18n (AR/EN/ZH/FR/ES) + RTL-aware transforms + mobile (<768px) fallback to plain stacked blocks + prefers-reduced-motion respect + scroll progress dots
-- [ ] T41: Local visual verification (desktop + mobile), deploy to horizon-stays project (owns horizonstay-sa.com), verify live, push GitHub
+- [x] T39: 3-phase hybrid scrollytelling section live on landing (ScrollStory.tsx, 420vh runway, native scroll+rAF, no framer-motion; gold/dark luxury styling, real CDN property photos, showcase links to 4 property pages)
+- [x] T40: story_* i18n keys in AR/EN/ZH/FR/ES; RTL-aware rail direction (verified +x in AR, -x in EN); mobile/reduced-motion fallback (.ss-fallback stacked blocks); phase progress dots
+- [x] T41: Verified locally (Phase 1 callouts, Phase 2 card stack, Phase 3 rail, dots) in AR+EN; deployed to both Vercel projects; horizonstay-sa.com serving new bundle (ss-root CSS + story code confirmed live); pushed to GitHub master + vercel-live-site
+
+## Full site visual redesign (user request Jul 27 — "reshape and design the whole site bg and banners, don't forget anything")
+- [ ] T42: Define new visual system — layered luxury backgrounds (gold-dust radial glows, fine grain texture, section gradients), consistent banner language
+- [ ] T43: Global background system applied site-wide (body, sections, alternating rhythm, dividers) in dark + light themes
+- [ ] T44: Redesigned banners — hero banner upgrade + new page banners for About, Contact, and property detail header treatment
+- [ ] T45: Surface refresh — navbar (glass/blur), property cards, filter pills, buttons, footer, stats band, calendar, forms, admin panel cards
+- [ ] T46: Verify across AR RTL + EN, dark/light, desktop + mobile 375px; no regressions in scrollytelling section
+- [ ] T47: Deploy to both Vercel projects, verify live on horizonstay-sa.com, push GitHub
