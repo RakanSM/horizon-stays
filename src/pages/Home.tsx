@@ -5,6 +5,7 @@ import { useTheme } from "../lib/ThemeContext";
 import { useLang, propName } from "../lib/i18n";
 import { Reveal, Counter, useParallax } from "../lib/motion";
 import { EditorContentContext } from "./ThemeEditor";
+import ScrollStory from "../components/ScrollStory";
 
 const WHATSAPP = "https://wa.me/966560903335";
 
@@ -98,6 +99,8 @@ export default function Home() {
           </Reveal>
         </section>
       )}
+
+      <ScrollStory />
 
       <section className="section px-layer" id="properties">
         <div className="container">

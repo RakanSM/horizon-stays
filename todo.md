@@ -63,31 +63,7 @@
 - [x] T20: Connections verified — ical-relay ok, live sync 45/45 feeds 0 failed, blocked_dates fresh (airbnb+gathern), VM cron active
 - [x] T21: Deployed (dpl_BRWj3QJFqt2RymGz3dQwz8ixZSbC READY) — all 6 routes 200, CDN images live, GitHub master+main pushed
 
-## Follow-up: true original photos (user request Jul 25)
-- [x] T22: Downloaded 627 ORIGINAL full-res photos from Airbnb host photo manager (24 slugs, q88 max1920px, 0 failures)
-- [ ] T22b: Upload originals to Supabase Storage CDN, update photo maps, deploy + verify
-
-## A-Z consolidation batch (Jul 25 — Skywork session = same project; preserve original backend/landing design)
-- [x] T24: Verified — horizon-stays-olive.vercel.app and horizonstay-sa.vercel.app serve the IDENTICAL bundle (index-CwJA_KeW.js); the original landing design IS the current design, preserved throughout
-- [x] T25: No split-brain — both deployments point to Supabase Hstays (bwffhalzuvvmuzjfmdyp); the old Ireland project (jnodurinvfljjcexrmlp) was superseded
-- [ ] T26: Add Chinese/French/Spanish languages (Skywork request) on top of AR/EN
-- [ ] T27: SEO + meta tags audit (Skywork request)
-- [ ] T28: MyFatoorah payment gateway — scope with user (needs merchant API key)
-- [ ] T29: Domain horizonstay-sa.com — set up in Vercel for one-click purchase
-- [ ] T30: Final consolidation QA + deploy + report
-
-## Status update (Jul 25 later)
-- [x] T22b: All 627 originals uploaded to CDN (RLS UPDATE/DELETE policies fix), maps updated, deployed + verified
-- [x] T26: 5-language support (AR/EN/ZH/FR/ES) live with dropdown
-- [x] T27: SEO complete — OG/Twitter/JSON-LD, robots.txt, sitemap.xml (28 URLs), favicon, localized per-route titles
-- [x] T30 (old): Consolidation QA + deploy + report delivered
-
-## New batch (user request Jul 25 evening)
-- [ ] T31: Bind horizonstay-sa.com in Vercel (user has it), verify DNS/SSL, update sitemap/robots/canonical/OG URLs, redeploy
-- [ ] T32: MyFatoorah — user says already live; verify live key wired in Supabase private_config + payment flow end-to-end
-- [ ] T33: Gathern.co as full channel like Airbnb: admin-visible API/iCal textfields per property, Gathern link button on property pages
-- [ ] T34: Per-property channel endpoints (user suggests 2 GET + 1 POST): implement GET availability + GET export + POST update/sync per property; verify actual Gathern API shape
-- [ ] T35: TTLock — clear setup steps for user; integration scaffolding already exists (T5), verify ready state + document
-- [ ] T36: Role-specific guidebooks: Admin, Cleaner, Guest — separate per role
-- [ ] T37: General site improvements pass
-- [ ] T38: Send new admin link https://horizonstay-sa.com/admin after domain live
+## Scrollytelling landing section (user request Jul 27 — brought Gemini reference code + hybrid layout brief; I choose the approach)
+- [ ] T39: Build 3-phase hybrid scrollytelling section on landing page (Phase 1 fixed canvas hook, Phase 2 stacking value cards, Phase 3 pinned horizontal showcase), adapted to Horizon gold/dark luxury design with real property photos/content — NOT the generic Gemini demo copy
+- [ ] T40: i18n (AR/EN/ZH/FR/ES) + RTL-aware transforms + mobile (<768px) fallback to plain stacked blocks + prefers-reduced-motion respect + scroll progress dots
+- [ ] T41: Local visual verification (desktop + mobile), deploy to horizon-stays project (owns horizonstay-sa.com), verify live, push GitHub

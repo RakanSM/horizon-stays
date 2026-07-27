@@ -297,6 +297,59 @@ const STR = {
   footer_links: { ar: "روابط سريعة", en: "Quick Links", zh: "快速链接", fr: "Liens rapides", es: "Enlaces rápidos" },
   footer_contact: { ar: "التواصل", en: "Contact", zh: "联系", fr: "Contact", es: "Contacto" },
   footer_rights: { ar: "جميع الحقوق محفوظة", en: "All rights reserved", zh: "版权所有", fr: "Tous droits réservés", es: "Todos los derechos reservados" },
+
+  // Scrollytelling story section
+  story_eyebrow: { ar: "تجربة أفق", en: "The Horizon Experience", zh: "Horizon 体验", fr: "L'expérience Horizon", es: "La experiencia Horizon" },
+  story_cap1_t: { ar: "وصولك يبدأ من القمة", en: "Arrive at the top", zh: "从巅峰开始", fr: "Arrivez au sommet", es: "Llega a la cima" },
+  story_cap1_d: {
+    ar: "بنتهاوسات وأجنحة بإطلالات بانورامية على أفق الرياض",
+    en: "Penthouses and suites with panoramic views over the Riyadh skyline",
+    zh: "顶层公寓和套房，饱览利雅得天际线全景",
+    fr: "Penthouses et suites avec vues panoramiques sur Riyad",
+    es: "Áticos y suites con vistas panorámicas de Riad",
+  },
+  story_cap2_t: { ar: "مصمّمة للإبهار", en: "Designed to impress", zh: "精心设计 令人惊艳", fr: "Conçu pour impressionner", es: "Diseñado para impresionar" },
+  story_cap2_d: {
+    ar: "تشطيبات فاخرة وتجهيز فندقي كامل في كل وحدة",
+    en: "Luxury finishes and full hotel-grade equipment in every unit",
+    zh: "每套房源均配备豪华装修和酒店级设施",
+    fr: "Finitions de luxe et équipement hôtelier complet dans chaque logement",
+    es: "Acabados de lujo y equipamiento hotelero completo en cada unidad",
+  },
+  story_cap3_t: { ar: "في قلب كل شيء", en: "In the heart of it all", zh: "尽享城市核心", fr: "Au cœur de tout", es: "En el corazón de todo" },
+  story_cap3_d: {
+    ar: "KAFD، الياسمين، الملقا، البوليفارد — أرقى أحياء الرياض",
+    en: "KAFD, Al Yasmin, Al Malqa, the Boulevard — Riyadh's finest districts",
+    zh: "KAFD、Al Yasmin、Al Malqa、林荫大道——利雅得最优质的地段",
+    fr: "KAFD, Al Yasmin, Al Malqa, le Boulevard — les meilleurs quartiers de Riyad",
+    es: "KAFD, Al Yasmin, Al Malqa, el Boulevard: los mejores distritos de Riad",
+  },
+  story_card1_t: { ar: "احجز مباشرة", en: "Book Direct", zh: "直接预订", fr: "Réservez en direct", es: "Reserva directa" },
+  story_card1_d: {
+    ar: "بدون عمولات منصات — أفضل سعر مضمون وتواصل فوري عبر واتساب مع تقويم متزامن لحظياً مع Airbnb وGathern",
+    en: "No platform fees — best rate guaranteed, instant WhatsApp contact, and calendars synced live with Airbnb and Gathern",
+    zh: "无平台佣金——保证最优价格，WhatsApp 即时沟通，日历与 Airbnb 和 Gathern 实时同步",
+    fr: "Sans commission — meilleur tarif garanti, contact WhatsApp instantané, calendriers synchronisés avec Airbnb et Gathern",
+    es: "Sin comisiones: mejor precio garantizado, contacto instantáneo por WhatsApp y calendarios sincronizados con Airbnb y Gathern",
+  },
+  story_card2_t: { ar: "معايير فندقية", en: "Hotel Standards", zh: "酒店级标准", fr: "Standards hôteliers", es: "Estándares de hotel" },
+  story_card2_d: {
+    ar: "نظافة احترافية قبل كل إقامة، بياضات فاخرة، ومستلزمات كاملة — جودة فندق خمس نجوم بخصوصية منزلك",
+    en: "Professional cleaning before every stay, premium linens, and full amenities — five-star quality with the privacy of your own home",
+    zh: "每次入住前专业清洁、高级床品、设施齐全——五星级品质，独享居家私密",
+    fr: "Nettoyage professionnel avant chaque séjour, linge haut de gamme et équipements complets — la qualité cinq étoiles avec l'intimité d'un chez-soi",
+    es: "Limpieza profesional antes de cada estancia, ropa de cama premium y todas las comodidades: calidad de cinco estrellas con la privacidad de tu hogar",
+  },
+  story_card3_t: { ar: "إقامة ذكية", en: "Smart Stay", zh: "智能入住", fr: "Séjour intelligent", es: "Estancia inteligente" },
+  story_card3_d: {
+    ar: "دخول ذاتي بأقفال ذكية، رمز خاص لكل ضيف طوال إقامته، ودعم على مدار الساعة — وصول سلس بدون انتظار",
+    en: "Self check-in with smart locks, a personal code for each guest's stay, and 24/7 support — seamless arrival, no waiting",
+    zh: "智能门锁自助入住，每位客人专属密码，24/7 全天候支持——无缝抵达，无需等待",
+    fr: "Arrivée autonome avec serrures connectées, code personnel pour chaque séjour et assistance 24h/24 — arrivée fluide, sans attente",
+    es: "Auto check-in con cerraduras inteligentes, código personal para cada estancia y soporte 24/7: llegada sin esperas",
+  },
+  story_showcase_t: { ar: "استكشف المجموعة", en: "Explore the Collection", zh: "探索精选房源", fr: "Explorez la collection", es: "Explora la colección" },
+  story_phase: { ar: "مرحلة", en: "Phase", zh: "阶段", fr: "Phase", es: "Fase" },
 } satisfies Record<string, Entry>;
 
 export type StrKey = keyof typeof STR;
