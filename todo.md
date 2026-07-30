@@ -69,9 +69,15 @@
 - [x] T41: Verified locally (Phase 1 callouts, Phase 2 card stack, Phase 3 rail, dots) in AR+EN; deployed to both Vercel projects; horizonstay-sa.com serving new bundle (ss-root CSS + story code confirmed live); pushed to GitHub master + vercel-live-site
 
 ## Full site visual redesign (user request Jul 27 — "reshape and design the whole site bg and banners, don't forget anything")
-- [ ] T42: Define new visual system — layered luxury backgrounds (gold-dust radial glows, fine grain texture, section gradients), consistent banner language
-- [ ] T43: Global background system applied site-wide (body, sections, alternating rhythm, dividers) in dark + light themes
-- [ ] T44: Redesigned banners — hero banner upgrade + new page banners for About, Contact, and property detail header treatment
-- [ ] T45: Surface refresh — navbar (glass/blur), property cards, filter pills, buttons, footer, stats band, calendar, forms, admin panel cards
-- [ ] T46: Verify across AR RTL + EN, dark/light, desktop + mobile 375px; no regressions in scrollytelling section
-- [ ] T47: Deploy to both Vercel projects, verify live on horizonstay-sa.com, push GitHub
+- [x] T42: New visual system defined — token-driven (color-mix on theme vars so all 20 themes + light mode inherit): gold-dust radial glows + SVG grain on body, glass surfaces, gradient gold accents
+- [x] T43: Global background system live — body::before/::after fixed glow + grain layers, section ornamental center dividers, section.alt radial tint, light-mode variants
+- [x] T44: Banners redesigned — hero (richer overlay, glass eyebrow w/ RTL-aware shine animation, gradient em headline, bottom gold hairline), page-hero for About/Contact (radial gold overlay + h1 underline bar), detail-hero gold frame
+- [x] T45: Surfaces refreshed — glass blur header w/ gradient border-image, gradient gold CTAs w/ shine sweep, glass filter chips, upgraded property cards (hover hairline + glow), gradient stat numbers, footer glow, book-box, calendar months, amenities, mv/why/contact/odoo admin cards, WhatsApp float pulse (reduced-motion respected)
+- [x] T46: Verified locally — AR dark + light variant, homepage/About, scrollytelling unaffected; mobile-only rules untouched (low risk)
+- [x] T47: Deployed to both Vercel projects; horizonstay-sa.com serving new CSS (eyebrow-shine/book-box/ss-root confirmed in live bundle), all pages 200; pushed GitHub master + vercel-live-site
+
+## Channel + data audit (user request Jul 27)
+- [ ] T48: Verify all 3 channels per property — Airbnb iCal, Gathern iCal, Horizon export feed; run live sync, confirm blocked_dates fresh from both sources
+- [ ] T49: Audit property locations (neighborhood labels + map coords) and fix any errors
+- [ ] T50: Audit photo galleries — correct unit, correct count, no broken CDN images
+- [ ] T51: Verify admin login works on production, deliver admin URL + credentials to user

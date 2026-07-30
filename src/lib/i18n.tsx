@@ -397,6 +397,21 @@ export function useLang() {
 }
 
 /** Localized property name (AR uses Arabic name; other languages fall back to English) */
+const NEIGHBORHOODS: Record<string, Entry> = {
+  KAFD: { ar: "المركز المالي (KAFD)", en: "KAFD", zh: "KAFD 金融区", fr: "KAFD", es: "KAFD" },
+  "Al Olaya": { ar: "العليا", en: "Al Olaya", zh: "奥莱亚区", fr: "Al Olaya", es: "Al Olaya" },
+  "Al Malqa": { ar: "الملقا", en: "Al Malqa", zh: "马尔卡区", fr: "Al Malqa", es: "Al Malqa" },
+  "Al Narjes": { ar: "النرجس", en: "Al Narjes", zh: "纳尔吉斯区", fr: "Al Narjes", es: "Al Narjes" },
+  "Al Yasmin": { ar: "الياسمين", en: "Al Yasmin", zh: "雅斯敏区", fr: "Al Yasmin", es: "Al Yasmin" },
+  Boulevard: { ar: "البوليفارد", en: "Boulevard", zh: "大道区", fr: "Boulevard", es: "Boulevard" },
+};
+
+export function neighborhoodLabel(value: string | null | undefined, lang: Lang): string {
+  if (!value) return "";
+  const entry = NEIGHBORHOODS[value];
+  return entry ? entry[lang] : value;
+}
+
 export function propName(p: { name_ar: string; name_en: string }, lang: Lang): string {
   return lang === "ar" ? p.name_ar || p.name_en : p.name_en || p.name_ar;
 }

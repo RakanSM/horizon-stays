@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 import { fetchProperties, propertyPhotos, type Property } from "../lib/supabase";
 import { useTheme } from "../lib/ThemeContext";
-import { useLang, propName } from "../lib/i18n";
+import { useLang, propName, neighborhoodLabel } from "../lib/i18n";
 import { Reveal, Counter, useParallax } from "../lib/motion";
 import { EditorContentContext } from "./ThemeEditor";
 import ScrollStory from "../components/ScrollStory";
@@ -155,7 +155,7 @@ export default function Home() {
                       <div className="card-body">
                         <h3>{name}</h3>
                         <div className="card-loc">
-                          {t("riyadh")} — {p.neighborhood || t("prime_district")}
+                          {t("riyadh")} — {neighborhoodLabel(p.neighborhood, lang) || t("prime_district")}
                         </div>
                         <div className="card-meta">
                           <span>

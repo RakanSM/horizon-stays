@@ -7,7 +7,7 @@ import {
   type Property,
   type BlockedDate,
 } from "../lib/supabase";
-import { useLang, propName, localizeAmenity, MONTHS, WEEKDAYS } from "../lib/i18n";
+import { useLang, propName, localizeAmenity, neighborhoodLabel, MONTHS, WEEKDAYS } from "../lib/i18n";
 
 function monthMatrix(year: number, month: number) {
   const first = new Date(Date.UTC(year, month, 1));
@@ -254,7 +254,7 @@ export default function PropertyDetail() {
           <div className="detail-title">
             <h1>{name}</h1>
             <div className="detail-sub">
-              {t("riyadh")} — {property.neighborhood || t("prime_district")} ·{" "}
+              {t("riyadh")} — {neighborhoodLabel(property.neighborhood, lang) || t("prime_district")} ·{" "}
               {property.type || t("luxury_unit_type")}
             </div>
           </div>
