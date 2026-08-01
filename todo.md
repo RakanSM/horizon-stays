@@ -77,7 +77,24 @@
 - [x] T47: Deployed to both Vercel projects; horizonstay-sa.com serving new CSS (eyebrow-shine/book-box/ss-root confirmed in live bundle), all pages 200; pushed GitHub master + vercel-live-site
 
 ## Channel + data audit (user request Jul 27)
-- [ ] T48: Verify all 3 channels per property — Airbnb iCal, Gathern iCal, Horizon export feed; run live sync, confirm blocked_dates fresh from both sources
-- [ ] T49: Audit property locations (neighborhood labels + map coords) and fix any errors
-- [ ] T50: Audit photo galleries — correct unit, correct count, no broken CDN images
-- [ ] T51: Verify admin login works on production, deliver admin URL + credentials to user
+- [x] T48: All 3 channels verified — live sync 45/45 feeds ok 0 failed (25 Airbnb + 20 Gathern; 5 units not listed on Gathern so no feed by design); Horizon export ICS verified valid on 3 sample slugs; blocked_dates fresh (cron 12:30 UTC + manual run)
+- [x] T49: Locations fixed — neighborhoods normalized to canonical EN in DB (KAFD/Al Olaya/Al Malqa/Al Narjes/Al Yasmin/Boulevard), localized display in all 5 langs via neighborhoodLabel(); 3 coordinate mismatches corrected (luxury-1bd-70tv→KAFD, tranquil-stay-luxury-bath+sky-lounge-suite→Al Malqa)
+- [x] T50: Photo audit — 628/628 CDN gallery images return 200, 0 broken (counts 15-42/unit; luxury-apt-blvd-70-tv=1 known, source delisted)
+- [x] T51: admin_login RPC verified returns session token with stored password; deployed both projects, live pages 200, pushed GitHub; credentials delivered to user
+
+## Admin portal rebuild + financial + bookings + artsy properties (user request Jul 30)
+- [ ] T52: Audit current Admin.tsx; design multi-page admin structure (sidebar/tab routes per feature, admin-gated): Properties, Financial, Bookings/Users, Invoices, Channels, TTLock, Cleaning, Themes, Settings
+- [ ] T53: DB: bookings table (property, guest name/phone/email, source airbnb/gathern/direct, check-in/out, nights, amount, status), invoices table (number, booking_id, amounts, VAT, issued_at), admin RPCs (list/create/update/delete bookings, generate invoice, financial summaries)
+- [ ] T54: Properties admin page — full CRUD on details (names AR/EN, price, desc, beds/baths/guests/area/floor, neighborhood, type, active toggle), per-property iCal fields (moved from Channels), photo count/reorder note, Airbnb/Gathern URLs
+- [ ] T55: Financial page — total income, monthly chart, by-unit and by-source breakdowns, occupancy %, ADR, date-range filter
+- [ ] T56: Bookings/Users page — upcoming + past tabs, guest info, add/edit manual bookings, auto-shown iCal blocks, invoice button per booking
+- [ ] T57: Invoice generation — printable/downloadable invoice per booking (bilingual AR/EN, VAT-ready, sequential numbering)
+- [ ] T58: Artsy properties page — slide-in from all directions on scroll, reactive banners (mouse/scroll-reactive), staggered reveals; keep mobile + reduced-motion fallbacks
+- [ ] T59: Verify locally (admin flows, financial calcs, invoice print, artsy animations AR/EN), deploy both Vercel projects, verify live
+- [ ] T60: Write Cursor prompt document for Apple iOS app (SwiftUI, same Supabase backend, feature parity map, API/RPC reference, design tokens)
+
+## Landlord role (user request Jul 30, follow-up)
+- [x] T61: DB done (migration v2 applied; reused existing bookings uuid table, junk test rows cleaned; landlords/property_landlords/invoices created; all RPCs smoke-tested end-to-end incl. commission math 18% override) — landlords table (name, phone, email, login code/password, default commission %), property_landlords mapping (property_id, landlord_id, commission_pct override), bookings gain landlord-facing amounts; landlord_login + landlord_data RPCs (own properties only)
+- [ ] T62: Admin landlords page — create/edit landlords, assign properties, set Horizon % per landlord/property, view their statement, share login credentials
+- [ ] T63: Landlord portal (/landlord) — own units only: bookings, gross income, Horizon commission (percentage field shown), VAT, net payout; monthly statement view; print/export
+- [ ] T64: Financial page shows Horizon commission earnings separately (admin view)

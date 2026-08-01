@@ -13,7 +13,7 @@ const DECOR_ICONS: Record<string, string> = {
   "parallax-art": "🎨",
 };
 
-function ThemeSwatch({
+export function ThemeSwatch({
   t, active, scheduled, onActivate, busy,
 }: {
   t: ThemePreset; active: boolean; scheduled: boolean; onActivate: () => void; busy: boolean;
@@ -67,7 +67,7 @@ function ThemeSwatch({
 }
 
 /* ---------- Theme scheduling ---------- */
-function ScheduleSection() {
+export function ScheduleSection() {
   const { schedules, saveSchedules, activeScheduleId } = useTheme();
   const allThemes = getAllThemes();
   const [items, setItems] = useState<ThemeSchedule[]>(schedules);
@@ -188,7 +188,7 @@ function ScheduleSection() {
 }
 
 /* ---------- Odoo ---------- */
-function OdooSection() {
+export function OdooSection() {
   const { odooUrl, setOdooUrl } = useTheme();
   const [editing, setEditing] = useState(false);
   const [url, setUrl] = useState(odooUrl);
@@ -261,7 +261,7 @@ function OdooSection() {
 type AdminCleaner = { id: number; name: string; phone: string | null; pin: string; active: boolean };
 type AdminCleanLog = { id: number; property_slug: string; notes: string | null; cleaned_at: string; cleaner_name: string; cleaner_phone: string | null };
 
-function CleaningSection() {
+export function CleaningSection() {
   const [logs, setLogs] = useState<AdminCleanLog[]>([]);
   const [cleaners, setCleaners] = useState<AdminCleaner[]>([]);
   const [showManage, setShowManage] = useState(false);
@@ -383,137 +383,3 @@ function CleaningSection() {
   );
 }
 
-export default function Admin() {
-  const { activeThemeId, baseThemeId, overrides, saveSettings, refresh, odooUrl, schedules, activeScheduleId } = useTheme();
-  const [authed, setAuthed] = useState<boolean | null>(null);
-  const [password, setPassword] = useState("");
-  const [err, setErr] = useState("");
-  const [busyId, setBusyId] = useState<string | null>(null);
-  const [toast, setToast] = useState("");
-  const navigate = useNavigate();
-  const allThemes = getAllThemes();
-
-  useEffect(() => {
-    const tok = getAdminToken();
-    if (!tok) {
-      setAuthed(false);
-      return;
-    }
-    adminCheck(tok).then((ok) => setAuthed(ok));
-  }, []);
-
-  const doLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErr("");
-    try {
-      await adminLogin(password);
-      setAuthed(true);
-    } catch (ex: any) {
-      setErr(ex.message || "فشل تسجيل الدخول");
-    }
-  };
-
-  const activate = async (id: string) => {
-    const tok = getAdminToken();
-    if (!tok) return setAuthed(false);
-    setBusyId(id);
-    try {
-      await saveSettings(tok, id, overrides);
-      setToast(`تم تفعيل طابع «${getTheme(id).nameAr}»`);
-      setTimeout(() => setToast(""), 2500);
-    } catch {
-      setErr("انتهت الجلسة — سجّل الدخول مجدداً");
-      clearAdminToken();
-      setAuthed(false);
-    } finally {
-      setBusyId(null);
-    }
-  };
-
-  if (authed === null) return <div className="admin-wrap"><div className="admin-loading">جارٍ التحقق...</div></div>;
-
-  if (!authed) {
-    return (
-      <div className="admin-wrap admin-login-wrap">
-        <form className="admin-login" onSubmit={doLogin}>
-          <h1>لوحة التحكم</h1>
-          <p>أدخل كلمة مرور المدير للمتابعة</p>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="كلمة المرور"
-            autoFocus
-          />
-          {err && <div className="admin-err">{err}</div>}
-          <button type="submit" className="btn-activate wide">دخول</button>
-        </form>
-      </div>
-    );
-  }
-
-  const scheduledThemeIds = new Set(schedules.filter((s) => s.enabled).map((s) => s.themeId));
-
-  return (
-    <div className="admin-wrap">
-      <div className="admin-head">
-        <div>
-          <h1>الطُّبوع (الثيمات)</h1>
-          <p>
-            {allThemes.length} طابعاً جاهزاً — بينها طُبوع موسمية لرمضان والعيدين وطابع فني بتأثير Parallax.
-            {activeScheduleId ? " (الطابع الحالي مفعّل عبر جدولة)" : ""}
-          </p>
-        </div>
-        <div className="admin-head-actions">
-          {odooUrl && (
-            <a className="btn-odoo" href={odooUrl} target="_blank" rel="noreferrer">
-              ⇆ التبديل إلى Odoo
-            </a>
-          )}
-          <button className="btn-editor" onClick={() => navigate("/admin/editor")}>
-            ✨ محرر الطابع
-          </button>
-          <button className="btn-editor alt" onClick={() => navigate("/admin/editor?new=1")}>
-            + إنشاء طابع جديد
-          </button>
-          <Link to="/" className="btn-ghost">عرض الموقع</Link>
-          <button
-            className="btn-ghost"
-            onClick={() => {
-              clearAdminToken();
-              setAuthed(false);
-            }}
-          >
-            خروج
-          </button>
-        </div>
-      </div>
-      {toast && <div className="admin-toast">{toast}</div>}
-      {activeScheduleId && (
-        <div className="schedule-banner">
-          📅 يعمل الموقع الآن بطابع مجدول «{getTheme(activeThemeId).nameAr}» — الطابع الأساسي: «{getTheme(baseThemeId).nameAr}»
-        </div>
-      )}
-      <div className="theme-grid">
-        {allThemes.map((t) => (
-          <ThemeSwatch
-            key={t.id}
-            t={t}
-            active={t.id === activeThemeId}
-            scheduled={scheduledThemeIds.has(t.id)}
-            onActivate={() => activate(t.id)}
-            busy={busyId === t.id}
-          />
-        ))}
-      </div>
-      <ScheduleSection />
-      <ChannelsSection />
-      <CleaningSection />
-      <TTLockSection />
-      <OdooSection />
-      <div className="admin-foot">
-        <button className="btn-ghost" onClick={() => refresh()}>تحديث الحالة</button>
-      </div>
-    </div>
-  );
-}

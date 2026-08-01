@@ -4,7 +4,15 @@ import Home from "./pages/Home";
 import PropertyDetail from "./pages/PropertyDetail";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Admin from "./pages/Admin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProperties from "./pages/admin/AdminProperties";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminFinance from "./pages/admin/AdminFinance";
+import AdminLandlords from "./pages/admin/AdminLandlords";
+import AdminThemes from "./pages/admin/AdminThemes";
+import AdminIntegrations from "./pages/admin/AdminIntegrations";
+import AdminCleaning from "./pages/admin/AdminCleaning";
+import Landlord from "./pages/Landlord";
 import ThemeEditor from "./pages/ThemeEditor";
 import Cleaner from "./pages/Cleaner";
 import { ThemeProvider, useTheme } from "./lib/ThemeContext";
@@ -98,6 +106,27 @@ function AppShell() {
         <PageTitle />
         <Routes>
           <Route path="/admin/editor" element={<ThemeEditor />} />
+        </Routes>
+      </>
+    );
+  }
+
+  if (isAdmin || location.pathname.startsWith("/landlord")) {
+    return (
+      <>
+        <ScrollToTop />
+        <PageTitle />
+        <Routes>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/properties" element={<AdminProperties />} />
+          <Route path="/admin/bookings" element={<AdminBookings />} />
+          <Route path="/admin/finance" element={<AdminFinance />} />
+          <Route path="/admin/landlords" element={<AdminLandlords />} />
+          <Route path="/admin/themes" element={<AdminThemes />} />
+          <Route path="/admin/integrations" element={<AdminIntegrations />} />
+          <Route path="/admin/cleaning" element={<AdminCleaning />} />
+          <Route path="/landlord" element={<Landlord />} />
+          <Route path="*" element={<AdminDashboard />} />
         </Routes>
       </>
     );
@@ -200,7 +229,6 @@ function AppShell() {
           <Route path="/property/:slug" element={<PropertyDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/admin" element={<Admin />} />
           <Route path="/cleaner" element={<Cleaner />} />
           <Route path="*" element={<Home />} />
         </Routes>

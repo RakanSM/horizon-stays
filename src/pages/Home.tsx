@@ -27,7 +27,27 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("all");
   const heroBgRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
   useParallax(heroBgRef, 0.3);
+
+  // Reactive banner: pointer-tracking spotlight + subtle bg shift
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const onMove = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        el.style.setProperty("--mx", `${x}%`);
+        el.style.setProperty("--my", `${y}%`);
+      });
+    };
+    el.addEventListener("pointermove", onMove);
+    return () => { el.removeEventListener("pointermove", onMove); cancelAnimationFrame(raf); };
+  }, []);
 
   useEffect(() => {
     fetchProperties()
@@ -53,9 +73,10 @@ export default function Home() {
 
   return (
     <>
-      <section className="hero">
+      <section className="hero reactive-banner" ref={heroRef}>
         <div className="hero-bg" ref={heroBgRef} style={{ backgroundImage: `url(${heroImg})` }} />
         <div className="hero-glow" aria-hidden />
+        <div className="hero-spot" aria-hidden />
         <div className="container">
           <div className="hero-content">
             <span className="hero-eyebrow hero-anim-1">
@@ -146,8 +167,8 @@ export default function Home() {
                 const photos = propertyPhotos(p);
                 const name = propName(p, lang);
                 return (
-                  <Reveal key={p.id} delay={(i % 3) * 70} className="card-wrap">
-                    <Link to={`/property/${p.slug}`} className="card">
+                  <Reveal key={p.id} delay={(i % 3) * 70} className={`card-wrap art-slide ${["from-start", "from-bottom", "from-end"][i % 3]}`}>
+                    <Link to={`/property/${p.slug}`} className="card art-card">
                       <div className="card-img">
                         {photos[0] && <img src={photos[0]} alt={name} loading="lazy" />}
                         <span className="card-badge">{p.type || t("luxury_unit")}</span>
