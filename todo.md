@@ -116,4 +116,4 @@
 - [ ] T81: Run final production QA, deploy only if a repair is required, and deliver final live access links
 
 ## Admin login correction (user reported Aug 15)
-- [ ] T82: Diagnose why the supplied admin password fails, repair the live credential/authentication flow, verify production login, and send validated access details
+- [x] T82: Root cause fixed — restored DB was missing pgcrypto, so admin_login failed on gen_random_bytes; session helper also read an obsolete private_config token. Replaced token generation with database-native MD5 rotation, unified _is_admin with admin_auth, added post-login reload, deployed main + vercel-live-site, and verified production dashboard loads finance/bookings successfully.
