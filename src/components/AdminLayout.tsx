@@ -33,7 +33,9 @@ export default function AdminLayout({ title, subtitle, children }: { title: stri
     setErr("");
     try {
       await adminLogin(password);
-      setAuthed(true);
+      // The admin data pages mount outside this layout. Reload once the token
+      // is written so their first data request always includes the new session.
+      window.location.reload();
     } catch (ex: any) {
       setErr(ex.message || "فشل تسجيل الدخول");
     }

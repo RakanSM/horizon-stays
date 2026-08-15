@@ -98,3 +98,22 @@
 - [ ] T62: Admin landlords page — create/edit landlords, assign properties, set Horizon % per landlord/property, view their statement, share login credentials
 - [ ] T63: Landlord portal (/landlord) — own units only: bookings, gross income, Horizon commission (percentage field shown), VAT, net payout; monthly statement view; print/export
 - [ ] T64: Financial page shows Horizon commission earnings separately (admin view)
+
+## Theme expansion + celebration game (user request Aug 1)
+- [ ] T70: Design 40+ themes (Islamic holy days, Saudi national, family, Valentine, medical/nursing Nightingale, international non-religious, seasonal, exclusive) with full color palettes and dates
+- [ ] T71: Add Riyadh trivia + hidden discount code mechanics for each celebration theme (correct answer = 15% code)
+- [ ] T72: Update themes.ts with all new theme definitions including game data (question, options, answer, discount code)
+- [ ] T73: Enhance ThemeEditor: favicon upload/change, banner image management per theme, live preview
+- [ ] T74: Build CelebrationGame component (trivia popup or hidden-code hunt) that appears during active celebration themes
+- [ ] T75: Integrate game into site (hero area or floating widget), add CSS for all new themes
+- [ ] T76: Build, verify, deploy to production
+
+## Final integrations readiness audit (user request Aug 15)
+- [x] T77: Supabase root cause verified and fixed — Hstays project was INACTIVE; restored through Supabase management API and confirmed ACTIVE_HEALTHY
+- [x] T78: Database and public site verified after restore — 25 active properties, 69 blocked-date rows, REST API HTTP 200, 25/25 live property cards, no client connection errors
+- [x] T79: Airbnb/Gathern calendar setup verified — 25 Airbnb feeds + 20 Gathern feeds present; authorized live sync refreshed both sources; availability endpoint returns 200 with current blocked dates
+- [ ] T80: Verify Odoo connection status and any available sync workflow — stored Odoo URL is currently blank and no API credentials/sync endpoint are configured in the site
+- [ ] T81: Run final production QA, deploy only if a repair is required, and deliver final live access links
+
+## Admin login correction (user reported Aug 15)
+- [ ] T82: Diagnose why the supplied admin password fails, repair the live credential/authentication flow, verify production login, and send validated access details
