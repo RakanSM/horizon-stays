@@ -13,3 +13,9 @@
 
 - `pnpm test`: 2/2 gallery URL/order tests passed.
 - `pnpm build`: completed successfully.
+
+## Production verification
+
+- Production deployment on `horizonstay-sa.com` now serves the `/calendar` release. It loaded 25 active units and the current blocked-date data.
+- Production `/admin/properties` authenticated successfully and displayed 26 stored units with real Supabase Storage thumbnails, verified image counts, iCal connection labels, and the expanded workspace.
+- Production `/admin/integrations` displays the safe Odoo setup workspace and accurate channel totals: 25/26 Airbnb iCal links and 20/26 Gathern iCal links.
