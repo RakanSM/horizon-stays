@@ -74,11 +74,10 @@ export async function fetchBlockedDates(propertyId: number): Promise<BlockedDate
 
 /** High-quality photos served from Supabase Storage CDN (re-fetched from source at
  * full resolution, T17). Falls back to hero/gallery URLs stored in the DB. */
-const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public/property-images`;
+export const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public/property-images`;
 
-export function propertyPhotos(p: Property): string[] {
+export const HQ_GALLERY_COUNTS: Record<string, number> = {
   // Number of original full-resolution images uploaded to storage per slug (T22, Jul 2026)
-  const hqGalleries: Record<string, number> = {
     "3br-apt-outdoor": 28,
     "al-yasmeen-apt-self-checkin": 17,
     "artistic-design-suite": 20,
@@ -104,13 +103,18 @@ export function propertyPhotos(p: Property): string[] {
     "spacious-apt-luxury-bath-75tv": 22,
     "towers-jacuzzi-suite": 25,
     "tranquil-stay-luxury-bath": 36,
-  };
-  const n = hqGalleries[p.slug];
-  if (n) {
-    return Array.from({ length: n }, (_, i) => `${STORAGE_BASE}/${p.slug}-${i + 1}.webp`);
-  }
-  const photos: string[] = [];
-  if (p.hero_image) photos.push(p.hero_image);
-  if (Array.isArray(p.gallery_images)) photos.push(...p.gallery_images);
-  return photos;
+};
+
+export function propertyPhotoUrls(slug: string, heroImage?: string | null, galleryImages?: string[] | null): string[] {
+  const stored = Array.isArray(galleryImages) ? galleryImages.filter(Boolean) : [];
+  const fromStorage = HQ_GALLERY_COUNTS[slug]
+    ? Array.from({ length: HQ_GALLERY_COUNTS[slug] }, (_, i) => `${STORAGE_BASE}/${slug}-${i + 1}.webp`)
+    : [];
+  const gallery = stored.length ? stored : fromStorage;
+  const ordered = [heroImage, ...gallery].filter((url): url is string => Boolean(url));
+  return Array.from(new Set(ordered));
+}
+
+export function propertyPhotos(p: Property): string[] {
+  return propertyPhotoUrls(p.slug, p.hero_image, p.gallery_images);
 }

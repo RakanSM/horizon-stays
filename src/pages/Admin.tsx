@@ -4,6 +4,7 @@ import { getAllThemes, getTheme, type ThemePreset, type ThemeSchedule } from "..
 import { useTheme, getAdminToken, adminLogin, adminCheck, clearAdminToken } from "../lib/ThemeContext";
 import TTLockSection from "../components/TTLockSection";
 import ChannelsSection from "../components/ChannelsSection";
+import { adminRpc } from "../lib/adminApi";
 
 const DECOR_ICONS: Record<string, string> = {
   ramadan: "🏮",
@@ -188,70 +189,160 @@ export function ScheduleSection() {
 }
 
 /* ---------- Odoo ---------- */
+type OdooStatus = {
+  config: {
+    base_url: string;
+    database_name: string;
+    username: string;
+    has_api_key: boolean;
+    is_enabled: boolean;
+    sync_enabled: boolean;
+    configured: boolean;
+    last_connection_status: "not_configured" | "ready" | "connected" | "failed";
+    last_connection_checked_at: string | null;
+    last_sync_at: string | null;
+    last_sync_summary: { status?: string; total?: number; succeeded?: number; failed?: number } | null;
+    last_error: string | null;
+  };
+  runs: Array<{
+    id: number;
+    triggered_by: string;
+    status: string;
+    total_bookings: number;
+    succeeded: number;
+    failed: number;
+    error_message: string | null;
+    started_at: string;
+    finished_at: string | null;
+  }>;
+};
+
 export function OdooSection() {
-  const { odooUrl, setOdooUrl } = useTheme();
-  const [editing, setEditing] = useState(false);
-  const [url, setUrl] = useState(odooUrl);
+  const [status, setStatus] = useState<OdooStatus | null>(null);
+  const [form, setForm] = useState({ baseUrl: "", databaseName: "", username: "", apiKey: "", isEnabled: false, syncEnabled: false });
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
+  const [action, setAction] = useState<"connection" | "sync" | null>(null);
 
-  useEffect(() => setUrl(odooUrl), [odooUrl]);
+  const load = async () => {
+    try {
+      const data = await adminRpc<{ ok: boolean } & OdooStatus>("admin_odoo_status");
+      if (!data.ok) throw new Error("تعذر تحميل إعدادات أودو");
+      setStatus(data);
+      setForm((current) => ({
+        baseUrl: data.config.base_url || "",
+        databaseName: data.config.database_name || "",
+        username: data.config.username || "",
+        apiKey: current.apiKey,
+        isEnabled: data.config.is_enabled,
+        syncEnabled: data.config.sync_enabled,
+      }));
+    } catch (error: any) {
+      setMsg(error.message || "فشل تحميل حالة Odoo");
+    }
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const set = (key: keyof typeof form, value: string | boolean) => setForm((current) => ({ ...current, [key]: value }));
 
   const save = async () => {
-    const tok = getAdminToken();
-    if (!tok) return;
-    let clean = url.trim();
+    let clean = form.baseUrl.trim();
     if (clean && !/^https?:\/\//i.test(clean)) clean = "https://" + clean;
     setBusy(true);
     setMsg("");
     try {
-      await setOdooUrl(tok, clean);
-      setMsg(clean ? "تم حفظ رابط Odoo وربطه بالزر في الأعلى ✓" : "تم مسح الرابط");
-      setEditing(false);
-    } catch {
-      setMsg("فشل الحفظ — تحقق من الجلسة");
+      await adminRpc("admin_set_odoo_config", {
+        p_base_url: clean,
+        p_database_name: form.databaseName.trim(),
+        p_username: form.username.trim(),
+        p_api_key: form.apiKey.trim() || null,
+        p_is_enabled: form.isEnabled,
+        p_sync_enabled: form.syncEnabled,
+      });
+      setForm((current) => ({ ...current, baseUrl: clean, apiKey: "" }));
+      setMsg("تم حفظ إعدادات Odoo بأمان ✓");
+      await load();
+    } catch (error: any) {
+      setMsg(error.message || "فشل الحفظ — تحقق من الجلسة");
     } finally {
       setBusy(false);
     }
   };
+
+  const runAction = async (nextAction: "connection" | "sync") => {
+    const token = getAdminToken();
+    if (!token) return;
+    setAction(nextAction);
+    setMsg("");
+    try {
+      const response = await fetch(`/api/odoo/sync?action=${nextAction}`, { method: "POST", headers: { "x-admin-token": token } });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.message || data.detail || data.error || "فشلت العملية");
+      setMsg(nextAction === "connection" ? "تم التحقق من اتصال Odoo ✓" : `انتهت المزامنة: ${data.succeeded || 0} ناجح، ${data.failed || 0} فشل`);
+      await load();
+    } catch (error: any) {
+      setMsg(error.message || "فشلت العملية");
+      await load();
+    } finally {
+      setAction(null);
+    }
+  };
+
+  const config = status?.config;
+  const stateLabel = !config?.configured ? "غير مكتمل" : config.last_connection_status === "connected" ? "متصل ✓" : config.last_connection_status === "failed" ? "فشل الاتصال" : "بانتظار التحقق";
 
   return (
     <div className="odoo-card">
       <div className="odoo-card-head">
         <div>
           <h2>تكامل Odoo (ERP)</h2>
-          <p>اربط نظام Odoo لإدارة الفواتير والمحاسبة والإيجارات — يظهر زر التبديل في أعلى لوحة التحكم</p>
+          <p>اربط حجوزات Horizon بوحدات Odoo والإيرادات والفواتير. لا تظهر مفاتيح Odoo بعد حفظها.</p>
         </div>
-        <span className={`odoo-status ${odooUrl ? "on" : "off"}`}>{odooUrl ? "متصل ✓" : "غير مهيّأ"}</span>
+        <span className={`odoo-status ${config?.last_connection_status === "connected" ? "on" : "off"}`}>{stateLabel}</span>
       </div>
-      {odooUrl && !editing ? (
-        <div className="odoo-row">
-          <code className="odoo-url">{odooUrl}</code>
-          <div className="theme-actions">
-            <a className="btn-activate" href={odooUrl} target="_blank" rel="noreferrer">فتح Odoo ↗</a>
-            <button className="btn-ghost" onClick={() => setEditing(true)}>تعديل</button>
-          </div>
+
+      <div className="pe-grid odoo-settings-grid">
+        <div className="sf-row"><label>رابط Odoo</label><input dir="ltr" value={form.baseUrl} onChange={(e) => set("baseUrl", e.target.value)} placeholder="https://yourcompany.odoo.com" /></div>
+        <div className="sf-row"><label>اسم قاعدة بيانات Odoo</label><input dir="ltr" value={form.databaseName} onChange={(e) => set("databaseName", e.target.value)} placeholder="yourcompany-prod" /></div>
+        <div className="sf-row"><label>اسم مستخدم Odoo</label><input dir="ltr" type="email" value={form.username} onChange={(e) => set("username", e.target.value)} placeholder="admin@company.com" /></div>
+        <div className="sf-row"><label>مفتاح API {config?.has_api_key ? "(محفوظ — اتركه فارغاً للإبقاء عليه)" : ""}</label><input dir="ltr" type="password" value={form.apiKey} onChange={(e) => set("apiKey", e.target.value)} placeholder={config?.has_api_key ? "••••••••" : "API Key"} autoComplete="new-password" /></div>
+      </div>
+
+      <div className="odoo-toggles">
+        <label className="pe-toggle"><input type="checkbox" checked={form.isEnabled} onChange={(e) => set("isEnabled", e.target.checked)} /> تفعيل ربط Odoo</label>
+        <label className="pe-toggle"><input type="checkbox" checked={form.syncEnabled} onChange={(e) => set("syncEnabled", e.target.checked)} /> تفعيل مزامنة الحجوزات</label>
+      </div>
+
+      <div className="odoo-row">
+        <div className="odoo-status-copy">
+          <strong>آخر تحقق:</strong> {config?.last_connection_checked_at ? new Date(config.last_connection_checked_at).toLocaleString("ar-SA") : "لم يتم"}
+          {config?.last_sync_at && <><br /><strong>آخر مزامنة:</strong> {new Date(config.last_sync_at).toLocaleString("ar-SA")}</>}
+          {config?.last_error && <><br /><span className="admin-err">{config.last_error}</span></>}
+        </div>
+        <div className="theme-actions">
+          <button className="btn-ghost" onClick={() => runAction("connection")} disabled={action !== null}>{action === "connection" ? "جارٍ التحقق…" : "اختبار الاتصال"}</button>
+          <button className="btn-activate" onClick={() => runAction("sync")} disabled={action !== null || !config?.configured || !form.isEnabled || !form.syncEnabled}>{action === "sync" ? "جارٍ التزامن…" : "مزامنة الحجوزات الآن"}</button>
+          <button className="btn-ghost" onClick={save} disabled={busy}>{busy ? "جارٍ الحفظ…" : "حفظ الإعدادات"}</button>
+          {config?.base_url && <a className="btn-ghost" href={config.base_url} target="_blank" rel="noreferrer">فتح Odoo ↗</a>}
+        </div>
+      </div>
+
+      {status?.runs?.length ? (
+        <div className="odoo-run-list">
+          <h4 className="pe-sub">سجل مزامنة Odoo</h4>
+          {status.runs.slice(0, 5).map((run) => (
+            <div className="odoo-run" key={run.id}>
+              <span className={`odoo-status ${run.status === "completed" ? "on" : "off"}`}>{run.status}</span>
+              <span>{run.total_bookings} حجوزات · {run.succeeded} ناجح · {run.failed} فشل</span>
+              <small>{new Date(run.started_at).toLocaleString("ar-SA")}</small>
+            </div>
+          ))}
         </div>
       ) : (
-        <div className="odoo-row">
-          <input
-            className="odoo-input"
-            dir="ltr"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://yourcompany.odoo.com"
-          />
-          <div className="theme-actions">
-            <button className="btn-activate" onClick={save} disabled={busy}>{busy ? "..." : "حفظ"}</button>
-            {editing && <button className="btn-ghost" onClick={() => { setEditing(false); setUrl(odooUrl); }}>إلغاء</button>}
-          </div>
-        </div>
+        <p className="odoo-hint">بعد حفظ بيانات Odoo، اضغط «اختبار الاتصال». بعدها اربط كل وحدة بمنتج Rental داخل إعداداتها ثم فعّل المزامنة.</p>
       )}
-      {!odooUrl && (
-        <p className="odoo-hint">
-          ليس لديك حساب Odoo بعد؟ أنشئ نسخة مجانية من <a href="https://www.odoo.com/trial" target="_blank" rel="noreferrer">odoo.com</a> (تطبيق واحد مجاناً — اختر Rental أو Invoicing)، ثم الصق رابط النسخة هنا. ولإضافة زر العودة إلى Horizon داخل Odoo: من Odoo فعّل وضع المطوّر ثم Settings ‹ Technical ‹ Menu Items وأضف قائمة برابط الموقع، أو ببساطة ثبّت الموقع كإشارة مرجعية.
-        </p>
-      )}
+
       {msg && <div className="admin-toast inline">{msg}</div>}
     </div>
   );
@@ -382,4 +473,3 @@ export function CleaningSection() {
     </div>
   );
 }
-

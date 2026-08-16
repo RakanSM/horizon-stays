@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import PropertyDetail from "./pages/PropertyDetail";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import AvailabilityCalendar from "./pages/AvailabilityCalendar";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProperties from "./pages/admin/AdminProperties";
 import AdminBookings from "./pages/admin/AdminBookings";
@@ -51,6 +52,13 @@ const TITLES: Record<string, Record<string, string>> = {
     zh: "联系我们 | Horizon Stays",
     fr: "Contact | Horizon Stays",
     es: "Contacto | Horizon Stays",
+  },
+  "/calendar": {
+    ar: "تقويم التوفر | Horizon Stays",
+    en: "Availability Calendar | Horizon Stays",
+    zh: "可用日历 | Horizon Stays",
+    fr: "Calendrier de disponibilité | Horizon Stays",
+    es: "Calendario de disponibilidad | Horizon Stays",
   },
 };
 
@@ -209,6 +217,9 @@ function AppShell() {
             <NavLink to="/contact" className={({ isActive }) => (isActive ? "active" : "")}>
               {t("nav_contact")}
             </NavLink>
+            <NavLink to="/calendar" className={({ isActive }) => (isActive ? "active" : "")}>
+              {lang === "ar" ? "التقويم" : "Calendar"}
+            </NavLink>
             <a href={WHATSAPP} target="_blank" rel="noreferrer" className="cta">
               {lang === "ar" && content.ctaText ? content.ctaText : t("book_now")}
             </a>
@@ -229,6 +240,7 @@ function AppShell() {
           <Route path="/property/:slug" element={<PropertyDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/calendar" element={<AvailabilityCalendar />} />
           <Route path="/cleaner" element={<Cleaner />} />
           <Route path="*" element={<Home />} />
         </Routes>

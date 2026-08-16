@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getAdminToken } from "../lib/ThemeContext";
-import { supabase } from "../lib/supabase";
+import { adminRpc, type AdminProperty } from "../lib/adminApi";
 
 
 type ChannelRow = {
@@ -27,10 +27,12 @@ export default function ChannelsSection() {
   const [filter, setFilter] = useState("");
 
   const load = useCallback(async () => {
-    const tok = getAdminToken();
-    if (!tok) return;
-    const { data } = await supabase.rpc("admin_list_channels", { p_token: tok });
-    if (data?.ok) setRows(data.properties || []);
+    try {
+      const data = await adminRpc<{ ok: boolean; properties: AdminProperty[] }>("admin_list_properties");
+      if (data.ok) setRows(data.properties || []);
+    } catch {
+      setMsg("تعذر تحميل روابط القنوات — تحقق من الجلسة");
+    }
   }, []);
 
   useEffect(() => {
@@ -49,26 +51,21 @@ export default function ChannelsSection() {
   };
 
   const save = async (id: number) => {
-    const tok = getAdminToken();
-    if (!tok) return;
     setBusy(true);
     setMsg("");
     try {
-      const { data, error } = await supabase.rpc("admin_update_channels", {
-        p_token: tok,
-        p_property_id: id,
+      await adminRpc("admin_update_property", {
+        p_id: id,
         p_airbnb_url: draft.airbnb_url || "",
         p_gathern_url: draft.gathern_url || "",
         p_airbnb_ical: draft.airbnb_ical_url || "",
         p_gathern_ical: draft.gatherin_ical_url || "",
       });
-      if (error || !data?.ok) {
-        setMsg("فشل الحفظ — تحقق من الجلسة");
-        return;
-      }
       setMsg("تم حفظ روابط المنصات ✓");
       await load();
       setTimeout(() => setMsg(""), 3000);
+    } catch (error: any) {
+      setMsg(error.message || "فشل الحفظ — تحقق من الجلسة");
     } finally {
       setBusy(false);
     }

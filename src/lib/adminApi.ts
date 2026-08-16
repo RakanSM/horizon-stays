@@ -22,6 +22,9 @@ export type AdminProperty = {
   description_ar: string | null; airbnb_url: string | null; gathern_url: string | null;
   airbnb_ical_url: string | null; gatherin_ical_url: string | null;
   ical_token: string | null; is_active: boolean; amenities: string[] | null;
+  hero_image: string | null; gallery_images: string[] | null;
+  odoo_product_id: number | null; odoo_product_name: string | null; odoo_sync_enabled: boolean;
+  calendar: { blocked_count: number; last_synced_at: string | null } | null;
   landlord: { id: number; name: string; commission_pct: number } | null;
 };
 

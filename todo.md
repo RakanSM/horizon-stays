@@ -115,5 +115,12 @@
 - [ ] T80: Verify Odoo connection status and any available sync workflow — stored Odoo URL is currently blank and no API credentials/sync endpoint are configured in the site
 - [ ] T81: Run final production QA, deploy only if a repair is required, and deliver final live access links
 
+## Odoo + property settings + Airbnb-style calendar (user request Aug 16)
+- [x] T83: Created the Supabase Odoo foundation: secured odoo_config and odoo_sync_runs tables, per-property Odoo product mapping, per-booking rental/invoice/payment sync metadata, indexes, admin config/status RPCs, and repaired the obsolete Odoo URL admin auth check.
+- [x] T84: Built the protected /api/odoo/sync endpoint and full Admin → Integrations Odoo workspace (credentials are never returned to the browser, connection test, safe manual sync, state and recent runs). Scheduled automation remains intentionally disabled until live Odoo credentials are saved and the connection is verified.
+- [x] T85: Rebuilt Admin → Properties as a complete unit workspace: the original 627-photo CDN galleries are now durable data per unit, photo count/cover/order controls and manual image URL field are live, and all property details, active status, Airbnb/Gathern/iCal, calendar status, and Odoo product mapping are grouped in one editor. Fixed Channels page to show actual 25/26 Airbnb and 20/26 Gathern connectivity.
+- [x] T86: Built `/calendar`: a two-month Airbnb-style availability page with previous/next/today navigation, all-unit or single-unit filter, source-colored blocked date ranges, availability legend, and direct property links. Locally verified with 25 active units and current Supabase blocked-date data.
+- [ ] T87: Test the new database, property-management, and calendar workflows; build, deploy, and verify the production experience.
+
 ## Admin login correction (user reported Aug 15)
 - [x] T82: Root cause fixed — restored DB was missing pgcrypto, so admin_login failed on gen_random_bytes; session helper also read an obsolete private_config token. Replaced token generation with database-native MD5 rotation, unified _is_admin with admin_auth, added post-login reload, deployed main + vercel-live-site, and verified production dashboard loads finance/bookings successfully.
