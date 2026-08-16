@@ -5,6 +5,7 @@ import { useTheme, getAdminToken, adminLogin, adminCheck, clearAdminToken } from
 const NAV = [
   { to: "/admin", icon: "📊", label: "الرئيسية", exact: true },
   { to: "/admin/properties", icon: "🏢", label: "الوحدات" },
+  { to: "/admin/pricing", icon: "🏷️", label: "تقويم الأسعار" },
   { to: "/admin/bookings", icon: "📆", label: "الحجوزات والضيوف" },
   { to: "/admin/finance", icon: "💰", label: "المالية" },
   { to: "/admin/landlords", icon: "🤝", label: "المُلّاك" },

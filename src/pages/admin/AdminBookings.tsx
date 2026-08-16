@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import { adminRpc, fmtSAR, type AdminBooking, type AdminProperty, type Invoice } from "../../lib/adminApi";
+import { supabase, type PropertyPriceQuote } from "../../lib/supabase";
 
 const EMPTY = { property_id: 0, guest_name: "", guest_phone: "", guest_email: "", source: "direct", check_in: "", check_out: "", amount: "", status: "confirmed", notes: "" };
 
@@ -36,7 +37,7 @@ function InvoiceModal({ inv, onClose }: { inv: Invoice; onClose: () => void }) {
   <div><span>ضريبة القيمة المضافة (${inv.vat_rate}%)</span><span>${Number(inv.vat_amount).toLocaleString()} ر.س</span></div>
   <div class="grand"><span>الإجمالي شامل الضريبة</span><span>${Number(inv.total).toLocaleString()} ر.س</span></div>
 </div>
-<div class="foot">horizonstay-sa.com · واتساب +966 56 090 3335 · شكراً لاختياركم Horizon Stays</div>
+<div class="foot">horizonstay-sa.com · 920035843 · شكراً لاختياركم Horizon Stays</div>
 <script>window.onload=()=>window.print()</script></body></html>`);
     w.document.close();
   };
@@ -75,6 +76,7 @@ export default function AdminBookings() {
   const [msg, setMsg] = useState("");
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [err, setErr] = useState("");
+  const [quoteMessage, setQuoteMessage] = useState("");
 
   const load = useCallback(async () => {
     try {
@@ -111,6 +113,20 @@ export default function AdminBookings() {
       await load();
       setTimeout(() => setMsg(""), 2500);
     } catch (e: any) { setMsg("فشل: " + e.message); }
+    finally { setBusy(false); }
+  };
+
+  const applyCalendarPrice = async () => {
+    if (!draft.property_id || !draft.check_in || !draft.check_out) { setQuoteMessage("اختر الوحدة والوصول والمغادرة أولاً"); return; }
+    setBusy(true); setQuoteMessage("");
+    try {
+      const { data, error } = await supabase.rpc("property_price_quote", { p_property_id: Number(draft.property_id), p_check_in: draft.check_in, p_check_out: draft.check_out });
+      if (error) throw error;
+      const quote = data as PropertyPriceQuote;
+      if (!quote.available || quote.total === null) { setQuoteMessage("هذا المدى غير متاح بحسب تقويم الوحدة"); return; }
+      setDraft((current: any) => ({ ...current, amount: String(quote.total) }));
+      setQuoteMessage(`تم احتساب ${quote.nights} ليالٍ: ${fmtSAR(quote.total)} حسب تقويم التسعير ✓`);
+    } catch (error: any) { setQuoteMessage(error.message || "تعذر حساب السعر من التقويم"); }
     finally { setBusy(false); }
   };
 
@@ -151,7 +167,7 @@ export default function AdminBookings() {
         </div>
         <div className="sf-row"><label>الوصول</label><input type="date" value={draft.check_in} onChange={(e) => setDraft({ ...draft, check_in: e.target.value })} /></div>
         <div className="sf-row"><label>المغادرة</label><input type="date" value={draft.check_out} onChange={(e) => setDraft({ ...draft, check_out: e.target.value })} /></div>
-        <div className="sf-row"><label>المبلغ شامل الضريبة (﷼)</label><input dir="ltr" type="number" value={draft.amount} onChange={(e) => setDraft({ ...draft, amount: e.target.value })} /></div>
+        <div className="sf-row"><label>المبلغ شامل الضريبة (﷼)</label><input dir="ltr" type="number" value={draft.amount} onChange={(e) => setDraft({ ...draft, amount: e.target.value })} /><button type="button" className="btn-ghost sm booking-price-btn" onClick={applyCalendarPrice} disabled={busy}>احسب من تقويم الأسعار</button>{quoteMessage && <small className="booking-price-message">{quoteMessage}</small>}</div>
         <div className="sf-row"><label>الحالة</label>
           <select value={draft.status} onChange={(e) => setDraft({ ...draft, status: e.target.value })}>
             <option value="confirmed">مؤكد</option><option value="completed">مكتمل</option><option value="cancelled">ملغي</option>

@@ -124,3 +124,10 @@
 
 ## Admin login correction (user reported Aug 15)
 - [x] T82: Root cause fixed — restored DB was missing pgcrypto, so admin_login failed on gen_random_bytes; session helper also read an obsolete private_config token. Replaced token generation with database-native MD5 rotation, unified _is_admin with admin_auth, added post-login reload, deployed main + vercel-live-site, and verified production dashboard loads finance/bookings successfully.
+
+## Back-office pricing calendar and comments review (user request Aug 16)
+- [x] T88: Reviewed `Comments-v1.docx`, captured every actionable issue in `qa/comments-v1-review.md`, and prioritized booking, pricing, property page, image, contact, and production-usage concerns.
+- [x] T89: Added durable future pricing: per-unit weekday/weekend rules, configurable weekend days, per-date price/closed/minimum-stay/note overrides, protected admin APIs, and a public stay-price quote that resolves the final total.
+- [x] T90: Built Admin → Pricing Calendar with a two-month view, unit selector, one-date/range selection, price/close/minimum-stay controls, reset-to-automatic action, and weekday/weekend rule editor.
+- [x] T91: Applied immediately actionable comments: dynamic date-aware displayed totals, checkout selection when the following reservation starts on checkout, compact Show all photos control, Share and map controls, updated contact number, services section, six-unit initial display with Show all, and a legal/footer information area.
+- [x] T92: Added 3 future-price precedence tests (date override → weekend/weekday rule → base price), retained the 2 gallery tests, passed all 5/5 Vitest checks, completed Vite production build, and visually verified the admin pricing range selector plus public check-in/check-out price calculation without writing test pricing data.

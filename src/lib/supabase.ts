@@ -37,6 +37,14 @@ export type BlockedDate = {
   end_date: string;
 };
 
+export type PropertyPriceQuote = {
+  ok: boolean;
+  available: boolean;
+  nights: number;
+  total: number | null;
+  days: Array<{ date: string; price: number; is_closed: boolean; is_booked: boolean; minimum_stay: number | null }>;
+};
+
 export async function fetchProperties(): Promise<Property[]> {
   const { data, error } = await supabase
     .from("properties")
@@ -70,6 +78,17 @@ export async function fetchBlockedDates(propertyId: number): Promise<BlockedDate
     .gte("end_date", new Date().toISOString().slice(0, 10));
   if (error) throw error;
   return (data || []) as BlockedDate[];
+}
+
+/** Resolves a stay total using date overrides, weekday/weekend rules, and the base price. */
+export async function fetchPropertyPriceQuote(propertyId: number, checkIn: string, checkOut: string): Promise<PropertyPriceQuote> {
+  const { data, error } = await supabase.rpc("property_price_quote", {
+    p_property_id: propertyId,
+    p_check_in: checkIn,
+    p_check_out: checkOut,
+  });
+  if (error) throw error;
+  return data as PropertyPriceQuote;
 }
 
 /** High-quality photos served from Supabase Storage CDN (re-fetched from source at

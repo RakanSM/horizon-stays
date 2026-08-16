@@ -3,9 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import {
   fetchPropertyBySlug,
   fetchBlockedDates,
+  fetchPropertyPriceQuote,
   propertyPhotos,
   type Property,
   type BlockedDate,
+  type PropertyPriceQuote,
 } from "../lib/supabase";
 import { useLang, propName, localizeAmenity, neighborhoodLabel, MONTHS, WEEKDAYS } from "../lib/i18n";
 
@@ -31,6 +33,7 @@ export default function PropertyDetail() {
   const [checkIn, setCheckIn] = useState<string | null>(null);
   const [checkOut, setCheckOut] = useState<string | null>(null);
   const [rangeError, setRangeError] = useState<string | null>(null);
+  const [priceQuote, setPriceQuote] = useState<PropertyPriceQuote | null>(null);
   const bookBoxRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -75,6 +78,16 @@ export default function PropertyDetail() {
     return Math.max(0, Math.round((e - s) / 86400000));
   }, [checkIn, checkOut]);
 
+  useEffect(() => {
+    if (!property || !checkIn || !checkOut) { setPriceQuote(null); return; }
+    fetchPropertyPriceQuote(property.id, checkIn, checkOut)
+      .then((quote) => {
+        setPriceQuote(quote);
+        if (!quote.available) setRangeError(t("dates_unavailable"));
+      })
+      .catch(() => setPriceQuote(null));
+  }, [property, checkIn, checkOut, t]);
+
   /** Smart click logic:
    * - no check-in yet → set check-in
    * - has check-in, no check-out:
@@ -84,15 +97,17 @@ export default function PropertyDetail() {
    */
   const onDayClick = useCallback(
     (dstr: string, isPast: boolean, isBlocked: boolean) => {
-      if (isPast || isBlocked) return;
+      if (isPast) return;
       setRangeError(null);
       if (!checkIn || (checkIn && checkOut)) {
+        if (isBlocked) return;
         setCheckIn(dstr);
         setCheckOut(null);
         return;
       }
       // has check-in, selecting second date
       if (dstr <= checkIn) {
+        if (isBlocked) return;
         setCheckIn(dstr); // earlier (or same) click becomes the new check-in
         return;
       }
@@ -118,6 +133,16 @@ export default function PropertyDetail() {
     setCheckIn(null);
     setCheckOut(null);
     setRangeError(null);
+  };
+
+  const shareProperty = async () => {
+    const shareData = { title: property?.name_en || "Horizon Stays", text: property?.name_ar || "Horizon Stays", url: window.location.href };
+    try {
+      if (navigator.share) await navigator.share(shareData);
+      else await navigator.clipboard.writeText(window.location.href);
+    } catch {
+      // Cancelling a native share dialog is intentionally silent.
+    }
   };
 
   if (property === undefined) {
@@ -152,7 +177,8 @@ export default function PropertyDetail() {
     return { year: base.getUTCFullYear(), month: base.getUTCMonth() };
   });
 
-  const total = nights * (property.price_per_night || 0);
+  const total = priceQuote?.available && priceQuote.total !== null ? priceQuote.total : nights * (property.price_per_night || 0);
+  const averageNightly = nights > 0 ? Math.round(total / nights) : property.price_per_night || 0;
 
   const waText =
     `${t("wa_greeting")}: ${name}` +
@@ -163,7 +189,9 @@ export default function PropertyDetail() {
   /** Determine day cell class for the range calendar */
   const dayClass = (dstr: string, isPast: boolean, isBlocked: boolean) => {
     if (isPast) return "cal-day past";
-    if (isBlocked) return "cal-day blocked";
+    const canUseAsCheckout = Boolean(checkIn && !checkOut && dstr > checkIn && rangeIsFree(checkIn, dstr));
+    if (isBlocked && !canUseAsCheckout) return "cal-day blocked";
+    if (isBlocked && canUseAsCheckout) return "cal-day blocked checkout-ok";
     let cls = "cal-day free selectable";
     if (checkIn === dstr) cls += " sel-start";
     if (checkOut === dstr) cls += " sel-end";
@@ -197,23 +225,7 @@ export default function PropertyDetail() {
               )}
             </div>
           </div>
-          {photos.length > 1 && (
-            <div className="photo-strip">
-              {photos.map((ph, i) => (
-                <img
-                  key={ph}
-                  src={ph}
-                  alt=""
-                  loading="lazy"
-                  className={i === mainPhoto ? "active" : ""}
-                  onClick={() => setMainPhoto(i)}
-                />
-              ))}
-              <button className="show-all-btn" onClick={() => setLightbox(0)}>
-                {t("show_all_photos")} ({photos.length})
-              </button>
-            </div>
-          )}
+          {photos.length > 1 && <div className="detail-gallery-actions"><button className="show-all-btn" onClick={() => setLightbox(0)}><span aria-hidden>▦</span> {t("show_all_photos")} ({photos.length})</button></div>}
         </>
       )}
 
@@ -256,6 +268,10 @@ export default function PropertyDetail() {
             <div className="detail-sub">
               {t("riyadh")} — {neighborhoodLabel(property.neighborhood, lang) || t("prime_district")} ·{" "}
               {property.type || t("luxury_unit_type")}
+            </div>
+            <div className="detail-actions">
+              <button type="button" onClick={shareProperty} className="detail-action-btn"><span aria-hidden>↗</span> {lang === "ar" ? "مشاركة" : "Share"}</button>
+              {property.lat && property.lng ? <a className="detail-action-btn" href={`https://www.google.com/maps/search/?api=1&query=${property.lat},${property.lng}`} target="_blank" rel="noreferrer"><span aria-hidden>⌖</span> {lang === "ar" ? "الموقع على الخريطة" : "View map"}</a> : null}
             </div>
           </div>
 
@@ -336,12 +352,13 @@ export default function PropertyDetail() {
                       ).padStart(2, "0")}`;
                       const isPast = dstr < todayStr;
                       const isBlocked = blockedSet.has(dstr);
+                      const canUseAsCheckout = Boolean(checkIn && !checkOut && dstr > checkIn && rangeIsFree(checkIn, dstr));
                       return (
                         <span
                           key={dstr}
                           className={dayClass(dstr, isPast, isBlocked)}
                           onClick={() => onDayClick(dstr, isPast, isBlocked)}
-                          role={!isPast && !isBlocked ? "button" : undefined}
+                          role={!isPast && (!isBlocked || canUseAsCheckout) ? "button" : undefined}
                         >
                           {day}
                         </span>
@@ -387,7 +404,7 @@ export default function PropertyDetail() {
               <div className="bb-summary">
                 <div>
                   <span>
-                    {property.price_per_night?.toLocaleString("en-US")} ﷼ × {nights} {t("nights_word")}
+                  {averageNightly.toLocaleString("en-US")} ﷼ × {nights} {t("nights_word")}
                   </span>
                   <b>{total.toLocaleString("en-US")} ﷼</b>
                 </div>
@@ -405,24 +422,14 @@ export default function PropertyDetail() {
             )}
 
             <a
-              href={`https://wa.me/966560903335?text=${encodeURIComponent(waText)}`}
+              href={`https://wa.me/966920035843?text=${encodeURIComponent(waText)}`}
               target="_blank"
               rel="noreferrer"
               className="btn btn-gold"
             >
               {t("book_whatsapp")}
             </a>
-            {property.airbnb_url && (
-              <a href={property.airbnb_url} target="_blank" rel="noreferrer" className="btn btn-outline">
-                {t("view_airbnb")}
-              </a>
-            )}
-            {property.gathern_url && (
-              <a href={property.gathern_url} target="_blank" rel="noreferrer" className="btn btn-outline btn-gathern">
-                {t("view_gathern")}
-              </a>
-            )}
-            <div className="bb-note">{t("sync_note")}</div>
+            <div className="bb-note">{lang === "ar" ? "السعر النهائي يحسب تلقائياً حسب التواريخ المختارة." : "Your final price is calculated automatically from the selected dates."}</div>
           </div>
         </aside>
       </div>
@@ -447,7 +454,7 @@ export default function PropertyDetail() {
           )}
         </div>
         <a
-          href={`https://wa.me/966560903335?text=${encodeURIComponent(waText)}`}
+          href={`https://wa.me/966920035843?text=${encodeURIComponent(waText)}`}
           target="_blank"
           rel="noreferrer"
           className="btn btn-gold mbb-btn"

@@ -7,7 +7,7 @@ import { Reveal, Counter, useParallax } from "../lib/motion";
 import { EditorContentContext } from "./ThemeEditor";
 import ScrollStory from "../components/ScrollStory";
 
-const WHATSAPP = "https://wa.me/966560903335";
+const WHATSAPP = "https://wa.me/966920035843";
 
 export default function Home() {
   const { content: liveContent } = useTheme();
@@ -26,6 +26,7 @@ export default function Home() {
   const [properties, setProperties] = useState<Property[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("all");
+  const [showAll, setShowAll] = useState(false);
   const heroBgRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   useParallax(heroBgRef, 0.3);
@@ -63,6 +64,11 @@ export default function Home() {
     if (filter === "2") return properties.filter((p) => p.bedrooms === 2);
     return properties.filter((p) => p.bedrooms >= 3);
   }, [properties, filter]);
+
+  const visibleProperties = useMemo(() => {
+    if (!filtered) return null;
+    return filter === "all" && !showAll ? filtered.slice(0, 6) : filtered;
+  }, [filtered, filter, showAll]);
 
   const heroImg = "https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/kafd-penthouse-3bd-1.webp";
 
@@ -140,7 +146,7 @@ export default function Home() {
               <button
                 key={f.key}
                 className={`chip ${filter === f.key ? "active" : ""}`}
-                onClick={() => setFilter(f.key)}
+                onClick={() => { setFilter(f.key); setShowAll(f.key !== "all"); }}
               >
                 {f.label}
               </button>
@@ -161,9 +167,9 @@ export default function Home() {
             <div className="empty-state">{t("no_results")}</div>
           )}
 
-          {filtered && filtered.length > 0 && (
+          {visibleProperties && visibleProperties.length > 0 && (
             <div className="grid">
-              {filtered.map((p, i) => {
+              {visibleProperties.map((p, i) => {
                 const photos = propertyPhotos(p);
                 const name = propName(p, lang);
                 return (
@@ -200,6 +206,24 @@ export default function Home() {
               })}
             </div>
           )}
+          {filtered && filter === "all" && filtered.length > 6 && (
+            <div className="show-more-wrap">
+              <button className="btn btn-outline" onClick={() => setShowAll((value) => !value)}>
+                {showAll ? (lang === "ar" ? "عرض عدد أقل" : "Show fewer") : (lang === "ar" ? `عرض كل الوحدات (${filtered.length})` : `Show all properties (${filtered.length})`)}
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="section services-section">
+        <div className="container">
+          <Reveal className="section-head"><div><h2>{lang === "ar" ? "خدمات الإقامة" : "Stay services"}<span className="gold-line" /></h2></div><p>{lang === "ar" ? "تفاصيل عملية تساعدك على ترتيب إقامتك بسهولة قبل الوصول وأثناءها." : "Practical details that make each stay simple to arrange."}</p></Reveal>
+          <div className="services-grid">
+            <Reveal className="service-card" delay={0}><span>⌂</span><h3>{lang === "ar" ? "وحدات منتقاة" : "Selected homes"}</h3><p>{lang === "ar" ? "تفاصيل واضحة وصور كاملة لكل وحدة قبل اختيارك." : "Clear details and complete photographs before you choose."}</p></Reveal>
+            <Reveal className="service-card" delay={70}><span>◷</span><h3>{lang === "ar" ? "توفر حي" : "Live availability"}</h3><p>{lang === "ar" ? "تواريخ التوفر تُعرض بوضوح وتُحدّث من القنوات المرتبطة." : "Availability is displayed clearly and refreshed from connected channels."}</p></Reveal>
+            <Reveal className="service-card" delay={140}><span>✦</span><h3>{lang === "ar" ? "ترتيب مرن" : "Flexible planning"}</h3><p>{lang === "ar" ? "خيارات إقامة مصممة للزيارات القصيرة والطويلة في الرياض." : "Stay options designed for short and extended visits in Riyadh."}</p></Reveal>
+          </div>
         </div>
       </section>
     </>

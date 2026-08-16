@@ -7,6 +7,7 @@ import Contact from "./pages/Contact";
 import AvailabilityCalendar from "./pages/AvailabilityCalendar";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProperties from "./pages/admin/AdminProperties";
+import AdminPricing from "./pages/admin/AdminPricing";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminFinance from "./pages/admin/AdminFinance";
 import AdminLandlords from "./pages/admin/AdminLandlords";
@@ -21,7 +22,7 @@ import { LangProvider, useLang, LANGS } from "./lib/i18n";
 import { useScrollReveal, useParallaxSections } from "./lib/motion";
 import SeasonalDecor from "./components/SeasonalDecor";
 
-const WHATSAPP = "https://wa.me/966560903335";
+const WHATSAPP = "https://wa.me/966920035843";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -127,6 +128,7 @@ function AppShell() {
         <Routes>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/properties" element={<AdminProperties />} />
+          <Route path="/admin/pricing" element={<AdminPricing />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
           <Route path="/admin/finance" element={<AdminFinance />} />
           <Route path="/admin/landlords" element={<AdminLandlords />} />
@@ -257,7 +259,12 @@ function AppShell() {
               <Link to="/">{t("nav_properties")}</Link>
               <Link to="/about">{t("nav_about")}</Link>
               <Link to="/contact">{t("nav_contact")}</Link>
+              <a href="tel:920035843">920035843</a>
             </nav>
+          </div>
+          <div className="footer-legal">
+            <span>{lang === "ar" ? "السجل التجاري والترخيص متاحان عند الطلب" : "Commercial registration and licence available on request"}</span>
+            <span>{lang === "ar" ? "سياسة الخصوصية وشروط الإقامة" : "Privacy policy and stay terms"}</span>
           </div>
           <div className="copyright">
             © {new Date().getFullYear()} Horizon Stays — {t("footer_rights")}
