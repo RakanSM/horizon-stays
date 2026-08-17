@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Link, NavLink, useLocation } from "react-router-dom";
+import { Routes, Route, Link, NavLink, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import PropertyDetail from "./pages/PropertyDetail";
 import About from "./pages/About";
@@ -7,7 +7,6 @@ import Contact from "./pages/Contact";
 import AvailabilityCalendar from "./pages/AvailabilityCalendar";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProperties from "./pages/admin/AdminProperties";
-import AdminPricing from "./pages/admin/AdminPricing";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminFinance from "./pages/admin/AdminFinance";
 import AdminLandlords from "./pages/admin/AdminLandlords";
@@ -128,7 +127,7 @@ function AppShell() {
         <Routes>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/properties" element={<AdminProperties />} />
-          <Route path="/admin/pricing" element={<AdminPricing />} />
+          <Route path="/admin/pricing" element={<Navigate to="/calendar" replace />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
           <Route path="/admin/finance" element={<AdminFinance />} />
           <Route path="/admin/landlords" element={<AdminLandlords />} />

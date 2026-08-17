@@ -30,7 +30,7 @@ function makeDraft(property: AdminProperty): PropertyDraft {
   };
 }
 
-function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSaved: () => void; onClose: () => void }) {
+export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSaved: () => void; onClose: () => void }) {
   const [d, setD] = useState<PropertyDraft>(() => makeDraft(p));
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");

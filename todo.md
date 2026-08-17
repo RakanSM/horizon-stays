@@ -131,3 +131,10 @@
 - [x] T90: Built Admin → Pricing Calendar with a two-month view, unit selector, one-date/range selection, price/close/minimum-stay controls, reset-to-automatic action, and weekday/weekend rule editor.
 - [x] T91: Applied immediately actionable comments: dynamic date-aware displayed totals, checkout selection when the following reservation starts on checkout, compact Show all photos control, Share and map controls, updated contact number, services section, six-unit initial display with Show all, and a legal/footer information area.
 - [x] T92: Added 3 future-price precedence tests (date override → weekend/weekday rule → base price), retained the 2 gallery tests, passed all 5/5 Vitest checks, completed Vite production build, and visually verified the admin pricing range selector plus public check-in/check-out price calculation without writing test pricing data.
+
+## Unified availability and pricing calendar (user request Aug 17)
+- [x] T93: Merged the availability calendar and pricing calendar into one `/calendar` admin workspace with a selected-property editor.
+- [x] T94: The selected property opens the existing full editor in the unified workspace with real CDN gallery photos, cover/order/delete controls, descriptions, amenities, channel links, iCal status, and Odoo mapping.
+- [x] T95: Embedded base, weekday, weekend-day, weekend, and date-override pricing editors beside the selected unit calendar, including save/reset feedback and the existing protected admin RPCs.
+- [x] T96: `/admin/pricing` now redirects to `/calendar`, the admin navigation uses `التقويم الموحد`, and local desktop verification covered public mode, authenticated mode, unit selection, editor rendering, and legacy-route navigation.
+- [x] T97: Vitest passed 5/5 and Vite production build passed after the merge; QA notes are recorded in `qa/2026-08-17-unified-calendar.md`. The source workspace is ready for the user to publish.
