@@ -138,3 +138,8 @@
 - [x] T95: Embedded base, weekday, weekend-day, weekend, and date-override pricing editors beside the selected unit calendar, including save/reset feedback and the existing protected admin RPCs.
 - [x] T96: `/admin/pricing` now redirects to `/calendar`, the admin navigation uses `التقويم الموحد`, and local desktop verification covered public mode, authenticated mode, unit selection, editor rendering, and legacy-route navigation.
 - [x] T97: Vitest passed 5/5 and Vite production build passed after the merge; QA notes are recorded in `qa/2026-08-17-unified-calendar.md`. The source workspace is ready for the user to publish.
+
+## Admin-only calendar visibility (user request Aug 17)
+- [x] T98: Removed the availability/calendar link from the public header; direct public access now redirects to the admin portal instead of rendering calendar data.
+- [x] T99: Unified availability, property editor, and pricing workspace now render only after `admin_check` succeeds; unauthenticated access receives the admin login gate.
+- [x] T100: Verified logout → `/calendar` redirects to `/admin`, admin navigation retains the unified calendar link, 5/5 tests pass, and the release is ready for publishing.

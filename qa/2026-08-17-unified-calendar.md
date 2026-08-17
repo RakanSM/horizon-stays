@@ -14,3 +14,7 @@ The selected-property page contains the merged weekly pricing panel. The verifie
 ## Legacy route verification
 
 Navigating to local `/admin/pricing` resolved to `/calendar` and retained the authenticated admin shell. The merged calendar rendered the property list and the admin hint, confirming the old route no longer creates a separate pricing workflow.
+
+## Admin-only visibility verification
+
+After logging out in the local preview, opening `/calendar` redirected to `/admin` and showed only the admin login form. The public header/footer no longer includes a calendar link; the admin sidebar retains `التقويم الموحد`.

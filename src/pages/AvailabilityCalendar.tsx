@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { fetchProperties, supabase, type BlockedDate, type Property } from "../lib/supabase";
 import { useLang, propName } from "../lib/i18n";
 import { adminCheck, getAdminToken } from "../lib/ThemeContext";
@@ -263,6 +263,6 @@ export default function AvailabilityCalendar() {
     </div>
   );
   if (adminChecking) return <div className="availability-page container"><div className="availability-loading">جارٍ تجهيز التقويم…</div></div>;
-  if (isAdmin) return <AdminLayout title="التقويم الموحد" subtitle="التوفر، الصور، إعدادات الوحدة، وقواعد الأسعار في مساحة تشغيل واحدة">{body}</AdminLayout>;
-  return body;
+  if (!isAdmin) return <Navigate to="/admin" replace />;
+  return <AdminLayout title="التقويم الموحد" subtitle="التوفر، الصور، إعدادات الوحدة، وقواعد الأسعار في مساحة تشغيل واحدة">{body}</AdminLayout>;
 }

@@ -218,9 +218,6 @@ function AppShell() {
             <NavLink to="/contact" className={({ isActive }) => (isActive ? "active" : "")}>
               {t("nav_contact")}
             </NavLink>
-            <NavLink to="/calendar" className={({ isActive }) => (isActive ? "active" : "")}>
-              {lang === "ar" ? "التقويم" : "Calendar"}
-            </NavLink>
             <a href={WHATSAPP} target="_blank" rel="noreferrer" className="cta">
               {lang === "ar" && content.ctaText ? content.ctaText : t("book_now")}
             </a>
