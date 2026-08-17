@@ -149,3 +149,9 @@
 - [x] T102: Added a clear `Edit price` action beside `View property`; it scrolls directly to the selected property's pricing editor without losing unit or calendar context.
 - [x] T103: Added English mode for the admin shell, unified calendar, property names, months/weekdays, pricing controls, weekend rules, date overrides, and key embedded property-editor labels/actions.
 - [x] T104: Vitest passed 5/5, Vite production build passed, the admin-only shell was verified, English mode was verified, and `Edit price` was verified beside `View property` and inside the pricing editor.
+
+## Production calendar visibility and special pricing correction (user request Aug 17)
+- [x] T105: Verified production `/calendar`: it is still serving the public old bundle with header/footer, zero units while loading, and View property-only UI. GitHub production branches still point to `eb62637`, while the repaired local admin-only release is `aa1c37e`; the issue is that the repaired commit has not been promoted to production.
+- [ ] T106: Ensure unauthenticated production `/calendar` redirects to `/admin` and authenticated production managers receive the English admin shell.
+- [ ] T107: Ensure the selected-property admin header shows `View property` and `Edit price` side by side, with date-specific, range-specific, weekday, weekend, closed-date, and minimum-stay controls visible after Edit price.
+- [ ] T108: Test the visitor/manager split and document the exact production URL and login flow before preparing the release.
