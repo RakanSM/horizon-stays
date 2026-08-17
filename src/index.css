@@ -3524,3 +3524,18 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
   .unified-pricing-nav { width: 100%; }
   .unified-pricing-section { padding: 12px; }
 }
+
+/* Unified calendar actions and lazy property editor */
+.calendar-property-actions { display: flex; gap: .65rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.calendar-property-actions .btn-ghost, .calendar-property-actions .btn-activate { min-width: 8.75rem; text-align: center; }
+.unified-editor-loading { margin: 1.25rem 0; padding: 1.5rem; border: 1px solid rgba(183,142,75,.25); border-radius: 18px; background: rgba(255,255,255,.68); color: var(--muted, #765f45); text-align: center; }
+@media (max-width: 700px) {
+  .calendar-property-actions { width: 100%; justify-content: stretch; }
+  .calendar-property-actions .btn-ghost, .calendar-property-actions .btn-activate { flex: 1; min-width: 0; }
+}
+
+.adm-page-head { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+.adm-head-tools { display:flex; gap:.35rem; padding:.25rem; border:1px solid var(--border, rgba(120,90,45,.25)); border-radius:999px; background:color-mix(in srgb, var(--card) 80%, transparent); }
+.adm-head-tools button { border:0; border-radius:999px; padding:.35rem .75rem; background:transparent; color:var(--text-muted); font:inherit; font-size:.78rem; cursor:pointer; }
+.adm-head-tools button.active { color:var(--cta-text,#14120f); background:var(--gold); }
+@media (max-width:700px) { .adm-page-head { align-items:stretch; flex-direction:column; } .adm-head-tools { align-self:flex-start; } }

@@ -143,3 +143,9 @@
 - [x] T98: Removed the availability/calendar link from the public header; direct public access now redirects to the admin portal instead of rendering calendar data.
 - [x] T99: Unified availability, property editor, and pricing workspace now render only after `admin_check` succeeds; unauthenticated access receives the admin login gate.
 - [x] T100: Verified logout → `/calendar` redirects to `/admin`, admin navigation retains the unified calendar link, 5/5 tests pass, and the release is ready for publishing.
+
+## Speed, edit-price action, and English calendar (user request Aug 17)
+- [x] T101: Reduced initial calendar load cost by using lightweight property summaries and availability data; full property/gallery data loads only after a unit is selected, and the duplicate admin session check is skipped after the calendar auth check.
+- [x] T102: Added a clear `Edit price` action beside `View property`; it scrolls directly to the selected property's pricing editor without losing unit or calendar context.
+- [x] T103: Added English mode for the admin shell, unified calendar, property names, months/weekdays, pricing controls, weekend rules, date overrides, and key embedded property-editor labels/actions.
+- [x] T104: Vitest passed 5/5, Vite production build passed, the admin-only shell was verified, English mode was verified, and `Edit price` was verified beside `View property` and inside the pricing editor.

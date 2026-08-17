@@ -1,21 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Link, NavLink, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
-import PropertyDetail from "./pages/PropertyDetail";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import AvailabilityCalendar from "./pages/AvailabilityCalendar";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminProperties from "./pages/admin/AdminProperties";
-import AdminBookings from "./pages/admin/AdminBookings";
-import AdminFinance from "./pages/admin/AdminFinance";
-import AdminLandlords from "./pages/admin/AdminLandlords";
-import AdminThemes from "./pages/admin/AdminThemes";
-import AdminIntegrations from "./pages/admin/AdminIntegrations";
-import AdminCleaning from "./pages/admin/AdminCleaning";
-import Landlord from "./pages/Landlord";
-import ThemeEditor from "./pages/ThemeEditor";
-import Cleaner from "./pages/Cleaner";
+const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const AvailabilityCalendar = lazy(() => import("./pages/AvailabilityCalendar"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminProperties = lazy(() => import("./pages/admin/AdminProperties"));
+const AdminBookings = lazy(() => import("./pages/admin/AdminBookings"));
+const AdminFinance = lazy(() => import("./pages/admin/AdminFinance"));
+const AdminLandlords = lazy(() => import("./pages/admin/AdminLandlords"));
+const AdminThemes = lazy(() => import("./pages/admin/AdminThemes"));
+const AdminIntegrations = lazy(() => import("./pages/admin/AdminIntegrations"));
+const AdminCleaning = lazy(() => import("./pages/admin/AdminCleaning"));
+const Landlord = lazy(() => import("./pages/Landlord"));
+const ThemeEditor = lazy(() => import("./pages/ThemeEditor"));
+const Cleaner = lazy(() => import("./pages/Cleaner"));
+
+const RouteFallback = () => <div className="page-loading" aria-live="polite">Loading…</div>;
 import { ThemeProvider, useTheme } from "./lib/ThemeContext";
 import { LangProvider, useLang, LANGS } from "./lib/i18n";
 import { useScrollReveal, useParallaxSections } from "./lib/motion";
@@ -98,7 +100,7 @@ function AppShell() {
   const { lang, t, setLang } = useLang();
   const { theme, variant, toggleVariant } = useTheme();
   const isEditor = location.pathname.startsWith("/admin/editor");
-  const isAdmin = location.pathname.startsWith("/admin");
+  const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/calendar";
   useScrollReveal(content.animationsEnabled && !isEditor);
   useParallaxSections(!!theme.parallax && content.animationsEnabled && !isAdmin, location.pathname);
 
@@ -112,9 +114,11 @@ function AppShell() {
       <>
         <ScrollToTop />
         <PageTitle />
-        <Routes>
-          <Route path="/admin/editor" element={<ThemeEditor />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/admin/editor" element={<ThemeEditor />} />
+          </Routes>
+        </Suspense>
       </>
     );
   }
@@ -124,19 +128,22 @@ function AppShell() {
       <>
         <ScrollToTop />
         <PageTitle />
-        <Routes>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/properties" element={<AdminProperties />} />
-          <Route path="/admin/pricing" element={<Navigate to="/calendar" replace />} />
-          <Route path="/admin/bookings" element={<AdminBookings />} />
-          <Route path="/admin/finance" element={<AdminFinance />} />
-          <Route path="/admin/landlords" element={<AdminLandlords />} />
-          <Route path="/admin/themes" element={<AdminThemes />} />
-          <Route path="/admin/integrations" element={<AdminIntegrations />} />
-          <Route path="/admin/cleaning" element={<AdminCleaning />} />
-          <Route path="/landlord" element={<Landlord />} />
-          <Route path="*" element={<AdminDashboard />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/properties" element={<AdminProperties />} />
+            <Route path="/admin/pricing" element={<Navigate to="/calendar" replace />} />
+            <Route path="/calendar" element={<AvailabilityCalendar />} />
+            <Route path="/admin/bookings" element={<AdminBookings />} />
+            <Route path="/admin/finance" element={<AdminFinance />} />
+            <Route path="/admin/landlords" element={<AdminLandlords />} />
+            <Route path="/admin/themes" element={<AdminThemes />} />
+            <Route path="/admin/integrations" element={<AdminIntegrations />} />
+            <Route path="/admin/cleaning" element={<AdminCleaning />} />
+            <Route path="/landlord" element={<Landlord />} />
+            <Route path="*" element={<AdminDashboard />} />
+          </Routes>
+        </Suspense>
       </>
     );
   }
@@ -233,15 +240,17 @@ function AppShell() {
       </header>
 
       <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/property/:slug" element={<PropertyDetail />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/calendar" element={<AvailabilityCalendar />} />
-          <Route path="/cleaner" element={<Cleaner />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/property/:slug" element={<PropertyDetail />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/calendar" element={<AvailabilityCalendar />} />
+            <Route path="/cleaner" element={<Cleaner />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </Suspense>
       </main>
 
       <footer className="site-footer">

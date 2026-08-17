@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import { adminRpc, fmtSAR, type AdminProperty } from "../../lib/adminApi";
+import { useLang } from "../../lib/i18n";
 import { propertyPhotoUrls } from "../../lib/supabase";
 
 const NEIGHBORHOODS = ["KAFD", "Al Olaya", "Al Malqa", "Al Narjes", "Al Yasmin", "Boulevard"];
@@ -31,6 +32,8 @@ function makeDraft(property: AdminProperty): PropertyDraft {
 }
 
 export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSaved: () => void; onClose: () => void }) {
+  const { lang } = useLang();
+  const en = lang === "en";
   const [d, setD] = useState<PropertyDraft>(() => makeDraft(p));
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
@@ -61,16 +64,16 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
   const addPhoto = () => {
     const url = newPhoto.trim();
     if (!/^https?:\/\//i.test(url)) {
-      setMsg("أضف رابط صورة عام يبدأ بـ https://");
+      setMsg(en ? "Add a public image URL starting with https://" : "أضف رابط صورة عام يبدأ بـ https://");
       return;
     }
     if (d.gallery_images.includes(url)) {
-      setMsg("الصورة موجودة بالفعل في المعرض");
+      setMsg(en ? "This image is already in the gallery" : "الصورة موجودة بالفعل في المعرض");
       return;
     }
     setD((prev) => ({ ...prev, gallery_images: [...prev.gallery_images, url], hero_image: prev.hero_image || url }));
     setNewPhoto("");
-    setMsg("أضيفت الصورة — احفظ التعديلات لتظهر في الموقع");
+    setMsg(en ? "Image added — save changes to publish it" : "أضيفت الصورة — احفظ التعديلات لتظهر في الموقع");
   };
 
   const save = async () => {
@@ -94,11 +97,11 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
         p_odoo_product_name: d.odoo_product_name || null,
         p_odoo_sync_enabled: d.odoo_sync_enabled,
       });
-      setMsg("تم حفظ إعدادات الوحدة والمعرض ✓");
+      setMsg(en ? "Property settings and gallery saved ✓" : "تم حفظ إعدادات الوحدة والمعرض ✓");
       onSaved();
       setTimeout(() => setMsg(""), 3000);
     } catch (error: any) {
-      setMsg("فشل الحفظ: " + error.message);
+      setMsg((en ? "Save failed: " : "فشل الحفظ: ") + error.message);
     } finally { setBusy(false); }
   };
 
@@ -109,9 +112,9 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
       const token = getAdminToken() || "";
       const response = await fetch(`/api/property/${p.slug}/sync`, { method: "POST", headers: { "x-admin-token": token } });
       const data = await response.json().catch(() => ({}));
-      setMsg(response.ok ? `تمت المزامنة ✓ (${data.synced?.length || data.events || 0} مصدر/حدث)` : data.error || "فشلت المزامنة");
+      setMsg(response.ok ? (en ? `Synced ✓ (${data.synced?.length || data.events || 0} sources/events)` : `تمت المزامنة ✓ (${data.synced?.length || data.events || 0} مصدر/حدث)`) : data.error || (en ? "Sync failed" : "فشلت المزامنة"));
       if (response.ok) onSaved();
-    } catch { setMsg("فشلت المزامنة"); }
+    } catch { setMsg(en ? "Sync failed" : "فشلت المزامنة"); }
     finally { setSyncBusy(false); setTimeout(() => setMsg(""), 4000); }
   };
 
@@ -121,14 +124,14 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
     <div className="prop-editor">
       <div className="pe-head">
         <div>
-          <h3>{d.name_ar} <small dir="ltr">/{p.slug}</small></h3>
-          <p className="pe-meta">{photoCount} صورة · {p.calendar?.blocked_count || 0} حجوزات/فترات محجوبة قادمة · آخر مزامنة: {p.calendar?.last_synced_at ? new Date(p.calendar.last_synced_at).toLocaleString("ar-SA") : "—"}</p>
+          <h3>{en ? d.name_en : d.name_ar} <small dir="ltr">/{p.slug}</small></h3>
+          <p className="pe-meta">{photoCount} {en ? "photos" : "صورة"} · {p.calendar?.blocked_count || 0} {en ? "upcoming blocked periods" : "حجوزات/فترات محجوبة قادمة"} · {en ? "Last sync" : "آخر مزامنة"}: {p.calendar?.last_synced_at ? new Date(p.calendar.last_synced_at).toLocaleString(en ? "en-US" : "ar-SA") : "—"}</p>
         </div>
-        <button className="btn-ghost sm" onClick={onClose}>إغلاق ✕</button>
+        <button className="btn-ghost sm" onClick={onClose}>{en ? "Close" : "إغلاق"} ✕</button>
       </div>
 
       <section className="pe-section">
-        <div className="pe-section-head"><h4>الصور ومعرض الوحدة</h4><span>اختَر الغلاف، حرّك الترتيب، أو أضف رابط صورة عام</span></div>
+        <div className="pe-section-head"><h4>{en ? "Photos & gallery" : "الصور ومعرض الوحدة"}</h4><span>{en ? "Choose a cover, reorder photos, or add a public image URL" : "اختَر الغلاف، حرّك الترتيب، أو أضف رابط صورة عام"}</span></div>
         {d.gallery_images.length ? (
           <div className="prop-gallery-manager">
             {d.gallery_images.map((url, index) => (
@@ -146,33 +149,33 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
               </figure>
             ))}
           </div>
-        ) : <div className="admin-empty">لا توجد صور محفوظة لهذه الوحدة بعد.</div>}
+        ) : <div className="admin-empty">{en ? "No saved photos for this property yet." : "لا توجد صور محفوظة لهذه الوحدة بعد."}</div>}
         <div className="pe-add-photo">
           <input dir="ltr" value={newPhoto} onChange={(event) => setNewPhoto(event.target.value)} placeholder="https://…/unit-photo.webp" />
-          <button type="button" className="btn-ghost" onClick={addPhoto}>إضافة رابط صورة</button>
+          <button type="button" className="btn-ghost" onClick={addPhoto}>{en ? "Add image URL" : "إضافة رابط صورة"}</button>
         </div>
       </section>
 
       <section className="pe-section">
-        <div className="pe-section-head"><h4>تفاصيل الوحدة</h4><span>تنعكس مباشرة في بطاقات الموقع وصفحة الوحدة</span></div>
+        <div className="pe-section-head"><h4>{en ? "Property details" : "تفاصيل الوحدة"}</h4><span>{en ? "Shown directly on the site cards and property page" : "تنعكس مباشرة في بطاقات الموقع وصفحة الوحدة"}</span></div>
         <div className="pe-grid">
-          <div className="sf-row"><label>الاسم (عربي)</label><input value={d.name_ar} onChange={(event) => set("name_ar", event.target.value)} /></div>
-          <div className="sf-row"><label>الاسم (إنجليزي)</label><input dir="ltr" value={d.name_en} onChange={(event) => set("name_en", event.target.value)} /></div>
-          <div className="sf-row"><label>النوع</label><select value={d.type} onChange={(event) => set("type", event.target.value)}>{TYPES.map((type) => <option key={type} value={type}>{type}</option>)}</select></div>
-          <div className="sf-row"><label>الحي</label><select value={d.neighborhood || ""} onChange={(event) => set("neighborhood", event.target.value)}>{NEIGHBORHOODS.map((area) => <option key={area} value={area}>{area}</option>)}</select></div>
-          <div className="sf-row"><label>السعر / ليلة (﷼)</label><input dir="ltr" type="number" value={d.price_per_night} onChange={(event) => set("price_per_night", Number(event.target.value))} /></div>
-          <div className="sf-row"><label>غرف النوم</label><input dir="ltr" type="number" value={d.bedrooms} onChange={(event) => set("bedrooms", Number(event.target.value))} /></div>
-          <div className="sf-row"><label>دورات المياه</label><input dir="ltr" type="number" value={d.bathrooms} onChange={(event) => set("bathrooms", Number(event.target.value))} /></div>
-          <div className="sf-row"><label>المساحة (م²)</label><input dir="ltr" type="number" value={d.area_m2 || 0} onChange={(event) => set("area_m2", Number(event.target.value))} /></div>
-          <div className="sf-row"><label>الدور</label><input value={d.floor || ""} onChange={(event) => set("floor", event.target.value)} /></div>
-          <div className="sf-row"><label>أقصى عدد ضيوف</label><input dir="ltr" type="number" value={d.max_guests} onChange={(event) => set("max_guests", Number(event.target.value))} /></div>
+          <div className="sf-row"><label>{en ? "Name (Arabic)" : "الاسم (عربي)"}</label><input value={d.name_ar} onChange={(event) => set("name_ar", event.target.value)} /></div>
+          <div className="sf-row"><label>{en ? "Name (English)" : "الاسم (إنجليزي)"}</label><input dir="ltr" value={d.name_en} onChange={(event) => set("name_en", event.target.value)} /></div>
+          <div className="sf-row"><label>{en ? "Type" : "النوع"}</label><select value={d.type} onChange={(event) => set("type", event.target.value)}>{TYPES.map((type) => <option key={type} value={type}>{type}</option>)}</select></div>
+          <div className="sf-row"><label>{en ? "Neighborhood" : "الحي"}</label><select value={d.neighborhood || ""} onChange={(event) => set("neighborhood", event.target.value)}>{NEIGHBORHOODS.map((area) => <option key={area} value={area}>{area}</option>)}</select></div>
+          <div className="sf-row"><label>{en ? "Price / night (SAR)" : "السعر / ليلة (﷼)"}</label><input dir="ltr" type="number" value={d.price_per_night} onChange={(event) => set("price_per_night", Number(event.target.value))} /></div>
+          <div className="sf-row"><label>{en ? "Bedrooms" : "غرف النوم"}</label><input dir="ltr" type="number" value={d.bedrooms} onChange={(event) => set("bedrooms", Number(event.target.value))} /></div>
+          <div className="sf-row"><label>{en ? "Bathrooms" : "دورات المياه"}</label><input dir="ltr" type="number" value={d.bathrooms} onChange={(event) => set("bathrooms", Number(event.target.value))} /></div>
+          <div className="sf-row"><label>{en ? "Area (m²)" : "المساحة (م²)"}</label><input dir="ltr" type="number" value={d.area_m2 || 0} onChange={(event) => set("area_m2", Number(event.target.value))} /></div>
+          <div className="sf-row"><label>{en ? "Floor" : "الدور"}</label><input value={d.floor || ""} onChange={(event) => set("floor", event.target.value)} /></div>
+          <div className="sf-row"><label>{en ? "Max guests" : "أقصى عدد ضيوف"}</label><input dir="ltr" type="number" value={d.max_guests} onChange={(event) => set("max_guests", Number(event.target.value))} /></div>
         </div>
         <div className="sf-row"><label>الوصف (عربي)</label><textarea rows={3} value={d.description_ar || ""} onChange={(event) => set("description_ar", event.target.value)} /></div>
-        <div className="sf-row"><label>المرافق (سطر لكل مرفق)</label><textarea rows={4} dir="auto" value={d.amenities_text} onChange={(event) => set("amenities_text", event.target.value)} /></div>
+        <div className="sf-row"><label>{en ? "Amenities (one per line)" : "المرافق (سطر لكل مرفق)"}</label><textarea rows={4} dir="auto" value={d.amenities_text} onChange={(event) => set("amenities_text", event.target.value)} /></div>
       </section>
 
       <section className="pe-section">
-        <div className="pe-section-head"><h4>القنوات والتقويم</h4><a href="/calendar" target="_blank" rel="noreferrer">عرض التقويم الموحد ↗</a></div>
+        <div className="pe-section-head"><h4>{en ? "Channels & calendar" : "القنوات والتقويم"}</h4><a href="/calendar" target="_blank" rel="noreferrer">{en ? "Open unified calendar ↗" : "عرض التقويم الموحد ↗"}</a></div>
         <div className="pe-grid">
           <div className="sf-row"><label>رابط Airbnb</label><input dir="ltr" value={d.airbnb_url || ""} onChange={(event) => set("airbnb_url", event.target.value)} placeholder="https://airbnb.com/rooms/…" /></div>
           <div className="sf-row"><label>رابط Gathern</label><input dir="ltr" value={d.gathern_url || ""} onChange={(event) => set("gathern_url", event.target.value)} placeholder="https://gathern.co/…" /></div>
@@ -183,19 +186,19 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
       </section>
 
       <section className="pe-section">
-        <div className="pe-section-head"><h4>ربط أودو</h4><span>اختياري إلى أن تكتمل إعدادات Odoo</span></div>
+        <div className="pe-section-head"><h4>{en ? "Odoo connection" : "ربط أودو"}</h4><span>{en ? "Optional until Odoo settings are complete" : "اختياري إلى أن تكتمل إعدادات Odoo"}</span></div>
         <div className="pe-grid">
-          <div className="sf-row"><label>معرّف منتج Odoo Rental</label><input dir="ltr" type="number" value={d.odoo_product_id} onChange={(event) => set("odoo_product_id", event.target.value ? Number(event.target.value) : "")} placeholder="مثال: 42" /></div>
-          <div className="sf-row"><label>اسم منتج Odoo</label><input dir="ltr" value={d.odoo_product_name} onChange={(event) => set("odoo_product_name", event.target.value)} placeholder="Riyadh Penthouse — Night" /></div>
+          <div className="sf-row"><label>{en ? "Odoo Rental product ID" : "معرّف منتج Odoo Rental"}</label><input dir="ltr" type="number" value={d.odoo_product_id} onChange={(event) => set("odoo_product_id", event.target.value ? Number(event.target.value) : "")} placeholder="مثال: 42" /></div>
+          <div className="sf-row"><label>{en ? "Odoo product name" : "اسم منتج Odoo"}</label><input dir="ltr" value={d.odoo_product_name} onChange={(event) => set("odoo_product_name", event.target.value)} placeholder="Riyadh Penthouse — Night" /></div>
         </div>
-        <label className="pe-toggle"><input type="checkbox" checked={d.odoo_sync_enabled} onChange={(event) => set("odoo_sync_enabled", event.target.checked)} /> السماح بمزامنة حجوزات هذه الوحدة مع Odoo</label>
+        <label className="pe-toggle"><input type="checkbox" checked={d.odoo_sync_enabled} onChange={(event) => set("odoo_sync_enabled", event.target.checked)} /> {en ? "Allow this property's bookings to sync with Odoo" : "السماح بمزامنة حجوزات هذه الوحدة مع Odoo"}</label>
       </section>
 
       <div className="pe-foot">
-        <label className="pe-toggle"><input type="checkbox" checked={d.is_active} onChange={(event) => set("is_active", event.target.checked)} /> الوحدة نشطة (تظهر في الموقع)</label>
+        <label className="pe-toggle"><input type="checkbox" checked={d.is_active} onChange={(event) => set("is_active", event.target.checked)} /> {en ? "Property is active (visible on site)" : "الوحدة نشطة (تظهر في الموقع)"}</label>
         <div className="theme-actions">
-          <button className="btn-ghost" onClick={syncNow} disabled={syncBusy}>{syncBusy ? "جارٍ المزامنة…" : "مزامنة التقويم الآن ⟳"}</button>
-          <button className="btn-activate" onClick={save} disabled={busy}>{busy ? "جارٍ الحفظ…" : "حفظ جميع التعديلات"}</button>
+          <button className="btn-ghost" onClick={syncNow} disabled={syncBusy}>{syncBusy ? (en ? "Syncing…" : "جارٍ المزامنة…") : (en ? "Sync calendar now ⟳" : "مزامنة التقويم الآن ⟳")}</button>
+          <button className="btn-activate" onClick={save} disabled={busy}>{busy ? (en ? "Saving…" : "جارٍ الحفظ…") : (en ? "Save all changes" : "حفظ جميع التعديلات")}</button>
         </div>
       </div>
       {msg && <div className="admin-toast inline">{msg}</div>}
