@@ -171,3 +171,23 @@
 - [x] T116: Configure Vercel token securely for Horizon Stays deployment automation.
 - [ ] T117: Push local commit `50835f0` to GitHub `RakanSM/horizon-stays` main branch and trigger Vercel deployment.
 - [ ] T118: Verify live deployment build on Vercel and confirm `/admin/features` and calendar price edits are live on `horizonstay-sa.com`.
+
+## Landlord portal login issue (User request Aug 18)
+- [x] T119: Diagnosed landlord code rejection: the record in Supabase had an older access code while the link carried `LL-2A74F5B2`.
+- [x] T120: Updated the landlord access code in Supabase to `LL-2A74F5B2` without altering admin auth or `sno-edu.com`.
+- [x] T121: Verified successful landlord login and access to assigned units and financial summaries.
+
+## Landlord Property Classification & Separate Income Stats & Filters (User request Aug 18)
+- [x] T122: Added `relation_type` (owned vs managed) to `property_landlords` table and updated `landlord_data` RPC.
+- [x] T123: Updated Landlord portal (`/landlord`) to show distinct statistics for owned units (100% revenue) vs managed units (commission-based).
+- [x] T124: Verified local build (Vite + Vitest 7/7) and successful separation of owned revenue and management commissions.
+- [x] T125: Separated bookings and nights counts clearly for owned vs managed units in KPI cards and booking tables as requested.
+- [x] T126: Added period filters (All, Today, Last 7 Days, This Month, Custom Special Dates) and property selector (All properties vs specific unit) with real-time KPI and table re-calculation.
+
+
+- [x] T128: Verify build and test report filtering.
+
+## Landlord Portal & Filters Deployment (User request Aug 18)
+- [x] T129: Commit landlord filter and property classification changes locally.
+- [ ] T130: Push changes to GitHub main branch for Vercel production deployment.
+- [ ] T131: Verify live admin portal and landlord reports on `horizonstay-sa.com`.
