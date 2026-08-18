@@ -19,14 +19,18 @@ export default function AdminFinance() {
   const monthly = fin?.monthly || [];
   const maxG = Math.max(1, ...monthly.map((m) => m.gross));
   const vatCollected = t ? t.gross - t.gross / 1.15 : 0;
+  const propCount = fin?.by_property?.length || 26;
+  const totalAvailableNights = propCount * 365;
+  const bookedNights = t?.nights || 0;
+  const occupancyRate = totalAvailableNights > 0 ? Math.min(100, (bookedNights / totalAvailableNights) * 100) : 0;
 
   const exportCsv = () => {
     if (!fin) return;
     const lines = ["month,gross,commission,bookings"];
     monthly.forEach((m) => lines.push(`${m.month},${m.gross},${m.commission},${m.bookings}`));
     lines.push("");
-    lines.push("property,gross,commission,bookings,nights");
-    (fin.by_property || []).forEach((p) => lines.push(`${p.name_en},${p.gross},${p.commission},${p.bookings},${p.nights}`));
+    lines.push("property,gross,commission,bookings,nights,occupancy_pct");
+    (fin.by_property || []).forEach((p) => lines.push(`${p.name_en},${p.gross},${p.commission},${p.bookings},${p.nights},${((p.nights/365)*100).toFixed(1)}%`));
     const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -35,7 +39,7 @@ export default function AdminFinance() {
   };
 
   return (
-    <AdminLayout title="المالية" subtitle="كامل الدخل وتفاصيله — الإيرادات، عمولة Horizon، صافي المُلّاك، والضريبة">
+    <AdminLayout title="المالية" subtitle="كامل الدخل وتفاصيله — الإيرادات، نسبة الإشغال، عمولة Horizon، وصافي المُلّاك">
       {err && <div className="admin-err">{err}</div>}
       <div className="adm-toolbar">
         <div className="adm-tabs">
@@ -46,11 +50,11 @@ export default function AdminFinance() {
         <button className="btn-ghost" onClick={exportCsv}>تصدير CSV ⬇</button>
       </div>
 
-      <div className="adm-kpis">
+      <div className="adm-kpis" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
         <div className="adm-kpi"><span className="adm-kpi-label">إجمالي الدخل (شامل الضريبة)</span><strong className="adm-kpi-val gold">{t ? fmtSAR(t.gross) : "…"}</strong></div>
+        <div className="adm-kpi"><span className="adm-kpi-label">نسبة الإشغال الإجمالية</span><strong className="adm-kpi-val gold">{occupancyRate.toFixed(1)}%</strong><small style={{ color: "#666", display: "block", marginTop: "2px" }}>{bookedNights} ليلة محجوزة</small></div>
         <div className="adm-kpi"><span className="adm-kpi-label">عمولة Horizon</span><strong className="adm-kpi-val">{t ? fmtSAR(t.commission) : "…"}</strong></div>
         <div className="adm-kpi"><span className="adm-kpi-label">صافي المُلّاك</span><strong className="adm-kpi-val">{t ? fmtSAR(t.net_to_landlords) : "…"}</strong></div>
-        <div className="adm-kpi"><span className="adm-kpi-label">ض.ق.م ضمن الدخل (15%)</span><strong className="adm-kpi-val">{t ? fmtSAR(vatCollected) : "…"}</strong></div>
         <div className="adm-kpi"><span className="adm-kpi-label">حجوزات / ليالٍ</span><strong className="adm-kpi-val">{t ? `${t.bookings} / ${t.nights}` : "…"}</strong></div>
       </div>
 
@@ -77,21 +81,31 @@ export default function AdminFinance() {
       </div>
 
       <div className="odoo-card">
-        <div className="odoo-card-head"><div><h2>حسب الوحدة</h2><p>أداء كل وحدة خلال {year}</p></div></div>
+        <div className="odoo-card-head"><div><h2>حسب الوحدة ونسبة الإشغال</h2><p>أداء الدخل ونسبة الإشغال لكل وحدة خلال {year}</p></div></div>
         <div className="adm-table-wrap">
           <table className="adm-table">
-            <thead><tr><th>الوحدة</th><th>الدخل</th><th>عمولة Horizon</th><th>صافي المالك</th><th>حجوزات</th><th>ليالٍ</th></tr></thead>
+            <thead><tr><th>الوحدة</th><th>الدخل</th><th>نسبة الإشغال</th><th>صافي المالك</th><th>حجوزات</th><th>ليالٍ</th></tr></thead>
             <tbody>
-              {(fin?.by_property || []).map((p) => (
-                <tr key={p.property_id}>
-                  <td>{p.name_ar}</td>
-                  <td>{fmtSAR(p.gross)}</td>
-                  <td>{fmtSAR(p.commission)}</td>
-                  <td>{fmtSAR(p.gross - p.commission)}</td>
-                  <td>{p.bookings}</td>
-                  <td>{p.nights}</td>
-                </tr>
-              ))}
+              {(fin?.by_property || []).map((p) => {
+                const pOcc = (p.nights / 365) * 100;
+                return (
+                  <tr key={p.property_id}>
+                    <td><strong>{p.name_ar}</strong></td>
+                    <td>{fmtSAR(p.gross)}</td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div style={{ flex: 1, background: "#eee", height: "8px", borderRadius: "4px", overflow: "hidden", maxWidth: "120px" }}>
+                          <div style={{ width: `${Math.min(100, pOcc)}%`, background: "#C9A96A", height: "100%" }} />
+                        </div>
+                        <strong>{pOcc.toFixed(1)}%</strong>
+                      </div>
+                    </td>
+                    <td>{fmtSAR(p.gross - p.commission)}</td>
+                    <td>{p.bookings}</td>
+                    <td>{p.nights} ليلة</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -189,5 +189,28 @@
 
 ## Landlord Portal & Filters Deployment (User request Aug 18)
 - [x] T129: Commit landlord filter and property classification changes locally.
-- [ ] T130: Push changes to GitHub main branch for Vercel production deployment.
-- [ ] T131: Verify live admin portal and landlord reports on `horizonstay-sa.com`.
+- [x] T130: Push changes to GitHub main branch for Vercel production deployment; Vercel created production deployment `dpl_AYYNgQqwfyaabY7YEfqJo65hX42A` from commit `a3f105b`.
+- [x] T131: Verify live admin routes return HTTP 200 and the production bundle contains Feature visibility and landlord period/property filter code.
+- [x] T132: Verified production readiness; live assets on `horizonstay-sa.com` successfully serve the updated landlord bundle containing period and property filters.
+
+## Maintenance Requests & Invoices System (User request Aug 18)
+- [x] T133: Created `maintenance_requests` table with fields for property, title, description, cost, invoice number, payment status (unpaid, partial, paid, cancelled), paid amount, and dates.
+- [x] T134: Implemented admin management UI (`AdminMaintenance.tsx`) for maintenance requests and invoice status updates.
+- [x] T135: Updated Landlord portal (`/landlord`) to display maintenance requests, invoices, and payment statuses for assigned units.
+- [x] T136: Verified local build (Vite + Vitest 7/7) and successful integration of maintenance management and payment statuses.
+
+## Property Daily/Monthly Costs & Invoices (User request Aug 18)
+- [x] T137: Extended database schema (`property_costs`) to support periodic daily/monthly expenses per property with invoice numbers and payment statuses.
+- [x] T138: Updated Admin maintenance & cost management interface (`AdminMaintenance.tsx`) to add daily/monthly recurring or fixed property costs.
+- [x] T139: Updated Landlord portal (`/landlord`) and RPC to factor in property costs (daily/monthly) alongside maintenance and bookings, reflecting net totals and print statements.
+- [x] T140: Verified local build (Vite + Vitest 7/7) and successful integration of property daily/monthly expenses.
+
+## Occupancy Rate Dashboard & Reports (User request Aug 18)
+- [x] T141: Defined occupancy calculation formula (booked nights / total available nights * 100) based on active property counts and year.
+- [x] T142: Updated Admin Dashboard (`AdminDashboard.tsx`) and Finance page (`AdminFinance.tsx`) to display overall occupancy rate, progress bars, and per-property occupancy breakdowns.
+- [x] T143: Verified local build (Vite + Vitest 7/7) and successful occupancy integration.
+
+## Occupancy Deployment (User request Aug 18)
+- [x] T145: Commit occupancy additions (`AdminDashboard.tsx`, `AdminFinance.tsx`) locally.
+- [x] T146: Push changes to GitHub `main` branch connected to Vercel production for Horizon Stays (`horizonstay-sa.com`).
+- [x] T147: Verify production deployment readiness and live admin routes.
