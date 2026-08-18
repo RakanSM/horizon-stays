@@ -166,3 +166,8 @@
 - [x] T113: Add Admin → Feature visibility workspace at `/admin/features` with Arabic/English groups, switches, enable/hide all, discard, and save controls.
 - [x] T114: Wire Home, PropertyDetail, Navbar/footer, public route gates, seasonal decor, gallery, amenities, map, sharing, WhatsApp, Airbnb, and Gathern controls to respect saved flags.
 - [x] T115: Vite build passed, 7/7 Vitest tests passed, Arabic/English UI verified, and a Supabase round-trip test toggled WhatsApp off then restored it to `16/16 on`.
+
+## Vercel Token Deployment (User request Aug 18)
+- [x] T116: Configure Vercel token securely for Horizon Stays deployment automation.
+- [ ] T117: Push local commit `50835f0` to GitHub `RakanSM/horizon-stays` main branch and trigger Vercel deployment.
+- [ ] T118: Verify live deployment build on Vercel and confirm `/admin/features` and calendar price edits are live on `horizonstay-sa.com`.
