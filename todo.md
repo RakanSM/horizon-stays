@@ -155,3 +155,7 @@
 - [ ] T106: Ensure unauthenticated production `/calendar` redirects to `/admin` and authenticated production managers receive the English admin shell.
 - [ ] T107: Ensure the selected-property admin header shows `View property` and `Edit price` side by side, with date-specific, range-specific, weekday, weekend, closed-date, and minimum-stay controls visible after Edit price.
 - [ ] T108: Test the visitor/manager split and document the exact production URL and login flow before preparing the release.
+
+## Production promotion blocker (user request Aug 17)
+- [ ] T109: Promote the corrected admin-only English calendar release from local commit `aa1c37e`/documentation `6e963c4` to the Vercel-connected production branch without touching `sno-edu.com`.
+- [ ] T110: Verify that Vercel builds the corrected commit, promote it to production, and confirm `/calendar` shows admin login, English admin shell, View property + Edit price, and special date pricing controls.
