@@ -157,5 +157,12 @@
 - [ ] T108: Test the visitor/manager split and document the exact production URL and login flow before preparing the release.
 
 ## Production promotion blocker (user request Aug 17)
-- [ ] T109: Promote the corrected admin-only English calendar release from local commit `aa1c37e`/documentation `6e963c4` to the Vercel-connected production branch without touching `sno-edu.com`.
-- [ ] T110: Verify that Vercel builds the corrected commit, promote it to production, and confirm `/calendar` shows admin login, English admin shell, View property + Edit price, and special date pricing controls.
+- [x] T109: Promote the corrected admin-only English calendar release from local commit `aa1c37e`/documentation `6e963c4` to the Vercel-connected production branch without touching `sno-edu.com`.
+- [x] T110: Verify that Vercel builds the corrected commit, promote it to production, and confirm `/calendar` shows admin login, English admin shell, View property + Edit price, and special date pricing controls.
+
+## Admin Feature & Button Visibility Control (User Request Aug 18)
+- [x] T111: Define visibility toggles schema for booking methods (MyFatoorah-ready, Airbnb, WhatsApp), channel buttons, pages (About Us, Contact, Calendar, Landlord), and custom feature flags.
+- [x] T112: Implement protected Supabase `admin_set_feature_flags` RPC and JSONB storage on `site_settings.feature_flags`; public reads use the existing site settings loader.
+- [x] T113: Add Admin → Feature visibility workspace at `/admin/features` with Arabic/English groups, switches, enable/hide all, discard, and save controls.
+- [x] T114: Wire Home, PropertyDetail, Navbar/footer, public route gates, seasonal decor, gallery, amenities, map, sharing, WhatsApp, Airbnb, and Gathern controls to respect saved flags.
+- [x] T115: Vite build passed, 7/7 Vitest tests passed, Arabic/English UI verified, and a Supabase round-trip test toggled WhatsApp off then restored it to `16/16 on`.

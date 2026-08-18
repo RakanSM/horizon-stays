@@ -10,7 +10,7 @@ import ScrollStory from "../components/ScrollStory";
 const WHATSAPP = "https://wa.me/966920035843";
 
 export default function Home() {
-  const { content: liveContent } = useTheme();
+  const { content: liveContent, featureFlags } = useTheme();
   const editorContent = useContext(EditorContentContext);
   const content = editorContent || liveContent;
   const { lang, t } = useLang();
@@ -95,9 +95,11 @@ export default function Home() {
               <a href="#properties" className="btn btn-gold">
                 {t("explore_units")}
               </a>
-              <a href={WHATSAPP} target="_blank" rel="noreferrer" className="btn btn-outline">
-                {t("whatsapp_us")}
-              </a>
+              {featureFlags.booking_whatsapp && (
+                <a href={WHATSAPP} target="_blank" rel="noreferrer" className="btn btn-outline">
+                  {t("whatsapp_us")}
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -127,9 +129,9 @@ export default function Home() {
         </section>
       )}
 
-      <ScrollStory />
+      {featureFlags.feature_scrollytelling && <ScrollStory />}
 
-      <section className="section px-layer" id="properties">
+      {featureFlags.nav_properties && <section className="section px-layer" id="properties">
         <div className="container">
           <Reveal className="section-head">
             <div>
@@ -214,7 +216,7 @@ export default function Home() {
             </div>
           )}
         </div>
-      </section>
+      </section>}
 
       <section className="section services-section">
         <div className="container">

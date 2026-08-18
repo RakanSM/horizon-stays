@@ -10,6 +10,7 @@ import {
   type PropertyPriceQuote,
 } from "../lib/supabase";
 import { useLang, propName, localizeAmenity, neighborhoodLabel, MONTHS, WEEKDAYS } from "../lib/i18n";
+import { useTheme } from "../lib/ThemeContext";
 
 function monthMatrix(year: number, month: number) {
   const first = new Date(Date.UTC(year, month, 1));
@@ -24,6 +25,7 @@ function monthMatrix(year: number, month: number) {
 export default function PropertyDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { lang, t } = useLang();
+  const { featureFlags } = useTheme();
   const [property, setProperty] = useState<Property | null | undefined>(undefined);
   const [blocked, setBlocked] = useState<BlockedDate[]>([]);
   const [monthOffset, setMonthOffset] = useState(0);
@@ -205,7 +207,7 @@ export default function PropertyDetail() {
         <Link to="/">{t("back_to_all")}</Link> / {name}
       </nav>
 
-      {photos.length > 0 && (
+      {featureFlags.feature_gallery && photos.length > 0 && (
         <>
           <div className="detail-hero">
             <img
@@ -229,7 +231,7 @@ export default function PropertyDetail() {
         </>
       )}
 
-      {lightbox !== null && (
+      {featureFlags.feature_gallery && lightbox !== null && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <button className="lb-close" onClick={() => setLightbox(null)} aria-label="close">
             ✕
@@ -270,8 +272,10 @@ export default function PropertyDetail() {
               {property.type || t("luxury_unit_type")}
             </div>
             <div className="detail-actions">
-              <button type="button" onClick={shareProperty} className="detail-action-btn"><span aria-hidden>↗</span> {lang === "ar" ? "مشاركة" : "Share"}</button>
-              {property.lat && property.lng ? <a className="detail-action-btn" href={`https://www.google.com/maps/search/?api=1&query=${property.lat},${property.lng}`} target="_blank" rel="noreferrer"><span aria-hidden>⌖</span> {lang === "ar" ? "الموقع على الخريطة" : "View map"}</a> : null}
+              {featureFlags.feature_social_share && <button type="button" onClick={shareProperty} className="detail-action-btn"><span aria-hidden>↗</span> {lang === "ar" ? "مشاركة" : "Share"}</button>}
+              {featureFlags.feature_map && property.lat && property.lng ? <a className="detail-action-btn" href={`https://www.google.com/maps/search/?api=1&query=${property.lat},${property.lng}`} target="_blank" rel="noreferrer"><span aria-hidden>⌖</span> {lang === "ar" ? "الموقع على الخريطة" : "View map"}</a> : null}
+              {featureFlags.booking_airbnb && property.airbnb_url ? <a className="detail-action-btn" href={property.airbnb_url} target="_blank" rel="noreferrer">{t("view_airbnb")}</a> : null}
+              {featureFlags.booking_gathern && property.gathern_url ? <a className="detail-action-btn" href={property.gathern_url} target="_blank" rel="noreferrer">{t("view_gathern")}</a> : null}
             </div>
           </div>
 
@@ -307,7 +311,7 @@ export default function PropertyDetail() {
             </>
           )}
 
-          {amenities.length > 0 && (
+          {featureFlags.feature_amenities && amenities.length > 0 && (
             <>
               <h3 style={{ marginTop: 26, fontSize: "1.05rem" }}>{t("amenities")}</h3>
               <div className="amenities">
@@ -421,21 +425,21 @@ export default function PropertyDetail() {
               </button>
             )}
 
-            <a
+            {featureFlags.booking_whatsapp && <a
               href={`https://wa.me/966920035843?text=${encodeURIComponent(waText)}`}
               target="_blank"
               rel="noreferrer"
               className="btn btn-gold"
             >
               {t("book_whatsapp")}
-            </a>
+            </a>}
             <div className="bb-note">{lang === "ar" ? "السعر النهائي يحسب تلقائياً حسب التواريخ المختارة." : "Your final price is calculated automatically from the selected dates."}</div>
           </div>
         </aside>
       </div>
 
       {/* Sticky mobile booking bar — always-visible CTA on phones */}
-      <div className="mobile-book-bar" dir={lang === "ar" ? "rtl" : "ltr"}>
+      {featureFlags.booking_whatsapp && <div className="mobile-book-bar" dir={lang === "ar" ? "rtl" : "ltr"}>
         <div className="mbb-info">
           {nights > 0 ? (
             <>
@@ -461,7 +465,7 @@ export default function PropertyDetail() {
         >
           {t("book_whatsapp")}
         </a>
-      </div>
+      </div>}
     </div>
   );
 }

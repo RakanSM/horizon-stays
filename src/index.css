@@ -3539,3 +3539,51 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
 .adm-head-tools button { border:0; border-radius:999px; padding:.35rem .75rem; background:transparent; color:var(--text-muted); font:inherit; font-size:.78rem; cursor:pointer; }
 .adm-head-tools button.active { color:var(--cta-text,#14120f); background:var(--gold); }
 @media (max-width:700px) { .adm-page-head { align-items:stretch; flex-direction:column; } .adm-head-tools { align-self:flex-start; } }
+
+/* ---------- Admin feature visibility ---------- */
+.feature-flags-page { max-width: 1180px; }
+.feature-flags-hero { margin-top: 0; }
+.feature-flags-hero .odoo-card-head { align-items: center; }
+.feature-flags-count {
+  flex-shrink: 0;
+  padding: 7px 13px;
+  border-radius: 999px;
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.feature-flags-actions { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.feature-flags-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.feature-flags-grid .odoo-card { margin-top: 0; }
+.feature-flag-group .odoo-card-head { min-height: 64px; }
+.feature-flag-list { display: grid; gap: 8px; }
+.feature-flag-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 13px 14px; border: 1px solid var(--border); border-radius: 13px;
+  background: color-mix(in srgb, var(--bg) 50%, transparent);
+  transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out), opacity 180ms var(--ease-out);
+  cursor: pointer;
+}
+.feature-flag-row.is-on { border-color: color-mix(in srgb, var(--gold) 34%, var(--border)); background: color-mix(in srgb, var(--gold) 6%, var(--card)); }
+.feature-flag-row.is-off { opacity: 0.72; }
+.feature-flag-row:hover { border-color: var(--gold); opacity: 1; }
+.feature-flag-copy { display: grid; gap: 3px; min-width: 0; }
+.feature-flag-copy strong { color: var(--text); font-size: 0.9rem; }
+.feature-flag-copy small { color: var(--text-muted); font-size: 0.7rem; line-height: 1.45; }
+.feature-switch { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.feature-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.feature-switch-track { width: 42px; height: 23px; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--text-muted) 35%, var(--bg)); transition: background 180ms var(--ease-out); }
+.feature-switch-track span { display: block; width: 17px; height: 17px; border-radius: 50%; background: var(--card); box-shadow: 0 2px 7px rgb(0 0 0 / 20%); transition: transform 180ms var(--ease-out); }
+.feature-flag-row.is-on .feature-switch-track { background: var(--gold); }
+.feature-flag-row.is-on .feature-switch-track span { transform: translateX(19px); }
+[dir="rtl"] .feature-flag-row.is-on .feature-switch-track span { transform: translateX(-19px); }
+.feature-switch em { min-width: 39px; color: var(--text-muted); font-size: 0.68rem; font-style: normal; }
+.feature-flag-row.is-on .feature-switch em { color: var(--gold); }
+@media (max-width: 860px) {
+  .feature-flags-grid { grid-template-columns: 1fr; }
+  .feature-flags-hero .odoo-card-head { align-items: flex-start; flex-direction: column; }
+  .feature-flags-actions > button { flex: 1 1 auto; }
+}
+

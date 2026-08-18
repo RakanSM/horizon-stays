@@ -13,10 +13,11 @@ const NAV = [
   { to: "/admin/themes", icon: "🎨", label: "الطُّبوع", en: "Themes" },
   { to: "/admin/integrations", icon: "🔌", label: "التكاملات", en: "Integrations" },
   { to: "/admin/cleaning", icon: "🧹", label: "النظافة", en: "Cleaning" },
+  { to: "/admin/features", icon: "🎛️", label: "ظهور الميزات", en: "Feature visibility" },
 ];
 
 export default function AdminLayout({ title, subtitle, children, authVerified = false }: { title: string; subtitle?: string; children: ReactNode; authVerified?: boolean }) {
-  const { odooUrl } = useTheme();
+  const { odooUrl, featureFlags } = useTheme();
   const { lang, setLang } = useLang();
   const [authed, setAuthed] = useState<boolean | null>(authVerified ? true : null);
   const [password, setPassword] = useState("");
@@ -73,7 +74,7 @@ export default function AdminLayout({ title, subtitle, children, authVerified = 
           <span>{lang === "en" ? "Admin portal" : "لوحة التحكم"}</span>
         </div>
         <nav className="adm-nav">
-          {NAV.map((n) => (
+          {NAV.filter((n) => n.to !== "/calendar" || featureFlags.nav_calendar).map((n) => (
             <Link key={n.to} to={n.to} className={`adm-nav-item ${isActive(n) ? "active" : ""}`} onClick={() => setNavOpen(false)}>
               <span className="adm-nav-icon">{n.icon}</span>
               {lang === "en" ? n.en : n.label}

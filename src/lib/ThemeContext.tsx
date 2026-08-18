@@ -6,6 +6,7 @@ import {
   type ThemeOverrides, type SiteContent, type ThemePreset, type ThemeSchedule,
   type ThemeVariant,
 } from "./themes";
+import { DEFAULT_FEATURE_FLAGS, normalizeFeatureFlags, type FeatureFlags } from "./featureFlags";
 
 type ThemeState = {
   activeThemeId: string;
@@ -18,6 +19,8 @@ type ThemeState = {
   odooUrl: string;
   schedules: ThemeSchedule[];
   customThemes: ThemePreset[];
+  featureFlags: FeatureFlags;
+  saveFeatureFlags: (token: string, flags: FeatureFlags) => Promise<void>;
   /** id of the schedule currently forcing the theme, null if manual theme is shown */
   activeScheduleId: string | null;
   /** visitor's light/dark preference: default = theme's own mode, flipped = opposite */
@@ -115,6 +118,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   );
   const [customCss, setCustomCss] = useState("");
   const [customJs, setCustomJs] = useState("");
+  const [featureFlags, setFeatureFlags] = useState<FeatureFlags>(DEFAULT_FEATURE_FLAGS);
 
   // Apply immediately from cache (no flash), then refresh from Supabase
   useEffect(() => {
@@ -156,7 +160,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     try {
       const { data } = await supabase
         .from("site_settings")
-        .select("active_theme, overrides, odoo_url, schedules, custom_themes, custom_css, custom_js")
+        .select("active_theme, overrides, odoo_url, schedules, custom_themes, custom_css, custom_js, feature_flags")
         .eq("id", 1)
         .maybeSingle();
       if (data) {
@@ -170,6 +174,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         const js = (data as any).custom_js || "";
         setCustomCss(css);
         setCustomJs(js);
+        setFeatureFlags(normalizeFeatureFlags((data as any).feature_flags));
         injectCss(css);
         injectJs(js);
         applyState(base, ov, sch, custom);
@@ -245,6 +250,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     injectCss(css);
   }, []);
 
+  const saveFeatureFlags = useCallback(async (token: string, flags: FeatureFlags) => {
+    const normalized = normalizeFeatureFlags(flags);
+    const { data, error } = await supabase.rpc("admin_set_feature_flags", {
+      p_token: token,
+      p_flags: normalized,
+    });
+    if (error) throw error;
+    if (data && data.ok === false) throw new Error(data.error || "failed");
+    setFeatureFlags(normalizeFeatureFlags(data?.feature_flags || normalized));
+  }, []);
+
   const setOdooUrl = useCallback(async (token: string, url: string) => {
     const { error } = await supabase.rpc("admin_set_odoo_url", { p_token: token, p_url: url });
     if (error) throw error;
@@ -260,6 +276,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         activeThemeId, baseThemeId, overrides, content, theme, loading,
         previewTheme, saveSettings, refresh, odooUrl, setOdooUrl,
         schedules, customThemes: customThemesState, activeScheduleId,
+        featureFlags, saveFeatureFlags,
         saveSchedules, saveCustomThemes, variant, toggleVariant,
         customCss, customJs, saveCode, previewCss,
       }}
