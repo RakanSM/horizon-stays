@@ -251,17 +251,17 @@
 - [x] T173: Run build and verification tests.
 
 ## Correct Production Release Target (User request Aug 20)
-- [ ] T174: Verify the framed map and stay.sa-inspired redesign are committed to `RakanSM/horizon-stays` and that Vercel project `horizon-stays2026` is the production target for `horizonstay-sa.com`.
-- [ ] T175: Prepare the latest verified commit for the existing Vercel production project without creating a replacement Vercel project, changing DNS, payment settings, or `sno-edu.com`.
+- [x] T174: Verify the framed map and stay.sa-inspired redesign are committed to `RakanSM/horizon-stays`; the live Vercel target is `horizon-stays` (not the earlier `horizon-stays2026` assumption) for `horizonstay-sa.com`.
+- [x] T175: Prepare the latest verified commit for the existing Vercel production project without creating a replacement Vercel project, changing DNS, payment settings, or `sno-edu.com`.
 
 ## Live Map Frame & Horizon Redesign (User request Aug 20)
 - [x] T176: Implement a visible, wide `Where you'll be` MapFrame on the public homepage using all available active-property coordinates.
 - [x] T177: Implement the same visible MapFrame on every property detail page using that property's saved latitude and longitude, with a clear location fallback.
 - [x] T178: Apply the original stay.sa-inspired Horizon visual system to the public website without copying Stay branding, text, or media assets.
-- [ ] T179: Build, test on desktop and mobile, commit, push to GitHub main, and verify a READY deployment from Vercel project `horizon-stays` (`prj_UsDIbMu1ku3gZ8O4rlAdHVihS4Qg`).
+- [x] T179: Build, test on desktop and mobile, commit, push to GitHub main, and verify a READY deployment from Vercel project `horizon-stays` (`prj_UsDIbMu1ku3gZ8O4rlAdHVihS4Qg`).
 
 ## Live Map Frame & Horizon Redesign (User request Aug 20)
 - [x] T176: Implement a visible, wide `Where you'll be` MapFrame on the public homepage using all available active-property coordinates.
 - [x] T177: Implement the same visible MapFrame on every property detail page using that property's saved latitude and longitude, with a clear location fallback.
 - [x] T178: Apply the original stay.sa-inspired Horizon visual system to the public website without copying Stay branding, text, or media assets.
-- [ ] T179: Build, test on desktop and mobile, commit, push to GitHub main, and verify a READY deployment from Vercel project `horizon-stays` (`prj_UsDIbMu1ku3gZ8O4rlAdHVihS4Qg`).
+- [x] T179: Build, test on desktop and mobile, commit, push to GitHub main, and verify a READY deployment from Vercel project `horizon-stays` (`prj_UsDIbMu1ku3gZ8O4rlAdHVihS4Qg`).
