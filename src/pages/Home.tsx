@@ -7,6 +7,7 @@ import { useLang, propName, neighborhoodLabel } from "../lib/i18n";
 import { Reveal, Counter, useParallax } from "../lib/motion";
 import { EditorContentContext } from "./ThemeEditor";
 import ScrollStory from "../components/ScrollStory";
+import MapFrame from "../components/MapFrame";
 
 const WHATSAPP = "https://wa.me/966920035843";
 
@@ -219,6 +220,14 @@ export default function Home() {
           )}
         </div>
       </section>}
+
+      {featureFlags.feature_map && properties && (
+        <section className="section map-section-wrap">
+          <div className="container">
+            <MapFrame locations={properties} lang={lang} variant="collection" />
+          </div>
+        </section>
+      )}
 
       <section className="section services-section">
         <div className="container">

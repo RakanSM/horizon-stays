@@ -11,6 +11,7 @@ import {
 } from "../lib/supabase";
 import { useLang, propName, localizeAmenity, neighborhoodLabel, MONTHS, WEEKDAYS } from "../lib/i18n";
 import { useTheme } from "../lib/ThemeContext";
+import MapFrame from "../components/MapFrame";
 
 function monthMatrix(year: number, month: number) {
   const first = new Date(Date.UTC(year, month, 1));
@@ -322,6 +323,10 @@ export default function PropertyDetail() {
                 ))}
               </div>
             </>
+          )}
+
+          {featureFlags.feature_map && (
+            <MapFrame locations={[property]} lang={lang} variant="property" />
           )}
 
           <div className="calendar-wrap">
