@@ -1,20 +1,20 @@
 /* Horizon Stays — premium dark + gold, Arabic-first RTL */
 :root {
-  --bg: #0d0c0b;
-  --bg-2: #14120f;
-  --card: #1a1815;
-  --card-2: #201d19;
-  --border: #2c2822;
-  --text: #f0ead9;
-  --text-muted: #a89f8d;
-  --gold: #d4a84b;
-  --gold-2: #b8862a;
-  --gold-soft: rgba(212, 168, 75, 0.14);
-  --radius: 6px;
+  --bg: #07090e;
+  --bg-2: #0f1423;
+  --card: #141c2f;
+  --card-2: #1a253f;
+  --border: #233254;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --gold: #f59e0b;
+  --gold-2: #d97706;
+  --gold-soft: rgba(245, 158, 11, 0.15);
+  --radius: 12px;
   --font-body: "IBM Plex Sans Arabic", "Cairo", sans-serif;
   --font-display: "Cairo", "IBM Plex Sans Arabic", sans-serif;
-  --font-latin: "Cormorant Garamond", serif;
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --font-latin: "Space Grotesk", sans-serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -3587,3 +3587,52 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
   .feature-flags-actions > button { flex: 1 1 auto; }
 }
 
+
+/* ---------- Dynamic Theme & Responsive Motion System ---------- */
+@keyframes heroFadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+.hero-anim-1 { animation: heroFadeInUp 0.7s var(--ease-out) 0.1s both; }
+.hero-anim-2 { animation: heroFadeInUp 0.8s var(--ease-out) 0.2s both; }
+.hero-anim-3 { animation: heroFadeInUp 0.8s var(--ease-out) 0.3s both; }
+.hero-anim-4 { animation: heroFadeInUp 0.9s var(--ease-out) 0.4s both; }
+
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+  animation: pulseSlow 2s ease-in-out infinite;
+  margin-inline-end: 8px;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

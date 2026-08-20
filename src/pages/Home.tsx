@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 import { fetchProperties, propertyPhotos, type Property } from "../lib/supabase";
 import { useTheme } from "../lib/ThemeContext";
+import { getTheme } from "../lib/themes";
 import { useLang, propName, neighborhoodLabel } from "../lib/i18n";
 import { Reveal, Counter, useParallax } from "../lib/motion";
 import { EditorContentContext } from "./ThemeEditor";
@@ -10,7 +11,7 @@ import ScrollStory from "../components/ScrollStory";
 const WHATSAPP = "https://wa.me/966920035843";
 
 export default function Home() {
-  const { content: liveContent, featureFlags } = useTheme();
+  const { content: liveContent, featureFlags, activeThemeId } = useTheme();
   const editorContent = useContext(EditorContentContext);
   const content = editorContent || liveContent;
   const { lang, t } = useLang();
@@ -70,7 +71,8 @@ export default function Home() {
     return filter === "all" && !showAll ? filtered.slice(0, 6) : filtered;
   }, [filtered, filter, showAll]);
 
-  const heroImg = "https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/kafd-penthouse-3bd-1.webp";
+  const currentTheme = getTheme(activeThemeId);
+  const heroImg = currentTheme.heroImage || "https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/kafd-penthouse-3bd-1.webp";
 
   // Theme content overrides are authored in Arabic; use them for AR, t() for other languages
   const heroBadge = lang === "ar" && content.heroBadge ? content.heroBadge : t("hero_badge");

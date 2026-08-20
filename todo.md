@@ -169,8 +169,8 @@
 
 ## Vercel Token Deployment (User request Aug 18)
 - [x] T116: Configure Vercel token securely for Horizon Stays deployment automation.
-- [ ] T117: Push local commit `50835f0` to GitHub `RakanSM/horizon-stays` main branch and trigger Vercel deployment.
-- [ ] T118: Verify live deployment build on Vercel and confirm `/admin/features` and calendar price edits are live on `horizonstay-sa.com`.
+- [x] T117: Push local commit `50835f0` to GitHub `RakanSM/horizon-stays` main branch and trigger Vercel deployment.
+- [x] T118: Verify live deployment build on Vercel and confirm `/admin/features` and calendar price edits are live on `horizonstay-sa.com`.
 
 ## Landlord portal login issue (User request Aug 18)
 - [x] T119: Diagnosed landlord code rejection: the record in Supabase had an older access code while the link carried `LL-2A74F5B2`.
@@ -245,7 +245,7 @@
 - [ ] T166: Prepare deployment summary, risk analysis, rollback instructions, and file diff report.
 
 ## Dynamic Pricing & Airbnb-style Strikethrough Discount System (User request Mar 2026)
-- [ ] T170: Extend property pricing structure to support base price, custom date-specific pricing overrides, and weekly/monthly discount percentages.
-- [ ] T171: Update Admin calendar and pricing management (`AvailabilityCalendar.tsx` & `AdminProperties.tsx`) to let admins set custom date pricing and weekly/monthly discount rules per property.
-- [ ] T172: Update property detail booking widget (`PropertyDetail.tsx`) to calculate total nights dynamically, show weekly/monthly discount badge (e.g. "This host is offering a weekly discount"), and display strikethrough original total alongside the final discounted total price matching the Airbnb reference.
-- [ ] T173: Run build and verification tests.
+- [x] T170: Extend property pricing structure to support base price, custom date-specific pricing overrides, and weekly/monthly discount percentages.
+- [x] T171: Update Admin calendar and pricing management (`AvailabilityCalendar.tsx` & `AdminProperties.tsx`) to let admins set custom date pricing and weekly/monthly discount rules per property.
+- [x] T172: Update property detail booking widget (`PropertyDetail.tsx`) to calculate total nights dynamically, show weekly/monthly discount badge (e.g. "This host is offering a weekly discount"), and display strikethrough original total alongside the final discounted total price matching the Airbnb reference.
+- [x] T173: Run build and verification tests.
