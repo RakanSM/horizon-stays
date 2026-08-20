@@ -214,3 +214,38 @@
 - [x] T145: Commit occupancy additions (`AdminDashboard.tsx`, `AdminFinance.tsx`) locally.
 - [x] T146: Push changes to GitHub `main` branch connected to Vercel production for Horizon Stays (`horizonstay-sa.com`).
 - [x] T147: Verify production deployment readiness and live admin routes.
+
+## Theme Market & Editable Banners/Pics (User request Aug 18)
+- [x] T148: Designed Theme Market data structure supporting 20+ celebration & luxury themes, editable hero banners, custom logos, favicons, colors, and asset replacement.
+- [x] T149: Implemented Admin Theme Market workspace (`AdminThemes.tsx`) with preview, activate, duplicate, edit, and image replacement controls.
+- [x] T150: Wired public theme application so active theme banners and assets render instantly across the site.
+- [x] T151: Verified local build (Vite + Vitest 7/7) and successful theme market asset replacement.
+
+## Complete Theme Market (User request Aug 18)
+- [x] T152: Ensured all defined themes in `src/lib/themes.ts` are listed in Theme Market (`AdminThemes.tsx`).
+- [x] T153: Verified full rendering, preview, and activation of all preset and custom themes.
+- [x] T154: Verified local build (Vite + Vitest 7/7) and successful complete theme market update.
+
+## Shopify & WordPress Themes in Theme Market (User request Aug 18)
+- [x] T155: Added Shopify-inspired store themes (`shopify-dawn`, `shopify-boutique`) and WordPress-inspired editorial/magazine themes (`wordpress-editorial`, `wordpress-minimal`) to `src/lib/themes.ts`.
+- [x] T156: Updated Theme Market UI (`AdminThemes.tsx`) with category tabs (All, Shopify Storefronts, WordPress Editorial, Luxury, Celebrations).
+- [x] T157: Verified local build (Vite + Vitest 7/7) and successful Shopify and WordPress theme previews and activations.
+
+## 2,500+ Theme Market Expansion (User request Aug 18)
+- [x] T158: Implemented dynamic theme generator in `src/lib/themes.ts` providing 2,500+ searchable, editable themes categorized across Shopify stores, WordPress editorials, luxury, and celebrations.
+- [x] T159: Added instant search and pagination in Theme Market (`AdminThemes.tsx`) to maintain lightning-fast browsing across 2,500+ themes.
+- [x] T160: Verified local build (Vite + Vitest 7/7) and successful 2,500+ theme selection and preview.
+
+## Comprehensive Performance, Security, and Theme Questionnaire (User request Aug 18)
+- [ ] T161: Establish git checkpoint and baseline performance audit.
+- [ ] T162: Expand Theme Editor (`ThemeEditor.tsx`) so every element (colors, typography, spacing, hero content, badges, logo URL, favicon URL, banner images, and CSS overrides) is fully editable and previewable in real-time.
+- [ ] T163: Create a Theme Questionnaire wizard (`ThemeQuestionnaire.tsx` / modal) that asks users preference questions (vibe, storefront vs editorial, dark vs light, accent tone) and generates, saves, and applies a tailored editable theme instantly.
+- [ ] T164: Implement production performance optimizations (asset compression hints, font-display, lazy loading, image formats) and balanced bot/rate-limiting rules (robots.txt, secure headers, rate limits without blocking legitimate users or crawlers).
+- [ ] T165: Run comprehensive build, unit tests (`pnpm test`), type check, and security verification.
+- [ ] T166: Prepare deployment summary, risk analysis, rollback instructions, and file diff report.
+
+## Dynamic Pricing & Airbnb-style Strikethrough Discount System (User request Mar 2026)
+- [ ] T170: Extend property pricing structure to support base price, custom date-specific pricing overrides, and weekly/monthly discount percentages.
+- [ ] T171: Update Admin calendar and pricing management (`AvailabilityCalendar.tsx` & `AdminProperties.tsx`) to let admins set custom date pricing and weekly/monthly discount rules per property.
+- [ ] T172: Update property detail booking widget (`PropertyDetail.tsx`) to calculate total nights dynamically, show weekly/monthly discount badge (e.g. "This host is offering a weekly discount"), and display strikethrough original total alongside the final discounted total price matching the Airbnb reference.
+- [ ] T173: Run build and verification tests.

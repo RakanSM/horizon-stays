@@ -5,6 +5,35 @@ import { fmtSAR } from "../lib/adminApi";
 const LL_KEY = "hs_landlord_token";
 const MONTHS_AR = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
+type MaintenanceReq = {
+  id: string;
+  property_id: number;
+  property_name_ar: string;
+  title: string;
+  description: string | null;
+  cost: number;
+  invoice_number: string | null;
+  payment_status: "unpaid" | "partial" | "paid" | "cancelled";
+  paid_amount: number;
+  status: string;
+  created_at: string;
+};
+
+type PropertyCost = {
+  id: string;
+  property_id: number;
+  property_name_ar: string;
+  title: string;
+  cost_type: "daily" | "monthly";
+  amount: number;
+  invoice_number: string | null;
+  payment_status: "unpaid" | "partial" | "paid" | "cancelled";
+  paid_amount: number;
+  start_date: string | null;
+  end_date: string | null;
+  created_at: string;
+};
+
 type LLData = {
   ok: boolean;
   landlord: { name: string; default_commission_pct: number };
@@ -15,6 +44,8 @@ type LLData = {
     relation_type: "owned" | "managed";
     commission_pct: number; commission_amount: number; net_to_landlord: number; vat_in_amount: number; status: string;
   }[];
+  maintenance: MaintenanceReq[];
+  costs: PropertyCost[];
   totals: {
     gross: number; commission: number; net: number; bookings: number; nights: number;
     owned_gross: number; managed_gross: number; owned_net: number; managed_net: number;
@@ -85,18 +116,20 @@ export default function Landlord() {
     if (selectedPropId !== "all" && String(b.property_id) !== selectedPropId) return false;
     if (b.status === "cancelled") return false;
 
-    if (periodFilter === "today") {
-      return b.check_in <= nowStr && b.check_out >= nowStr;
-    }
-    if (periodFilter === "week") {
-      return b.check_out >= weekAgoStr && b.check_in <= nowStr;
-    }
-    if (periodFilter === "month") {
-      return b.check_in.startsWith(currentMonthStr) || b.check_out.startsWith(currentMonthStr);
-    }
-    if (periodFilter === "custom" && customStart && customEnd) {
-      return b.check_in <= customEnd && b.check_out >= customStart;
-    }
+    if (periodFilter === "today") return b.check_in <= nowStr && b.check_out >= nowStr;
+    if (periodFilter === "week") return b.check_out >= weekAgoStr && b.check_in <= nowStr;
+    if (periodFilter === "month") return b.check_in.startsWith(currentMonthStr) || b.check_out.startsWith(currentMonthStr);
+    if (periodFilter === "custom" && customStart && customEnd) return b.check_in <= customEnd && b.check_out >= customStart;
+    return true;
+  });
+
+  const filteredMaintenance = (data.maintenance || []).filter((m) => {
+    if (selectedPropId !== "all" && String(m.property_id) !== selectedPropId) return false;
+    return true;
+  });
+
+  const filteredCosts = (data.costs || []).filter((c) => {
+    if (selectedPropId !== "all" && String(c.property_id) !== selectedPropId) return false;
     return true;
   });
 
@@ -127,6 +160,12 @@ export default function Landlord() {
     }
   });
 
+  // Total costs (maintenance + property costs)
+  const totalMaintenanceCost = filteredMaintenance.reduce((sum, m) => sum + Number(m.cost || 0), 0);
+  const totalPropertyCosts = filteredCosts.reduce((sum, c) => sum + Number(c.amount || 0), 0);
+  const grandTotalCosts = totalMaintenanceCost + totalPropertyCosts;
+  const finalNetWithCosts = f_net - grandTotalCosts;
+
   const printStatement = () => {
     if (!data) return;
     const rows = filteredBookings.map((b) =>
@@ -134,7 +173,7 @@ export default function Landlord() {
     ).join("");
     const w = window.open("", "_blank", "width=900,height=900");
     if (!w) return;
-    w.document.write(`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>كشف حساب — ${data.landlord.name}</title>
+    w.document.write(`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>كشف حساب وتكاليف — ${data.landlord.name}</title>
     <style>
       body{font-family:'Segoe UI',Tahoma,sans-serif;margin:0;padding:36px;color:#1a1a1a}
       .head{display:flex;justify-content:space-between;border-bottom:3px solid #C9A96A;padding-bottom:16px;margin-bottom:22px}
@@ -150,7 +189,7 @@ export default function Landlord() {
       .foot{margin-top:36px;font-size:11px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:14px}
     </style></head><body>
     <div class="head">
-      <div class="brand">Horizon Stays<small>كشف حساب المالك والفلترة المخصصة</small></div>
+      <div class="brand">Horizon Stays<small>كشف حساب المالك مع التكاليف والفواتير</small></div>
       <div style="text-align:left"><h2>${data.landlord.name}</h2><span dir="ltr" style="font-size:12px;color:#666">${new Date().toLocaleDateString("en-GB")}</span></div>
     </div>
     <table>
@@ -158,11 +197,10 @@ export default function Landlord() {
       <tbody>${rows}</tbody>
     </table>
     <div class="totals">
-      <div><span>🏠 الوحدات المملوكة (${f_owned_bookings} حجز · ${f_owned_nights} ليلة)</span><span>${f_owned_gross.toLocaleString()} ر.س</span></div>
-      <div><span>🤝 الوحدات المُدارة (${f_managed_bookings} حجز · ${f_managed_nights} ليلة)</span><span>${f_managed_gross.toLocaleString()} ر.س</span></div>
-      <div><span>عمولة Horizon (من المُدارة)</span><span>− ${f_commission.toLocaleString()} ر.س</span></div>
-      <div><span>صافي الوحدات المُدارة للمالك</span><span>${f_managed_net.toLocaleString()} ر.س</span></div>
-      <div class="grand"><span>إجمالي المستحق المصفى</span><span>${f_net.toLocaleString()} ر.س</span></div>
+      <div><span>🏠 الوحدات المملوكة</span><span>${f_owned_gross.toLocaleString()} ر.س</span></div>
+      <div><span>🤝 الوحدات المُدارة (صافي)</span><span>${f_managed_net.toLocaleString()} ر.س</span></div>
+      <div><span>إجمالي الصيانة والتكاليف اليومية/الشهرية</span><span>− ${grandTotalCosts.toLocaleString()} ر.س</span></div>
+      <div class="grand"><span>صافي المستحق النهائي</span><span>${finalNetWithCosts.toLocaleString()} ر.س</span></div>
     </div>
     <p class="note">الفترة المحددة: ${periodFilter} | الوحدات: ${selectedPropId === 'all' ? 'جميع الوحدات' : selectedPropId}</p>
     <div class="foot">horizonstay-sa.com · Horizon Stays</div>
@@ -174,6 +212,15 @@ export default function Landlord() {
   const managedCount = data.properties.filter(p => p.relation_type === 'managed').length;
   const maxG = Math.max(1, ...data.monthly.map((m) => m.gross));
 
+  const getPayBadge = (p: string) => {
+    switch (p) {
+      case 'paid': return <span style={{ padding: "3px 8px", background: "#eef6ec", color: "#2e7d32", borderRadius: "4px", fontSize: "11px", fontWeight: 700 }}>مدفوع بالكامل</span>;
+      case 'partial': return <span style={{ padding: "3px 8px", background: "#fef8ee", color: "#b26a00", borderRadius: "4px", fontSize: "11px", fontWeight: 700 }}>مدفوع جزئياً</span>;
+      case 'cancelled': return <span style={{ padding: "3px 8px", background: "#f5f5f5", color: "#666", borderRadius: "4px", fontSize: "11px", fontWeight: 700 }}>ملغى</span>;
+      default: return <span style={{ padding: "3px 8px", background: "#fde8e8", color: "#c53030", borderRadius: "4px", fontSize: "11px", fontWeight: 700 }}>غير مدفوع</span>;
+    }
+  };
+
   return (
     <div className="ll-wrap">
       <header className="ll-head">
@@ -182,7 +229,7 @@ export default function Landlord() {
           <p>{data.properties.length} وحدة إجمالاً ({ownedCount} مملوكة بالكامل · {managedCount} مُدارة بنسبة عمولة {data.landlord.default_commission_pct}%)</p>
         </div>
         <div className="theme-actions">
-          <button className="btn-activate" onClick={printStatement}>كشف حساب 🖨</button>
+          <button className="btn-activate" onClick={printStatement}>كشف حساب وتكاليف 🖨</button>
           <button className="btn-ghost" onClick={logout}>خروج</button>
         </div>
       </header>
@@ -220,70 +267,108 @@ export default function Landlord() {
         )}
       </div>
 
-      {/* Separated KPI cards for Owned vs Managed based on filter */}
-      <div className="adm-kpis" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+      {/* KPI cards including costs */}
+      <div className="adm-kpis" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
         <div className="adm-kpi" style={{ borderRight: "4px solid #2e7d32" }}>
-          <span className="adm-kpi-label">🏠 الوحدات المملوكة (100% لك)</span>
-          <strong className="adm-kpi-val gold">{fmtSAR(f_owned_gross)}</strong>
-          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>{f_owned_bookings} حجز · {f_owned_nights} ليلة</small>
+          <span className="adm-kpi-label">🏠 إجمالي الدخل</span>
+          <strong className="adm-kpi-val gold">{fmtSAR(f_net)}</strong>
+          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>{filteredBookings.length} حجز مصفى</small>
         </div>
-        <div className="adm-kpi" style={{ borderRight: "4px solid #b26a00" }}>
-          <span className="adm-kpi-label">🤝 الوحدات المُدارة (إجمالي)</span>
-          <strong className="adm-kpi-val">{fmtSAR(f_managed_gross)}</strong>
-          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>{f_managed_bookings} حجز · {f_managed_nights} ليلة</small>
-        </div>
-        <div className="adm-kpi">
-          <span className="adm-kpi-label">عمولة Horizon (من المُدارة)</span>
-          <strong className="adm-kpi-val">− {fmtSAR(f_commission)}</strong>
-          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>حسب نسبة كل وحدة</small>
+        <div className="adm-kpi" style={{ borderRight: "4px solid #c53030" }}>
+          <span className="adm-kpi-label">🔧 إجمالي التكاليف والصيانة</span>
+          <strong className="adm-kpi-val" style={{ color: "#c53030" }}>− {fmtSAR(grandTotalCosts)}</strong>
+          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>{filteredMaintenance.length} صيانة + {filteredCosts.length} تكلفة دورية</small>
         </div>
         <div className="adm-kpi" style={{ borderRight: "4px solid #C9A96A" }}>
-          <span className="adm-kpi-label">إجمالي صافي المستحق لك</span>
-          <strong className="adm-kpi-val gold">{fmtSAR(f_net)}</strong>
-          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>{filteredBookings.length} حجز مصفى · {f_nights} ليلة</small>
+          <span className="adm-kpi-label">صافي المستحق النهائي</span>
+          <strong className="adm-kpi-val gold">{fmtSAR(finalNetWithCosts)}</strong>
+          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>بعد خصم كافة التكاليف</small>
         </div>
       </div>
 
+      {/* Property Costs (Daily/Monthly) Section */}
       <div className="odoo-card">
-        <div className="odoo-card-head"><div><h2>وحداتك وتصنيفاتها</h2><p>الوحدات المملوكة (عوائد كاملة للمالك) والوحدات المُدارة (خصم نسبة عمولة Horizon)</p></div></div>
-        <div className="ll-units">
-          {data.properties.filter(p => selectedPropId === 'all' || String(p.property_id) === selectedPropId).map((p) => (
-            <div key={p.property_id} className="ll-unit">
-              <img src={`https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/${p.slug}-1.webp`} alt="" loading="lazy" />
-              <div>
-                <strong>{p.name_ar}</strong>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center", marginTop: "4px" }}>
-                  <span style={{ fontSize: "11px", padding: "2px 8px", background: p.relation_type === 'owned' ? '#eef6ec' : '#fef8ee', color: p.relation_type === 'owned' ? '#2e7d32' : '#b26a00', borderRadius: "4px", fontWeight: 600 }}>
-                    {p.relation_type === 'owned' ? '🏠 ملكية خاصة (100% لك)' : `🤝 إدارة Horizon (عمولة ${p.commission_pct}%)`}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="odoo-card-head">
+          <div>
+            <h2>التكاليف الدورية (يومية / شهرية) والفواتير</h2>
+            <p>المصاريف اليومية والشهرية الثابتة لكل شقة مع أرقام الفواتير وحالات السداد</p>
+          </div>
         </div>
+        {filteredCosts.length === 0 ? <p className="odoo-hint">لا توجد تكاليف يومية أو شهرية مسجلة للوحدات المحددة.</p> : (
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>الوحدة</th>
+                  <th>البند</th>
+                  <th>النوع</th>
+                  <th>المبلغ</th>
+                  <th>رقم الفاتورة</th>
+                  <th>حالة السداد</th>
+                  <th>الفترة</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCosts.map((c) => (
+                  <tr key={c.id}>
+                    <td><strong>{c.property_name_ar}</strong></td>
+                    <td>{c.title}</td>
+                    <td>
+                      <span style={{ fontSize: "11px", padding: "2px 6px", background: c.cost_type === 'daily' ? '#e3f2fd' : '#f3e5f5', color: c.cost_type === 'daily' ? '#1565c0' : '#7b1fa2', borderRadius: "4px" }}>
+                        {c.cost_type === 'daily' ? '📅 يومي' : '📆 شهري'}
+                      </span>
+                    </td>
+                    <td><strong>{fmtSAR(c.amount)}</strong></td>
+                    <td><span dir="ltr">{c.invoice_number || "—"}</span></td>
+                    <td>{getPayBadge(c.payment_status)}</td>
+                    <td dir="ltr" style={{ fontSize: "12px" }}>{c.start_date || c.end_date ? `${c.start_date || '...'} → ${c.end_date || '...'}` : 'مستمر'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      {data.monthly.length > 0 && selectedPropId === 'all' && (
-        <div className="odoo-card">
-          <div className="odoo-card-head"><div><h2>الدخل الشهري</h2><p>مقارنة الدخل الإجمالي وصافي المستحق لكل شهر</p></div></div>
-          <div className="fin-chart">
-            {data.monthly.map((m) => {
-              const mi = parseInt(m.month.slice(5)) - 1;
-              return (
-                <div key={m.month} className="fin-col" title={`صافي ${fmtSAR(m.net)}`}>
-                  <div className="fin-bars">
-                    <div className="fin-bar gross" style={{ height: `${(m.gross / maxG) * 100}%` }} />
-                    <div className="fin-bar comm" style={{ height: `${(m.net / maxG) * 100}%` }} />
-                  </div>
-                  <span className="fin-month">{MONTHS_AR[mi] || m.month}</span>
-                  <small>{fmtSAR(m.net)}</small>
-                </div>
-              );
-            })}
+      {/* Maintenance Requests Section */}
+      <div className="odoo-card">
+        <div className="odoo-card-head">
+          <div>
+            <h2>طلبات الصيانة وفواتيرها</h2>
+            <p>سجل الصيانة والأعطال والفواتير مع حالة السداد</p>
           </div>
-          <div className="fin-legend"><span><i className="fin-dot gross" />الإجمالي</span><span><i className="fin-dot comm" />صافي المستحق</span></div>
         </div>
-      )}
+        {filteredMaintenance.length === 0 ? <p className="odoo-hint">لا توجد طلبات صيانة مسجلة للوحدات المحددة.</p> : (
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>الوحدة</th>
+                  <th>العطل / الصيانة</th>
+                  <th>رقم الفاتورة</th>
+                  <th>التكلفة</th>
+                  <th>حالة السداد</th>
+                  <th>المدفوع</th>
+                  <th>التاريخ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredMaintenance.map((m) => (
+                  <tr key={m.id}>
+                    <td><strong>{m.property_name_ar}</strong></td>
+                    <td><div>{m.title}</div>{m.description && <small style={{ color: "#777" }}>{m.description}</small>}</td>
+                    <td><span dir="ltr">{m.invoice_number || "—"}</span></td>
+                    <td><strong>{fmtSAR(m.cost)}</strong></td>
+                    <td>{getPayBadge(m.payment_status)}</td>
+                    <td>{fmtSAR(m.paid_amount)}</td>
+                    <td dir="ltr" style={{ fontSize: "12px" }}>{new Date(m.created_at).toLocaleDateString("en-GB")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       <div className="odoo-card">
         <div className="odoo-card-head"><div><h2>سجل الحجوزات (حسب الفلتر المحدد)</h2><p>تفاصيل الحجوزات والليالي لكل وحدة مع بيان نوع العلاقة والعمولة والصفاء</p></div></div>
@@ -315,7 +400,7 @@ export default function Landlord() {
           </div>
         )}
       </div>
-      <p className="ll-note">الوحدات المملوكة بالكامل تعود عوائدها للمالك بنسبة 100%، بينما الوحدات المُدارة يُحسم منها نسبة عمولة إدارة Horizon المتفق عليها. للاستفسار: واتساب +966 56 090 3335</p>
+      <p className="ll-note">تُحسب التكاليف اليومية والشهرية وفواتير الصيانة وتُخصم تلقائياً من إجمالي مستحقات الشقق في كشف الحساب. للاستفسار: واتساب +966 56 090 3335</p>
     </div>
   );
 }

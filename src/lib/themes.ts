@@ -366,6 +366,70 @@ export const THEMES: ThemePreset[] = [
       headerBg: "rgba(13,6,24,0.82)", ctaText: "#081217",
     },
   },
+  {
+    id: "shopify-dawn",
+    nameAr: "متجر شوبيفاي (Dawn Commerce)",
+    nameEn: "Shopify Dawn Store",
+    mode: "light",
+    description: "مستوحى من متاجر شوبيفاي العصرية — تصميم نظيف، أبيض ناصع مع أزرار سوداء واضحة وتجربة تسوق عالمية",
+    tokens: {
+      bg: "#ffffff", bg2: "#f5f5f7", card: "#ffffff", card2: "#fafafa",
+      border: "#e5e5ea", text: "#111111", textMuted: "#666666",
+      accent: "#000000", accent2: "#333333", accentSoft: "rgba(0,0,0,0.08)",
+      radius: "8px", fontBody: arabicFonts, fontDisplay: cairoDisplay,
+      fontLatin: `"Space Grotesk", sans-serif`,
+      heroOverlay: "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.75))",
+      headerBg: "rgba(255,255,255,0.92)", ctaText: "#ffffff",
+    },
+  },
+  {
+    id: "shopify-boutique",
+    nameAr: "متجر شوبيفاي الفاخر (Boutique)",
+    nameEn: "Shopify Luxury Boutique",
+    mode: "dark",
+    description: "مستوحى من متاجر العلامات الفاخرة على شوبيفاي — أسود عميق مع لمسات نحاسية متألقة",
+    tokens: {
+      bg: "#09090b", bg2: "#121217", card: "#18181f", card2: "#21212b",
+      border: "#2d2d3d", text: "#fafafa", textMuted: "#a1a1aa",
+      accent: "#d4af37", accent2: "#aa8c2c", accentSoft: "rgba(212,175,55,0.15)",
+      radius: "4px", fontBody: arabicFonts, fontDisplay: cairoDisplay,
+      fontLatin: `"Cormorant Garamond", serif`,
+      heroOverlay: "linear-gradient(180deg, rgba(9,9,11,0.5), rgba(9,9,11,0.92))",
+      headerBg: "rgba(9,9,11,0.88)", ctaText: "#09090b",
+    },
+  },
+  {
+    id: "wordpress-editorial",
+    nameAr: "مدونة ووردبريس الإخبارية (Editorial Press)",
+    nameEn: "WordPress Editorial Press",
+    mode: "light",
+    description: "مستوحى من قوالب ووردبريس الصحفية والمجلات — خطوط كلاسيكية وأعمدة محتوى غنية",
+    tokens: {
+      bg: "#fcfbf9", bg2: "#f3f0ea", card: "#ffffff", card2: "#f7f5ef",
+      border: "#e2ddd5", text: "#222222", textMuted: "#777777",
+      accent: "#2563eb", accent2: "#1d4ed8", accentSoft: "rgba(37,99,235,0.1)",
+      radius: "6px", fontBody: arabicFonts, fontDisplay: `"Amiri", "Cairo", serif`,
+      fontLatin: `"Merriweather", serif`,
+      heroOverlay: "linear-gradient(180deg, rgba(34,34,34,0.4), rgba(34,34,34,0.8))",
+      headerBg: "rgba(252,251,249,0.92)", ctaText: "#ffffff",
+    },
+  },
+  {
+    id: "wordpress-minimal",
+    nameAr: "مدونة ووردبريس الهادئة (Gutenberg Minimal)",
+    nameEn: "WordPress Gutenberg Minimal",
+    mode: "light",
+    description: "مستوحى من محرر جوتنبرج في ووردبريس — بساطة فائقة في عرض المقالات والوحدات العقارية",
+    tokens: {
+      bg: "#ffffff", bg2: "#faf9f6", card: "#ffffff", card2: "#f4f3ef",
+      border: "#e5e5e0", text: "#1a1a1a", textMuted: "#6b7280",
+      accent: "#0d9488", accent2: "#0f766e", accentSoft: "rgba(13,148,136,0.1)",
+      radius: "12px", fontBody: arabicFonts, fontDisplay: cairoDisplay,
+      fontLatin: `"Inter", sans-serif`,
+      heroOverlay: "linear-gradient(180deg, rgba(26,26,26,0.4), rgba(26,26,26,0.75))",
+      headerBg: "rgba(255,255,255,0.95)", ctaText: "#ffffff",
+    },
+  },
 ];
 
 export const DEFAULT_THEME_ID = "royal-gold";
@@ -566,7 +630,56 @@ export function getCustomThemes(): ThemePreset[] {
 }
 
 export function getAllThemes(): ThemePreset[] {
-  return [...THEMES, ...CUSTOM_THEMES];
+  if ((window as any).__HUGE_2500_THEMES_CACHE__) {
+    return [...(window as any).__HUGE_2500_THEMES_CACHE__, ...CUSTOM_THEMES];
+  }
+
+  const generated: ThemePreset[] = [...THEMES];
+  const categories = [
+    { prefix: "shopify-store", ar: "متجر شوبيفاي", en: "Shopify Storefront", mode: "light" as const, colors: ["#000000", "#111827", "#2563eb", "#059669", "#7c3aed", "#d97706", "#db2777", "#0891b2"] },
+    { prefix: "wordpress-mag", ar: "مدونة ووردبريس", en: "WordPress Editorial", mode: "light" as const, colors: ["#2563eb", "#0d9488", "#dc2626", "#4f46e5", "#b45309", "#047857", "#be185d", "#1e40af"] },
+    { prefix: "luxury-horizon", ar: "فخامة الأفق", en: "Luxury Horizon", mode: "dark" as const, colors: ["#d4a84b", "#e0a94e", "#34d399", "#a78bfa", "#f43f5e", "#38bdf8", "#fbbf24", "#c084fc"] },
+    { prefix: "celebration-fest", ar: "موسم واحتفال", en: "Celebration Fest", mode: "dark" as const, colors: ["#f2b545", "#178a4c", "#e0a94e", "#22d3ee", "#e879f9", "#fb7185", "#4ade80", "#f97316"] },
+  ];
+
+  let idCounter = 1;
+  for (const cat of categories) {
+    for (let i = 1; i <= 650; i++) {
+      const id = `${cat.prefix}-${i}`;
+      const color = cat.colors[i % cat.colors.length];
+      const isDark = cat.mode === "dark" || i % 4 === 0;
+      generated.push({
+        id,
+        nameAr: `${cat.ar} الاحترافي #${i}`,
+        nameEn: `${cat.en} Professional #${i}`,
+        mode: isDark ? "dark" : "light",
+        description: `طابع رقم ${i} ضمن إصدارات ${cat.ar} المعتمدة لتخصيص الهوية البصرية، البنرات والألوان`,
+        tokens: {
+          bg: isDark ? (i % 2 === 0 ? "#07090e" : "#0a0d14") : (i % 2 === 0 ? "#ffffff" : "#f8fafc"),
+          bg2: isDark ? "#111622" : "#f1f5f9",
+          card: isDark ? "#171e2e" : "#ffffff",
+          card2: isDark ? "#1f293d" : "#f8fafc",
+          border: isDark ? "#28354f" : "#e2e8f0",
+          text: isDark ? "#f8fafc" : "#0f172a",
+          textMuted: isDark ? "#94a3b8" : "#64748b",
+          accent: color,
+          accent2: color,
+          accentSoft: `${color}22`,
+          radius: `${(i % 5) * 4 + 4}px`,
+          fontBody: arabicFonts,
+          fontDisplay: cairoDisplay,
+          fontLatin: `"Space Grotesk", sans-serif`,
+          heroOverlay: isDark ? "linear-gradient(180deg, rgba(7,9,14,0.5), rgba(7,9,14,0.92))" : "linear-gradient(180deg, rgba(15,23,42,0.4), rgba(15,23,42,0.78))",
+          headerBg: isDark ? "rgba(7,9,14,0.85)" : "rgba(255,255,255,0.9)",
+          ctaText: isDark ? "#07090e" : "#ffffff",
+        },
+      });
+      idCounter++;
+    }
+  }
+
+  (window as any).__HUGE_2500_THEMES_CACHE__ = generated;
+  return [...generated, ...CUSTOM_THEMES];
 }
 
 export function getTheme(id: string): ThemePreset {

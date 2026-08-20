@@ -9,6 +9,7 @@ const NAV = [
   { to: "/calendar", icon: "🗓️", label: "التقويم الموحد", en: "Unified calendar" },
   { to: "/admin/bookings", icon: "📆", label: "الحجوزات والضيوف", en: "Bookings & guests" },
   { to: "/admin/finance", icon: "💰", label: "المالية", en: "Finance" },
+  { to: "/admin/maintenance", icon: "🔧", label: "الصيانة والفواتير", en: "Maintenance" },
   { to: "/admin/landlords", icon: "🤝", label: "المُلّاك", en: "Landlords" },
   { to: "/admin/themes", icon: "🎨", label: "الطُّبوع", en: "Themes" },
   { to: "/admin/integrations", icon: "🔌", label: "التكاملات", en: "Integrations" },

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, createContext } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import ThemeQuestionnaireModal from "../components/ThemeQuestionnaireModal";
 import {
   getAllThemes, getTheme, DEFAULT_CONTENT, applyThemeToDOM,
   type ThemeOverrides, type ThemeTokens, type SiteContent, type ThemePreset,
@@ -85,6 +86,7 @@ export default function ThemeEditor() {
   const [cssDraft, setCssDraft] = useState(customCss);
   const [jsDraft, setJsDraft] = useState(customJs);
   const [codeDirty, setCodeDirty] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   // Sync code drafts when settings load from Supabase
   useEffect(() => {
@@ -293,6 +295,7 @@ export default function ThemeEditor() {
           {panel === "theme" && (
             <div className="ep-section">
               <button className="btn-new-theme" onClick={startNewTheme}>+ إنشاء طابع جديد من الصفر</button>
+              <button className="btn-new-theme" style={{ marginTop: "8px", background: "linear-gradient(135deg, #d4a84b, #b8862a)", color: "#14120f" }} onClick={() => setShowQuiz(true)}>✨ استبيان تصميم الطابع (توليد ذكي)</button>
 
               {customDraft && (
                 <div className="ep-custom-meta">
@@ -462,6 +465,19 @@ export default function ThemeEditor() {
       </div>
 
       {toast && <div className="admin-toast editor-toast">{toast}</div>}
+      <ThemeQuestionnaireModal
+        isOpen={showQuiz}
+        onClose={() => setShowQuiz(false)}
+        onApplyTheme={(t) => {
+          setCustomDraft(t);
+          setThemeId(t.id);
+          setDraft({});
+          setDirty(true);
+          setPanel("colors");
+          setToast("تم توليد الطابع بنجاح عبر الاستبيان!");
+          setTimeout(() => setToast(""), 3000);
+        }}
+      />
     </div>
   );
 }

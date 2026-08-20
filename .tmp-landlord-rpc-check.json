@@ -1,0 +1,1 @@
+{"project_id":"bwffhalzuvvmuzjfmdyp","query":"SELECT public.landlord_login('LL-2A74F5B2') AS result LIMIT 1;"}

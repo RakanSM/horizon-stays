@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /calendar
+Allow: /landlord
+Disallow: /admin/
+Disallow: /admin
+Disallow: /editor
+Disallow: /api/
+
+Sitemap: https://horizonstay-sa.com/sitemap.xml

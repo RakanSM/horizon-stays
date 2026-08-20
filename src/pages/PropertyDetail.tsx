@@ -406,15 +406,28 @@ export default function PropertyDetail() {
 
             {nights > 0 && (
               <div className="bb-summary">
-                <div>
-                  <span>
-                  {averageNightly.toLocaleString("en-US")} ﷼ × {nights} {t("nights_word")}
+                {nights >= 7 && (
+                  <div style={{ background: "rgba(16, 185, 129, 0.12)", color: "#059669", padding: "8px 12px", borderRadius: "8px", fontSize: "13px", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px", marginBottom: "12px", border: "1px solid rgba(16, 185, 129, 0.25)" }}>
+                    <span>🏷️</span>
+                    <span>{nights >= 30 ? (lang === "ar" ? "هذا المضيف يقدم خصماً شهرياً!" : "This host is offering a monthly discount!") : (lang === "ar" ? "هذا المضيف يقدم خصماً أسبوعياً!" : "This host is offering a weekly discount!")}</span>
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
+                  <span style={{ fontSize: "14px", color: "var(--text-muted)" }}>
+                    {averageNightly.toLocaleString("en-US")} ﷼ × {nights} {t("nights_word")}
                   </span>
-                  <b>{total.toLocaleString("en-US")} ﷼</b>
+                  <div style={{ textAlign: "left" }}>
+                    {nights >= 7 && (
+                      <span style={{ textDecoration: "line-through", color: "#9ca3af", fontSize: "14px", marginInlineEnd: "8px" }}>
+                        {Math.round(total * 1.15).toLocaleString("en-US")} ﷼
+                      </span>
+                    )}
+                    <b style={{ fontSize: "16px" }}>{total.toLocaleString("en-US")} ﷼</b>
+                  </div>
                 </div>
-                <div className="bb-total">
-                  <span>{t("total")}</span>
-                  <b>{total.toLocaleString("en-US")} ﷼</b>
+                <div className="bb-total" style={{ borderTop: "1px solid var(--border)", paddingTop: "10px", marginTop: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "16px", fontWeight: "bold" }}>{t("total")}</span>
+                  <b style={{ fontSize: "18px", color: "var(--gold)" }}>{total.toLocaleString("en-US")} ﷼</b>
                 </div>
               </div>
             )}

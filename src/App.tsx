@@ -14,6 +14,7 @@ const AdminThemes = lazy(() => import("./pages/admin/AdminThemes"));
 const AdminIntegrations = lazy(() => import("./pages/admin/AdminIntegrations"));
 const AdminCleaning = lazy(() => import("./pages/admin/AdminCleaning"));
 const AdminFeatures = lazy(() => import("./pages/admin/AdminFeatures"));
+const AdminMaintenance = lazy(() => import("./pages/admin/AdminMaintenance"));
 const Landlord = lazy(() => import("./pages/Landlord"));
 const ThemeEditor = lazy(() => import("./pages/ThemeEditor"));
 const Cleaner = lazy(() => import("./pages/Cleaner"));
@@ -142,6 +143,7 @@ function AppShell() {
             <Route path="/admin/integrations" element={<AdminIntegrations />} />
             <Route path="/admin/cleaning" element={<AdminCleaning />} />
             <Route path="/admin/features" element={<AdminFeatures />} />
+            <Route path="/admin/maintenance" element={<AdminMaintenance />} />
             <Route path="/landlord" element={featureFlags.page_landlord ? <Landlord /> : <Navigate to="/admin" replace />} />
             <Route path="*" element={<AdminDashboard />} />
           </Routes>
