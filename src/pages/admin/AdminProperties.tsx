@@ -77,6 +77,16 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
   };
 
   const save = async () => {
+    const lat = d.lat === null || d.lat === undefined || d.lat === "" ? null : Number(d.lat);
+    const lng = d.lng === null || d.lng === undefined || d.lng === "" ? null : Number(d.lng);
+    if ((lat === null) !== (lng === null)) {
+      setMsg(en ? "Enter both latitude and longitude, or leave both unchanged." : "أدخل خط العرض والطول معاً، أو اتركهما دون تغيير.");
+      return;
+    }
+    if (lat !== null && (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < 23 || lat > 27 || lng < 45 || lng > 48)) {
+      setMsg(en ? "The map pin must be a valid Riyadh-area latitude and longitude." : "يجب أن تكون إحداثيات الدبوس صالحة ضمن نطاق الرياض.");
+      return;
+    }
     setBusy(true);
     setMsg("");
     try {
@@ -87,6 +97,7 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
         p_bedrooms: Number(d.bedrooms) || 0, p_bathrooms: Number(d.bathrooms) || 0,
         p_area: Number(d.area_m2) || 0, p_floor: d.floor, p_max_guests: Number(d.max_guests) || 1,
         p_neighborhood: d.neighborhood, p_description_ar: d.description_ar,
+        p_lat: lat, p_lng: lng,
         p_airbnb_url: d.airbnb_url, p_gathern_url: d.gathern_url,
         p_airbnb_ical: d.airbnb_ical_url, p_gathern_ical: d.gatherin_ical_url,
         p_is_active: d.is_active,
@@ -172,6 +183,16 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
         </div>
         <div className="sf-row"><label>الوصف (عربي)</label><textarea rows={3} value={d.description_ar || ""} onChange={(event) => set("description_ar", event.target.value)} /></div>
         <div className="sf-row"><label>{en ? "Amenities (one per line)" : "المرافق (سطر لكل مرفق)"}</label><textarea rows={4} dir="auto" value={d.amenities_text} onChange={(event) => set("amenities_text", event.target.value)} /></div>
+      </section>
+
+      <section className="pe-section">
+        <div className="pe-section-head"><h4>{en ? "Verified map pin" : "دبوس موقع موثّق"}</h4><span>{en ? "iCal calendars do not include map coordinates. Save only a verified building or listing point." : "تقويم iCal لا يتضمن إحداثيات الموقع. احفظ دبوس مبنى أو إعلان تم التحقق منه فقط."}</span></div>
+        <div className="pe-grid">
+          <div className="sf-row"><label>{en ? "Latitude" : "خط العرض"}</label><input dir="ltr" type="number" step="0.000001" min="23" max="27" value={d.lat ?? ""} onChange={(event) => set("lat", event.target.value === "" ? null : Number(event.target.value))} placeholder="24.774100" /></div>
+          <div className="sf-row"><label>{en ? "Longitude" : "خط الطول"}</label><input dir="ltr" type="number" step="0.000001" min="45" max="48" value={d.lng ?? ""} onChange={(event) => set("lng", event.target.value === "" ? null : Number(event.target.value))} placeholder="46.658000" /></div>
+        </div>
+        <p className="pe-map-help">{en ? "Open the listing or a verified building in a map, copy its latitude and longitude, preview below, then save. Do not use an iCal link as a location source." : "افتح الإعلان أو المبنى الموثّق في الخريطة، انسخ خط العرض والطول، عاين الموقع أدناه ثم احفظه. لا تستخدم رابط iCal كمصدر للموقع."}</p>
+        {Number.isFinite(Number(d.lat)) && Number.isFinite(Number(d.lng)) && <a className="btn-ghost sm" href={`https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`} target="_blank" rel="noreferrer">{en ? "Preview this pin ↗" : "معاينة الدبوس ↗"}</a>}
       </section>
 
       <section className="pe-section">

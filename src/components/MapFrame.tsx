@@ -1,6 +1,7 @@
+import { useState } from "react";
 import type { Property } from "../lib/supabase";
 
-type MapLocation = Pick<Property, "id" | "name_ar" | "name_en" | "neighborhood" | "lat" | "lng">;
+type MapLocation = Pick<Property, "id" | "name_ar" | "name_en" | "neighborhood" | "price_per_night" | "lat" | "lng">;
 type ValidMapLocation = MapLocation & { lat: number; lng: number };
 
 type MapFrameProps = {
@@ -24,7 +25,20 @@ function pointLink(location: ValidMapLocation) {
   return `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
 }
 
+function projectLatitude(latitude: number) {
+  const radians = (latitude * Math.PI) / 180;
+  return Math.log(Math.tan(Math.PI / 4 + radians / 2));
+}
+
+function priceLabel(location: MapLocation, lang: "ar" | "en") {
+  const price = Number(location.price_per_night);
+  if (!Number.isFinite(price) || price <= 0) return null;
+  const formatted = new Intl.NumberFormat(lang === "ar" ? "ar-SA" : "en-US", { maximumFractionDigits: 0 }).format(price);
+  return lang === "ar" ? `من ${formatted} ر.س / ليلة` : `From ${formatted} SAR / night`;
+}
+
 export default function MapFrame({ locations, lang, variant = "collection" }: MapFrameProps) {
+  const [activePinId, setActivePinId] = useState<number | null>(variant === "property" ? locations[0]?.id || null : null);
   const validLocations = locations.reduce<ValidMapLocation[]>((accumulator, location) => {
     const lat = numericCoordinate(location.lat);
     const lng = numericCoordinate(location.lng);
@@ -78,6 +92,8 @@ export default function MapFrame({ locations, lang, variant = "collection" }: Ma
         : lang === "ar"
           ? "موقع الوحدة في الرياض"
           : "Your stay in Riyadh";
+  const northProjection = projectLatitude(bounds.north);
+  const southProjection = projectLatitude(bounds.south);
 
   return (
     <section className={`map-frame-section map-frame-${variant}`} aria-label={title}>
@@ -104,21 +120,37 @@ export default function MapFrame({ locations, lang, variant = "collection" }: Ma
           <div className="map-pins-layer" aria-label={lang === "ar" ? "دبابيس مواقع الوحدات" : "Property location pins"}>
             {visibleLocations.map((location) => {
               const left = ((location.lng - bounds.west) / (bounds.east - bounds.west)) * 100;
-              const top = ((bounds.north - location.lat) / (bounds.north - bounds.south)) * 100;
+              const top = ((northProjection - projectLatitude(location.lat)) / (northProjection - southProjection)) * 100;
               const name = labelFor(location, lang);
+              const price = priceLabel(location, lang);
+              const isOpen = activePinId === location.id;
               return (
-                <a
+                <div
                   key={location.id}
-                  className={`property-map-pin ${variant === "property" ? "is-property-pin" : ""}`}
-                  href={pointLink(location)}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`${name} — ${lang === "ar" ? "فتح الموقع في الخرائط" : "open location in maps"}`}
+                  className={`property-map-pin ${variant === "property" ? "is-property-pin" : ""} ${top < 22 ? "is-near-top" : ""} ${isOpen ? "is-open" : ""}`}
                   style={{ left: `${Math.min(97, Math.max(3, left))}%`, top: `${Math.min(97, Math.max(3, top))}%` }}
+                  onMouseEnter={() => setActivePinId(location.id)}
+                  onMouseLeave={() => setActivePinId(variant === "property" ? location.id : null)}
                 >
-                  <span className="property-map-pin-core" aria-hidden>⌖</span>
-                  <span className="property-map-pin-label">{name}</span>
-                </a>
+                  <button
+                    type="button"
+                    className="property-map-pin-button"
+                    aria-label={`${name} — ${lang === "ar" ? "عرض تفاصيل الموقع" : "show location details"}`}
+                    aria-expanded={isOpen}
+                    aria-controls={`map-pin-tooltip-${location.id}`}
+                    onClick={() => setActivePinId((current) => current === location.id && variant !== "property" ? null : location.id)}
+                    onFocus={() => setActivePinId(location.id)}
+                  >
+                    <span className="property-map-pin-core" aria-hidden>⌖</span>
+                  </button>
+                  <div id={`map-pin-tooltip-${location.id}`} className="property-map-pin-tooltip" role="tooltip">
+                    <strong>{name}</strong>
+                    {price && <span>{price}</span>}
+                    <a href={pointLink(location)} target="_blank" rel="noreferrer">
+                      {lang === "ar" ? "فتح في الخرائط ↗" : "Open in Maps ↗"}
+                    </a>
+                  </div>
+                </div>
               );
             })}
           </div>

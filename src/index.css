@@ -3720,6 +3720,8 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
 }
 
 .map-frame-shell iframe {
+  position: relative;
+  z-index: 0;
   display: block;
   width: 100%;
   height: 440px;
@@ -3730,20 +3732,34 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
 .map-pins-layer {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
 }
 
 .property-map-pin {
   position: absolute;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: grid;
+  place-items: center;
   transform: translate(-50%, -100%);
   pointer-events: auto;
-  text-decoration: none;
+}
+
+.property-map-pin-button {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   color: #18130c;
-  outline: none;
+  cursor: pointer;
+}
+
+.property-map-pin-button:focus-visible {
+  outline: 3px solid #f0bd55;
+  outline-offset: 3px;
 }
 
 .property-map-pin-core {
@@ -3780,40 +3796,53 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
   box-shadow: 0 0 0 3px rgb(255 255 255 / 44%);
 }
 
-.property-map-pin-label {
-  max-width: 190px;
+.property-map-pin-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  display: grid;
+  gap: 3px;
+  min-width: 168px;
+  max-width: min(230px, 68vw);
+  padding: 10px 12px;
   overflow: hidden;
   border: 1px solid rgb(72 48 12 / 18%);
-  border-radius: 999px;
+  border-radius: 14px;
   background: rgb(255 252 244 / 95%);
   box-shadow: 0 8px 18px rgb(43 29 8 / 16%);
   color: #261b0b;
   font-size: 0.72rem;
-  font-weight: 800;
   line-height: 1.2;
-  padding: 7px 10px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   opacity: 0;
-  transform: translateX(-4px) scale(0.96);
+  pointer-events: none;
+  transform: translateX(-50%) translateY(4px) scale(0.96);
   transform-origin: center;
   transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
 }
 
+.property-map-pin-tooltip strong { overflow: hidden; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.property-map-pin-tooltip span { color: #76521a; font-weight: 700; }
+.property-map-pin-tooltip a { color: #513714; font-weight: 800; pointer-events: auto; text-decoration: underline; text-underline-offset: 2px; }
+.property-map-pin.is-near-top .property-map-pin-tooltip { top: calc(100% + 8px); bottom: auto; }
+
 .property-map-pin:hover .property-map-pin-core,
-.property-map-pin:focus-visible .property-map-pin-core,
+.property-map-pin:focus-within .property-map-pin-core,
+.property-map-pin.is-open .property-map-pin-core,
 .property-map-pin.is-property-pin .property-map-pin-core {
   background: linear-gradient(145deg, #3c280a, #a36919);
   box-shadow: 0 10px 22px rgb(35 23 8 / 44%), 0 0 0 7px rgb(245 194 92 / 34%);
   transform: rotate(-45deg) scale(1.12);
 }
 
-.property-map-pin:hover .property-map-pin-label,
-.property-map-pin:focus-visible .property-map-pin-label,
-.property-map-pin.is-property-pin .property-map-pin-label {
+.property-map-pin:hover .property-map-pin-tooltip,
+.property-map-pin:focus-within .property-map-pin-tooltip,
+.property-map-pin.is-open .property-map-pin-tooltip,
+.property-map-pin.is-property-pin .property-map-pin-tooltip {
   opacity: 1;
-  transform: translateX(0) scale(1);
+  transform: translateX(-50%) translateY(0) scale(1);
 }
+
+.pe-map-help { margin: 12px 0; color: var(--muted); font-size: 0.82rem; line-height: 1.6; }
 
 .map-frame-badge,
 .map-frame-fallback {
@@ -3925,14 +3954,7 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
     height: 31px;
   }
 
-  .property-map-pin-label {
-    display: none;
-  }
-
-  .property-map-pin.is-property-pin .property-map-pin-label {
-    display: block;
-    max-width: 140px;
-  }
+  .property-map-pin-tooltip { max-width: 180px; font-size: 0.68rem; }
 }
 
 @media (max-width: 700px) {

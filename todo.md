@@ -271,3 +271,22 @@
 - [x] T181: Render and label one interactive pin per active property on the homepage map, and one precise pin on each property detail map.
 - [x] T182: Show a clear missing-location state for properties with no latitude/longitude and retain the external map link.
 - [x] T183: Verify visible pins on desktop and mobile, run tests/build, push to GitHub main, and confirm the correct Vercel production deployment is READY.
+
+## Production Deployment Verification (User request Aug 21)
+- [x] T184: Confirm the Horizon Stays production deployment built from the latest map-pin fix is READY and serving the production domain.
+
+## Airbnb Location Reconciliation (User request Aug 21)
+- [ ] T185: Inventory each property’s linked Airbnb listing and compare its public location information with the current Horizon Stays coordinates.
+- [ ] T186: Update only coordinates supported by a public Airbnb location signal; record every ambiguous or privacy-protected listing for owner confirmation instead of guessing.
+- [ ] T187: Verify corrected pins on the homepage and property pages, run tests/build, and publish the confirmed coordinate updates.
+
+## Sahmk Integration Confirmation (User request Aug 21)
+- [ ] T188: Inspect the existing Sahmk integration configuration and restore the previously agreed Horizon Stays scope without altering unrelated integrations.
+- [ ] T189: Confirm the supported Sahmk workflow, credentials/connection state, and any required callback or synchronisation route before implementation.
+
+## iCal Location Audit (User request Aug 21)
+- [x] T190: Inspect the existing Airbnb and Gathern iCal feeds to determine whether any reliable location or listing identifiers are exposed. Completed: 45 configured feeds opened successfully; none exposed LOCATION, GEO, or an equivalent coordinate field.
+- [x] T191: Use iCal only for property matching if it lacks coordinates, and add a documented alternative for assigning exact property pins without guessing. Completed: the admin property editor now accepts a verified coordinate pair with Riyadh-area validation and a map-preview link; public pins now expose a touch/click/focus tooltip with the property name and price.
+
+## Production Link Accessibility (User report Aug 21)
+- [ ] T192: Diagnose the Horizon Stays production-link accessibility report, release the tested map interaction update to the correct production target, and verify the public site opens normally.

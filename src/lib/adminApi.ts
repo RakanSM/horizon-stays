@@ -19,6 +19,7 @@ export type AdminProperty = {
   id: number; slug: string; name_ar: string; name_en: string; type: string;
   price_per_night: number; bedrooms: number; bathrooms: number; area_m2: number;
   floor: string | null; max_guests: number; neighborhood: string | null;
+  lat: number | null; lng: number | null;
   description_ar: string | null; airbnb_url: string | null; gathern_url: string | null;
   airbnb_ical_url: string | null; gatherin_ical_url: string | null;
   ical_token: string | null; is_active: boolean; amenities: string[] | null;

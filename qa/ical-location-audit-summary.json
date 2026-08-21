@@ -1,0 +1,407 @@
+[
+  {
+    "propertyId": 4,
+    "slug": "garden-hottub-suite",
+    "source": "gathern",
+    "urlHash": "f49766081b15",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 1,
+    "slug": "kafd-penthouse-3bd",
+    "source": "gathern",
+    "urlHash": "16cbe7a11985",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 26,
+    "slug": "3br-apt-outdoor",
+    "source": "gathern",
+    "urlHash": "193d93a86cfd",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 15,
+    "slug": "artistic-design-suite",
+    "source": "gathern",
+    "urlHash": "c72cab08b32a",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 26,
+    "slug": "3br-apt-outdoor",
+    "source": "airbnb",
+    "urlHash": "6312e58d5745",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 1,
+    "slug": "kafd-penthouse-3bd",
+    "source": "airbnb",
+    "urlHash": "3b3a4ccf1803",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 5,
+    "slug": "cinema-suite-2br",
+    "source": "gathern",
+    "urlHash": "a9475e1d6c5a",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 11,
+    "slug": "city-view-suite",
+    "source": "airbnb",
+    "urlHash": "69540e363cc3",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 4,
+    "slug": "garden-hottub-suite",
+    "source": "airbnb",
+    "urlHash": "36f74085b034",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 11,
+    "slug": "city-view-suite",
+    "source": "gathern",
+    "urlHash": "d0aaf094a4c5",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 10,
+    "slug": "designer-loft-2bd",
+    "source": "gathern",
+    "urlHash": "fd9535f4fe97",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 5,
+    "slug": "cinema-suite-2br",
+    "source": "airbnb",
+    "urlHash": "6c16fe969d35",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 15,
+    "slug": "artistic-design-suite",
+    "source": "airbnb",
+    "urlHash": "7370bff65172",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 6,
+    "slug": "luxury-1bd-70tv",
+    "source": "gathern",
+    "urlHash": "55e944af9101",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 10,
+    "slug": "designer-loft-2bd",
+    "source": "airbnb",
+    "urlHash": "684ecd4b094f",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 17,
+    "slug": "luxury-apt-3bd-gaming-area",
+    "source": "gathern",
+    "urlHash": "14a8cdb2120a",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 39,
+    "slug": "al-yasmeen-apt-self-checkin",
+    "source": "gathern",
+    "urlHash": "7c7020cdbf43",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 6,
+    "slug": "luxury-1bd-70tv",
+    "source": "airbnb",
+    "urlHash": "b65b86f8d3f0",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 39,
+    "slug": "al-yasmeen-apt-self-checkin",
+    "source": "airbnb",
+    "urlHash": "cf993070c440",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 19,
+    "slug": "luxury-apt-al-yasmin",
+    "source": "airbnb",
+    "urlHash": "03897206c9b9",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 17,
+    "slug": "luxury-apt-3bd-gaming-area",
+    "source": "airbnb",
+    "urlHash": "89f898617390",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 9,
+    "slug": "duplex-penthouse-4bd",
+    "source": "airbnb",
+    "urlHash": "45330980185c",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 9,
+    "slug": "duplex-penthouse-4bd",
+    "source": "gathern",
+    "urlHash": "7f821cf89cb3",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 8,
+    "slug": "executive-studio",
+    "source": "gathern",
+    "urlHash": "8050474b1af8",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 22,
+    "slug": "luxury-apt-blvd-70-tv",
+    "source": "airbnb",
+    "urlHash": "2fb24355d484",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 12,
+    "slug": "minimalist-1bd",
+    "source": "gathern",
+    "urlHash": "92d434dbf695",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 25,
+    "slug": "massive-3br-2floors",
+    "source": "airbnb",
+    "urlHash": "52d72736152c",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 8,
+    "slug": "executive-studio",
+    "source": "airbnb",
+    "urlHash": "43de903d0680",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 12,
+    "slug": "minimalist-1bd",
+    "source": "airbnb",
+    "urlHash": "29724ccf6b52",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 14,
+    "slug": "pool-view-apartment",
+    "source": "gathern",
+    "urlHash": "ad1f5ce02ece",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 3,
+    "slug": "private-rooftop-penthouse",
+    "source": "gathern",
+    "urlHash": "8405d5ddbbf0",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 14,
+    "slug": "pool-view-apartment",
+    "source": "airbnb",
+    "urlHash": "309695024104",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 13,
+    "slug": "royal-suite-3bd",
+    "source": "gathern",
+    "urlHash": "808a0cb4225b",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 3,
+    "slug": "private-rooftop-penthouse",
+    "source": "airbnb",
+    "urlHash": "80cb8956a0d7",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 25,
+    "slug": "massive-3br-2floors",
+    "source": "gathern",
+    "urlHash": "ec1abf2c8363",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 7,
+    "slug": "sky-lounge-suite",
+    "source": "gathern",
+    "urlHash": "9b238ba52e27",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 7,
+    "slug": "sky-lounge-suite",
+    "source": "airbnb",
+    "urlHash": "ed69ee381dcf",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 30,
+    "slug": "self-checkin-apt-75tv-blvd",
+    "source": "airbnb",
+    "urlHash": "6f62579ae916",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 13,
+    "slug": "royal-suite-3bd",
+    "source": "airbnb",
+    "urlHash": "d6cbf9d1a2c5",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 29,
+    "slug": "spacious-2bd-cinema",
+    "source": "gathern",
+    "urlHash": "4366d3db8d93",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 29,
+    "slug": "spacious-2bd-cinema",
+    "source": "airbnb",
+    "urlHash": "71fdc742e2f4",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 2,
+    "slug": "towers-jacuzzi-suite",
+    "source": "gathern",
+    "urlHash": "ca914fe9c1e9",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 2,
+    "slug": "towers-jacuzzi-suite",
+    "source": "airbnb",
+    "urlHash": "941c4d07f0ff",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 33,
+    "slug": "tranquil-stay-luxury-bath",
+    "source": "airbnb",
+    "urlHash": "16e3f9468f0c",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  },
+  {
+    "propertyId": 27,
+    "slug": "spacious-apt-luxury-bath-75tv",
+    "source": "airbnb",
+    "urlHash": "ce86fc711fb7",
+    "route": "direct",
+    "locationPropertyNames": [],
+    "locationFieldCount": 0
+  }
+]
