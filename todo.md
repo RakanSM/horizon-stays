@@ -289,4 +289,4 @@
 - [x] T191: Use iCal only for property matching if it lacks coordinates, and add a documented alternative for assigning exact property pins without guessing. Completed: the admin property editor now accepts a verified coordinate pair with Riyadh-area validation and a map-preview link; public pins now expose a touch/click/focus tooltip with the property name and price.
 
 ## Production Link Accessibility (User report Aug 21)
-- [ ] T192: Diagnose the Horizon Stays production-link accessibility report, release the tested map interaction update to the correct production target, and verify the public site opens normally.
+- [x] T192: Diagnose the Horizon Stays production-link accessibility report, release the tested map interaction update to the correct production target, and verify the public site opens normally. Completed: commit `3fd13a3` deployed READY to the `horizon-stays` production project; the apex domain loads the same released assets and exposes the map pin name/price tooltips. Use the apex domain, not the unconfigured `www` host.
