@@ -3727,6 +3727,94 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
   filter: saturate(0.86) contrast(1.03);
 }
 
+.map-pins-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.property-map-pin {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transform: translate(-50%, -100%);
+  pointer-events: auto;
+  text-decoration: none;
+  color: #18130c;
+  outline: none;
+}
+
+.property-map-pin-core {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid #fffaf0;
+  border-radius: 50% 50% 50% 7px;
+  background: linear-gradient(145deg, #22190e, #5d3d12);
+  box-shadow: 0 8px 18px rgb(35 23 8 / 36%), 0 0 0 5px rgb(255 250 240 / 72%);
+  color: #f0bd55;
+  font-size: 1.15rem;
+  line-height: 1;
+  transform: rotate(-45deg);
+  transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out), background 160ms var(--ease-out);
+}
+
+.property-map-pin-core::first-letter {
+  display: inline-block;
+}
+
+.property-map-pin-core {
+  text-indent: 0;
+}
+
+.property-map-pin-core::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f5c25c;
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 44%);
+}
+
+.property-map-pin-label {
+  max-width: 190px;
+  overflow: hidden;
+  border: 1px solid rgb(72 48 12 / 18%);
+  border-radius: 999px;
+  background: rgb(255 252 244 / 95%);
+  box-shadow: 0 8px 18px rgb(43 29 8 / 16%);
+  color: #261b0b;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 7px 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-4px) scale(0.96);
+  transform-origin: center;
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.property-map-pin:hover .property-map-pin-core,
+.property-map-pin:focus-visible .property-map-pin-core,
+.property-map-pin.is-property-pin .property-map-pin-core {
+  background: linear-gradient(145deg, #3c280a, #a36919);
+  box-shadow: 0 10px 22px rgb(35 23 8 / 44%), 0 0 0 7px rgb(245 194 92 / 34%);
+  transform: rotate(-45deg) scale(1.12);
+}
+
+.property-map-pin:hover .property-map-pin-label,
+.property-map-pin:focus-visible .property-map-pin-label,
+.property-map-pin.is-property-pin .property-map-pin-label {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
 .map-frame-badge,
 .map-frame-fallback {
   position: absolute;
@@ -3816,6 +3904,35 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
 .map-frame-property .map-frame-shell iframe {
   min-height: 360px;
   height: 360px;
+}
+
+@media (max-width: 640px) {
+  .map-frame-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .map-frame-shell,
+  .map-frame-shell iframe,
+  .map-frame-property .map-frame-shell,
+  .map-frame-property .map-frame-shell iframe {
+    min-height: 320px;
+    height: 320px;
+  }
+
+  .property-map-pin-core {
+    width: 31px;
+    height: 31px;
+  }
+
+  .property-map-pin-label {
+    display: none;
+  }
+
+  .property-map-pin.is-property-pin .property-map-pin-label {
+    display: block;
+    max-width: 140px;
+  }
 }
 
 @media (max-width: 700px) {

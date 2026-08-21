@@ -265,3 +265,9 @@
 - [x] T177: Implement the same visible MapFrame on every property detail page using that property's saved latitude and longitude, with a clear location fallback.
 - [x] T178: Apply the original stay.sa-inspired Horizon visual system to the public website without copying Stay branding, text, or media assets.
 - [x] T179: Build, test on desktop and mobile, commit, push to GitHub main, and verify a READY deployment from Vercel project `horizon-stays` (`prj_UsDIbMu1ku3gZ8O4rlAdHVihS4Qg`).
+
+## Property Map Pins Repair (User report Aug 20)
+- [ ] T180: Diagnose why property pins are not visibly rendered in the homepage map frame despite available property coordinates.
+- [ ] T181: Render and label one interactive pin per active property on the homepage map, and one precise pin on each property detail map.
+- [ ] T182: Show a clear missing-location state for properties with no latitude/longitude and retain the external map link.
+- [ ] T183: Verify visible pins on desktop and mobile, run tests/build, push to GitHub main, and confirm the correct Vercel production deployment is READY.
