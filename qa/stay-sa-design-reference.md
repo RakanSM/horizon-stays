@@ -15,3 +15,5 @@ DOM verification confirmed that the homepage now contains a visible MapFrame ele
 After switching the embed source to OpenStreetMap, the local homepage loaded with the new light Horizon Residence visual system, and the map frame is present in the rendered document beneath the property collection. A property-page check remains required before release.
 
 The KAFD Penthouse property page now renders the `HORIZON LOCATION` section with the property’s saved coordinates. Browser inspection confirmed visible OpenStreetMap controls and a marker within the framed map block before the availability calendar.
+
+Production verification after commit `990d5e9`: the Horizon Stays deployment rendered 22 interactive property-pin links on the homepage map layer, each targeting its stored latitude/longitude in Google Maps. The map frame and pins are therefore included in the production bundle rather than only the local source.
