@@ -293,3 +293,8 @@
 
 ## Production Link Accessibility (User report Aug 21)
 - [x] T192: Diagnose the Horizon Stays production-link accessibility report, release the tested map interaction update to the correct production target, and verify the public site opens normally. Completed: commit `3fd13a3` deployed READY to the `horizon-stays` production project; the apex domain loads the same released assets and exposes the map pin name/price tooltips. Use the apex domain, not the unconfigured `www` host.
+
+## Public Frontend Rebuild (User request Aug 22)
+- [x] T196: Replace the existing public-facing Horizon Stays theme from the ground up while preserving routes, live property data, booking paths, prices, and admin functionality. Completed: rebuilt the public application shell, homepage, property discovery cards, footer, and property-details visual layer without changing Supabase data models, booking calculations, or admin routes.
+- [x] T197: Establish a new responsive visual system, navigation, hero, property discovery, trust/value content, map, and footer using existing verified property media only. Completed: implemented the new Horizon editorial design system with separate desktop/mobile treatments, live property imagery, responsive navigation, collection filters, map area, and updated footer.
+- [ ] T198: Validate the rebuilt homepage and property journey on desktop and mobile, run tests/build, commit, push, and verify the production deployment.

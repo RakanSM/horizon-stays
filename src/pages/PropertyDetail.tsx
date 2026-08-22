@@ -150,7 +150,7 @@ export default function PropertyDetail() {
 
   if (property === undefined) {
     return (
-      <div className="container section">
+      <div className="container section horizon-detail-page">
         <div className="skeleton" style={{ height: 420 }} />
       </div>
     );
@@ -158,7 +158,7 @@ export default function PropertyDetail() {
 
   if (property === null) {
     return (
-      <div className="container section">
+      <div className="container section horizon-detail-page">
         <div className="empty-state">
           {t("not_found")}{" "}
           <Link to="/" style={{ color: "var(--gold)" }}>
@@ -203,14 +203,14 @@ export default function PropertyDetail() {
   };
 
   return (
-    <div className="container section">
-      <nav style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+    <div className="container section horizon-detail-page">
+      <nav className="horizon-detail-breadcrumb">
         <Link to="/">{t("back_to_all")}</Link> / {name}
       </nav>
 
       {featureFlags.feature_gallery && photos.length > 0 && (
         <>
-          <div className="detail-hero">
+          <div className="detail-hero horizon-detail-gallery">
             <img
               className="main-img"
               src={photos[mainPhoto] || photos[0]}
@@ -264,9 +264,9 @@ export default function PropertyDetail() {
         </div>
       )}
 
-      <div className="detail-cols">
+      <div className="detail-cols horizon-detail-layout">
         <div>
-          <div className="detail-title">
+          <div className="detail-title horizon-detail-heading">
             <h1>{name}</h1>
             <div className="detail-sub">
               {t("riyadh")} — {neighborhoodLabel(property.neighborhood, lang) || t("prime_district")} ·{" "}

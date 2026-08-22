@@ -22,8 +22,7 @@ const Cleaner = lazy(() => import("./pages/Cleaner"));
 const RouteFallback = () => <div className="page-loading" aria-live="polite">Loading…</div>;
 import { ThemeProvider, useTheme } from "./lib/ThemeContext";
 import { LangProvider, useLang, LANGS } from "./lib/i18n";
-import { useScrollReveal, useParallaxSections } from "./lib/motion";
-import SeasonalDecor from "./components/SeasonalDecor";
+import { useScrollReveal } from "./lib/motion";
 
 const WHATSAPP = "https://wa.me/966920035843";
 
@@ -100,11 +99,10 @@ function AppShell() {
   const location = useLocation();
   const { content, featureFlags } = useTheme();
   const { lang, t, setLang } = useLang();
-  const { theme, variant, toggleVariant } = useTheme();
+  const { variant, toggleVariant } = useTheme();
   const isEditor = location.pathname.startsWith("/admin/editor");
   const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/calendar";
   useScrollReveal(content.animationsEnabled && !isEditor);
-  useParallaxSections(!!theme.parallax && content.animationsEnabled && !isAdmin, location.pathname);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -212,14 +210,13 @@ function AppShell() {
     <>
       <ScrollToTop />
       <PageTitle />
-      {!isAdmin && featureFlags.feature_theme_decor && <SeasonalDecor />}
-      <header className="site-header">
-        <div className="container header-inner">
-          <Link to="/" className="brand">
-            <span className="brand-en">{content.brandEn}</span>
-            <span className="brand-ar">{lang === "ar" ? content.brandAr : ""}</span>
+      <header className="site-header horizon-shell-header">
+        <div className="container horizon-header-inner">
+          <Link to="/" className="horizon-wordmark" aria-label={content.brandEn}>
+            <span className="horizon-wordmark-main">HORIZON</span>
+            <span className="horizon-wordmark-sub">STAYS · RIYADH</span>
           </Link>
-          <nav className={`nav ${menuOpen ? "open" : ""}`}>
+          <nav className={`nav horizon-nav ${menuOpen ? "open" : ""}`}>
             {featureFlags.nav_properties && (
               <NavLink to="/" end className={({ isActive }) => (isActive ? "active" : "")}>
                 {t("nav_properties")}
@@ -236,22 +233,23 @@ function AppShell() {
               </NavLink>
             )}
             {featureFlags.booking_whatsapp && (
-              <a href={WHATSAPP} target="_blank" rel="noreferrer" className="cta">
+              <a href={WHATSAPP} target="_blank" rel="noreferrer" className="horizon-nav-book">
                 {lang === "ar" && content.ctaText ? content.ctaText : t("book_now")}
               </a>
             )}
           </nav>
-          <div className="header-actions">
+          <div className="horizon-header-tools">
             {modeToggle}
             {langToggle}
-            <button className="menu-btn" onClick={() => setMenuOpen((v) => !v)} aria-label="menu">
-              ☰
+            <button className="menu-btn horizon-menu-btn" onClick={() => setMenuOpen((v) => !v)} aria-label="menu" aria-expanded={menuOpen}>
+              <span />
+              <span />
             </button>
           </div>
         </div>
       </header>
 
-      <main>
+      <main className="horizon-public-shell">
         <Suspense fallback={<RouteFallback />}>
               <Routes>
             <Route path="/" element={<Home />} />
@@ -265,26 +263,25 @@ function AppShell() {
         </Suspense>
       </main>
 
-      <footer className="site-footer">
+      <footer className="site-footer horizon-footer">
         <div className="container">
-          <div className="footer-inner">
-            <div>
-              <span className="brand-en">{content.brandEn}</span>
+          <div className="horizon-footer-grid">
+            <div className="horizon-footer-intro">
+              <span className="horizon-wordmark-main">HORIZON</span>
+              <span className="horizon-wordmark-sub">STAYS · RIYADH</span>
               <p>{t("footer_tag")}</p>
             </div>
-            <nav className="footer-nav">
+            <nav className="footer-nav horizon-footer-nav" aria-label={lang === "ar" ? "روابط الموقع" : "Site links"}>
               {featureFlags.nav_properties && <Link to="/">{t("nav_properties")}</Link>}
               {featureFlags.nav_about && <Link to="/about">{t("nav_about")}</Link>}
               {featureFlags.nav_contact && <Link to="/contact">{t("nav_contact")}</Link>}
               <a href="tel:920035843">920035843</a>
             </nav>
           </div>
-          <div className="footer-legal">
+          <div className="horizon-footer-bottom">
+            <span>{lang === "ar" ? "الرياض، المملكة العربية السعودية" : "Riyadh, Saudi Arabia"}</span>
             <span>{lang === "ar" ? "السجل التجاري والترخيص متاحان عند الطلب" : "Commercial registration and licence available on request"}</span>
-            <span>{lang === "ar" ? "سياسة الخصوصية وشروط الإقامة" : "Privacy policy and stay terms"}</span>
-          </div>
-          <div className="copyright">
-            © {new Date().getFullYear()} Horizon Stays — {t("footer_rights")}
+            <span>© {new Date().getFullYear()} Horizon Stays</span>
           </div>
         </div>
       </footer>
