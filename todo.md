@@ -279,6 +279,9 @@
 - [ ] T185: Inventory each property’s linked Airbnb listing and compare its public location information with the current Horizon Stays coordinates.
 - [ ] T186: Update only coordinates supported by a public Airbnb location signal; record every ambiguous or privacy-protected listing for owner confirmation instead of guessing.
 - [ ] T187: Verify corrected pins on the homepage and property pages, run tests/build, and publish the confirmed coordinate updates.
+- [ ] T193: Use the connected Airbnb host session only to review each listing’s verified location information; do not alter listings, pricing, calendars, or account settings.
+- [ ] T194: Use the connected Airbnb host session only to review and reconcile listing photos with the corresponding Horizon Stays unit; do not replace or delete any Airbnb media.
+- [x] T195: Continue a non-blocking audit of existing property galleries and publicly available listing metadata while the Airbnb browser connection is restored; mark every unverified map point or image for confirmation rather than guessing. Completed: all 25 stored hero images respond successfully; 24 galleries have at least five images; the single-image `luxury-apt-blvd-70-tv` cover is identical to another unit’s cover and is documented for host-side verification instead of automatic replacement.
 
 ## Sahmk Integration Confirmation (User request Aug 21)
 - [ ] T188: Inspect the existing Sahmk integration configuration and restore the previously agreed Horizon Stays scope without altering unrelated integrations.

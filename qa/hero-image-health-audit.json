@@ -1,0 +1,236 @@
+{
+  "checkedAt": "2026-08-22T17:09:42.721Z",
+  "propertyCount": 25,
+  "healthyHeroImages": 25,
+  "failedHeroImages": 0,
+  "propertiesWithLessThanFiveImages": [
+    "luxury-apt-blvd-70-tv"
+  ],
+  "results": [
+    {
+      "id": 1,
+      "slug": "kafd-penthouse-3bd",
+      "name": "KAFD Penthouse 3BD",
+      "galleryCount": 42,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 2,
+      "slug": "towers-jacuzzi-suite",
+      "name": "Towers Jacuzzi Suite",
+      "galleryCount": 25,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 3,
+      "slug": "private-rooftop-penthouse",
+      "name": "Private Rooftop Penthouse",
+      "galleryCount": 28,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 4,
+      "slug": "garden-hottub-suite",
+      "name": "Garden HotTub Suite",
+      "galleryCount": 23,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 5,
+      "slug": "cinema-suite-2br",
+      "name": "Cinema Suite 2BR",
+      "galleryCount": 30,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 6,
+      "slug": "luxury-1bd-70tv",
+      "name": "Luxury 1BD 70TV",
+      "galleryCount": 25,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 7,
+      "slug": "sky-lounge-suite",
+      "name": "Sky Lounge Suite",
+      "galleryCount": 34,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 8,
+      "slug": "executive-studio",
+      "name": "Executive Studio",
+      "galleryCount": 17,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 9,
+      "slug": "duplex-penthouse-4bd",
+      "name": "Duplex Penthouse 4BD",
+      "galleryCount": 27,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 10,
+      "slug": "designer-loft-2bd",
+      "name": "Designer Loft 2BD",
+      "galleryCount": 16,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 11,
+      "slug": "city-view-suite",
+      "name": "City View Suite",
+      "galleryCount": 19,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 12,
+      "slug": "minimalist-1bd",
+      "name": "Minimalist 1BD",
+      "galleryCount": 15,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 13,
+      "slug": "royal-suite-3bd",
+      "name": "Royal Suite 3BD",
+      "galleryCount": 20,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 14,
+      "slug": "pool-view-apartment",
+      "name": "Pool View Apartment",
+      "galleryCount": 37,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 15,
+      "slug": "artistic-design-suite",
+      "name": "Artistic Design Suite",
+      "galleryCount": 20,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 17,
+      "slug": "luxury-apt-3bd-gaming-area",
+      "name": "Luxury APT | 3 Bd | gaming area | outdoor | Jacuzzi",
+      "galleryCount": 39,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 19,
+      "slug": "luxury-apt-al-yasmin",
+      "name": "Luxury Apartment | Al Yasmin",
+      "galleryCount": 30,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 22,
+      "slug": "luxury-apt-blvd-70-tv",
+      "name": "Near to Blvd | Luxury Apt | 70\" Smart TV",
+      "galleryCount": 1,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 25,
+      "slug": "massive-3br-2floors",
+      "name": "Massive 3BR APT with 2 Floors",
+      "galleryCount": 29,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 26,
+      "slug": "3br-apt-outdoor",
+      "name": "3BR APT | Outdoor Area",
+      "galleryCount": 28,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 27,
+      "slug": "spacious-apt-luxury-bath-75tv",
+      "name": "Spacious APT With Luxury Bathroom | 75\" TV",
+      "galleryCount": 22,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 29,
+      "slug": "spacious-2bd-cinema",
+      "name": "Spacious 2Bd APT | Cinema Room",
+      "galleryCount": 26,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 30,
+      "slug": "self-checkin-apt-75tv-blvd",
+      "name": "Self Check-in Apt | 75\" TV | Near Boulevard",
+      "galleryCount": 22,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 33,
+      "slug": "tranquil-stay-luxury-bath",
+      "name": "Tranquil Stay | Luxury Bathtub",
+      "galleryCount": 36,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "id": 39,
+      "slug": "al-yasmeen-apt-self-checkin",
+      "name": "Al-Yasmeen Apt | Self Check-in | 75\" TV | Fiber | Quiet",
+      "galleryCount": 17,
+      "heroImageHealthy": true,
+      "status": 200,
+      "error": null
+    }
+  ]
+}
