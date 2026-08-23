@@ -5,6 +5,7 @@ import { useTheme } from "../lib/ThemeContext";
 import { useLang, neighborhoodLabel, propName } from "../lib/i18n";
 import { EditorContentContext } from "../lib/editorPreview";
 import MapFrame from "../components/MapFrame";
+import { TwoClickDateRangePicker } from "../components/TwoClickDateRangePicker";
 
 const WHATSAPP = "https://wa.me/966920035843";
 const FALLBACK_HERO = "https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/kafd-penthouse-3bd-1.webp";
@@ -227,8 +228,8 @@ export default function Home() {
     }).slice(0, 4);
   }, [properties]);
 
-  const runSearch = () => {
-    if (checkIn && checkOut && checkOut <= checkIn) {
+  const runSearch = (range = { checkIn, checkOut }) => {
+    if (range.checkIn && range.checkOut && range.checkOut <= range.checkIn) {
       setSearchMessage(copy.datesError);
       return;
     }
@@ -269,14 +270,18 @@ export default function Home() {
               <span><Icon name="pin" />{copy.destination}</span>
               <select aria-label={copy.destination} defaultValue="riyadh"><option value="riyadh">{copy.location}</option></select>
             </label>
-            <label className="horizon-search-field">
-              <span><Icon name="calendar" />{copy.checkIn}</span>
-              <input type="date" min={today} value={checkIn} onChange={(event) => setCheckIn(event.target.value)} />
-            </label>
-            <label className="horizon-search-field">
-              <span><Icon name="calendar" />{copy.checkOut}</span>
-              <input type="date" min={checkIn || today} value={checkOut} onChange={(event) => setCheckOut(event.target.value)} />
-            </label>
+            <div className="horizon-search-field horizon-search-date-range">
+              <span><Icon name="calendar" />{copy.checkIn} / {copy.checkOut}</span>
+              <TwoClickDateRangePicker
+                value={{ checkIn, checkOut }}
+                minDate={today}
+                locale={lang === "ar" ? "ar-SA" : "en-US"}
+                checkInLabel={copy.checkIn}
+                checkOutLabel={copy.checkOut}
+                onChange={(next) => { setCheckIn(next.checkIn); setCheckOut(next.checkOut); setSearchMessage(""); }}
+                onComplete={runSearch}
+              />
+            </div>
             <label className="horizon-search-field horizon-search-guests">
               <span><Icon name="guests" />{copy.guests}</span>
               <select aria-label={copy.guests} value={guests} onChange={(event) => setGuests(event.target.value)}>{[1, 2, 3, 4, 5, 6, 8].map((value) => <option key={value} value={value}>{value}</option>)}</select>

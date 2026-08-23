@@ -15,6 +15,8 @@ describe("public frontend rebuild", () => {
     expect(home).toContain("horizon-search-module");
     expect(home).toContain("checkIn");
     expect(home).toContain("checkOut");
+    expect(home).toContain("TwoClickDateRangePicker");
+    expect(home).not.toContain('<input type="date"');
     expect(home).toContain("horizon-journey-grid");
     expect(home).not.toMatch(/testimonial|guest review|guest rating/i);
     expect(home).toContain('import { EditorContentContext } from "../lib/editorPreview"');

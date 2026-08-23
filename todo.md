@@ -315,3 +315,12 @@
 ## Public Experience Organisation (User request Aug 23)
 - [x] T208: Reorder the public homepage into a clear journey from search to curated stay selection, city context, confidence signals, map discovery, and owner partnership; reduce decorative duplication and visual dead space. Completed: reordered the page into search/metrics → curated stay selection → city context → booking journey → Horizon standard → map → owner partnership.
 - [x] T209: Refine the desktop and mobile hierarchy, card rhythm, control density, and section transitions while retaining the live catalogue, pricing, map, booking paths, and accessibility settings. Completed: added an asymmetric desktop residence grid, controlled card rhythm, shorter visual transitions, and focused mobile stacking; desktop and mobile checks render without JavaScript errors.
+
+## TTLock Access Integration (User request Aug 23)
+- [ ] T210: Verify the official TTLock integration method, account type, required application credentials, and access scope without placing any credentials in source control.
+- [ ] T211: Add an admin-only TTLock lock-mapping model so every Horizon Stays unit can be linked to the correct verified lock.
+- [ ] T212: Implement and test booking-bound digital access creation, expiry, revocation, and audit visibility according to a confirmed access policy.
+
+## Public Booking Calendar Restoration (User request Aug 23)
+- [x] T213: Restore the public booking search to a two-click date-range interaction: one click for check-in and one click for check-out. Completed: replaced the separate native fields with one shared, accessible month picker that follows the original range-selection behaviour.
+- [x] T214: Retain date validation, guest/type filters, availability flow, responsive behavior, and accessible keyboard interactions while replacing the separate native date inputs. Completed: retained existing filters, search feedback and collection flow; added focused range-selection tests, production build validation, and a local browser check showing the full two-click journey.
