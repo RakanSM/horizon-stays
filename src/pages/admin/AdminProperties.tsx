@@ -206,16 +206,16 @@ export function PropertyEditor({ p, onSaved, onClose }: { p: AdminProperty; onSa
         {icalExport && <div className="sf-row"><label>رابط تصدير Horizon (الصقه في Airbnb/Gathern)</label><div className="pe-copy"><code dir="ltr">{icalExport}</code><button className="btn-ghost sm" onClick={() => { navigator.clipboard.writeText(icalExport); setMsg("نُسخ ✓"); }}>نسخ</button></div></div>}
       </section>
 
-      <section className="pe-section">
+      <section className="pe-section odoo-property-link">
         <div className="pe-section-head"><h4>{en ? "Odoo connection" : "ربط أودو"}</h4><span>{en ? "Optional until Odoo settings are complete" : "اختياري إلى أن تكتمل إعدادات Odoo"}</span></div>
-        <div className="pe-grid">
+        <div className="pe-grid pe-grid--odoo">
           <div className="sf-row"><label>{en ? "Odoo Rental product ID" : "معرّف منتج Odoo Rental"}</label><input dir="ltr" type="number" value={d.odoo_product_id} onChange={(event) => set("odoo_product_id", event.target.value ? Number(event.target.value) : "")} placeholder="مثال: 42" /></div>
           <div className="sf-row"><label>{en ? "Odoo product name" : "اسم منتج Odoo"}</label><input dir="ltr" value={d.odoo_product_name} onChange={(event) => set("odoo_product_name", event.target.value)} placeholder="Riyadh Penthouse — Night" /></div>
         </div>
         <label className="pe-toggle"><input type="checkbox" checked={d.odoo_sync_enabled} onChange={(event) => set("odoo_sync_enabled", event.target.checked)} /> {en ? "Allow this property's bookings to sync with Odoo" : "السماح بمزامنة حجوزات هذه الوحدة مع Odoo"}</label>
       </section>
 
-      <div className="pe-foot">
+      <div className="pe-foot" dir={en ? "ltr" : "rtl"}>
         <label className="pe-toggle"><input type="checkbox" checked={d.is_active} onChange={(event) => set("is_active", event.target.checked)} /> {en ? "Property is active (visible on site)" : "الوحدة نشطة (تظهر في الموقع)"}</label>
         <div className="theme-actions">
           <button className="btn-ghost" onClick={syncNow} disabled={syncBusy}>{syncBusy ? (en ? "Syncing…" : "جارٍ المزامنة…") : (en ? "Sync calendar now ⟳" : "مزامنة التقويم الآن ⟳")}</button>

@@ -55,4 +55,14 @@ describe("public frontend rebuild", () => {
     expect(locks).toContain("window.confirm");
     expect(locks).not.toContain("propertyId");
   });
+
+  it("keeps the Odoo unit-linking form contained in the RTL property editor", () => {
+    const properties = readSource("src/pages/admin/AdminProperties.tsx");
+    const styles = readSource("src/index.css");
+    expect(properties).toContain('className="pe-section odoo-property-link"');
+    expect(properties).toContain('className="pe-grid pe-grid--odoo"');
+    expect(styles).toContain(".pe-grid--odoo { grid-template-columns: repeat(2, minmax(0, 1fr)); }");
+    expect(styles).toContain(".pe-grid .sf-row input, .pe-grid .sf-row select, .pe-grid .sf-row textarea");
+    expect(styles).toContain(".pe-foot { display: flex; justify-content: space-between;");
+  });
 });

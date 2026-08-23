@@ -3282,13 +3282,19 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
 .adm-prop-state { padding: 4px 12px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; flex-shrink: 0; }
 .adm-prop-state.on { background: rgba(64, 180, 130, 0.14); color: #3fb07f; }
 .adm-prop-state.off { background: rgba(200, 60, 60, 0.12); color: #d66; }
-.prop-editor { padding: 18px; border-top: 1px solid color-mix(in srgb, var(--gold) 14%, transparent); background: color-mix(in srgb, var(--bg) 55%, var(--card)); }
+.prop-editor { min-width: 0; padding: 18px; border-top: 1px solid color-mix(in srgb, var(--gold) 14%, transparent); background: color-mix(in srgb, var(--bg) 55%, var(--card)); }
 .pe-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-.pe-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.pe-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; min-width: 0; margin-bottom: 14px; }
+.pe-grid > .sf-row { min-width: 0; }
+.pe-grid .sf-row input, .pe-grid .sf-row select, .pe-grid .sf-row textarea { box-sizing: border-box; min-width: 0; width: 100%; }
+.pe-grid--odoo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.odoo-property-link .pe-toggle { min-width: 0; padding-block: 6px; line-height: 1.65; }
+.odoo-property-link .pe-toggle input { flex: 0 0 auto; }
 .pe-sub { grid-column: 1 / -1; color: var(--gold); font-size: 0.85rem; font-weight: 700; margin: 8px 0 0; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--gold) 25%, transparent); }
 .pe-copy { display: flex; align-items: center; gap: 8px; }
 .pe-copy code { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.72rem; color: var(--text-muted); background: var(--bg); padding: 8px 10px; border-radius: 8px; direction: ltr; }
-.pe-foot { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.pe-foot { display: flex; justify-content: space-between; gap: 10px; align-items: center; min-width: 0; flex-wrap: wrap; }
+.pe-foot .theme-actions { min-width: 0; flex-wrap: wrap; }
 .pe-toggle { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 0.88rem; cursor: pointer; }
 .pe-meta { margin: 4px 0 0; color: var(--text-muted); font-size: 0.76rem; }
 .pe-section { margin: 16px 0; padding: 16px; border: 1px solid color-mix(in srgb, var(--gold) 15%, transparent); border-radius: 14px; background: color-mix(in srgb, var(--card) 72%, var(--bg)); }
@@ -3317,6 +3323,10 @@ html[data-mode="light"] .hero-actions a:not(.btn-gold) {
   .prop-gallery-manager { grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: none; }
   .pe-section { padding: 12px; }
   .pe-add-photo { flex-direction: column; }
+  .pe-grid--odoo { grid-template-columns: minmax(0, 1fr); }
+  .pe-foot { align-items: stretch; }
+  .pe-foot > .pe-toggle, .pe-foot .theme-actions { width: 100%; }
+  .pe-foot .theme-actions > button { flex: 1 1 160px; }
   .odoo-run small { width: 100%; margin-inline-start: 0; }
 }
 
