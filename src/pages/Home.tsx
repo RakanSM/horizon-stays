@@ -202,6 +202,50 @@ function DeferredMap({ locations, lang }: { locations: Property[]; lang: "ar" | 
   </div>;
 }
 
+function ScrollScene({ properties, lang }: { properties: Property[] | null; lang: "ar" | "en" }) {
+  const panelRefs = useRef<Array<HTMLElement | null>>([]);
+  const [visiblePanels, setVisiblePanels] = useState<number[]>([]);
+  const sceneProperties = useMemo(() => (properties || []).slice(0, 3), [properties]);
+
+  useEffect(() => {
+    if (!sceneProperties.length || !("IntersectionObserver" in window)) {
+      setVisiblePanels(sceneProperties.map((_, index) => index));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const index = Number((entry.target as HTMLElement).dataset.sceneIndex);
+        setVisiblePanels((current) => current.includes(index) ? current : [...current, index]);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.22 });
+    panelRefs.current.forEach((panel) => panel && observer.observe(panel));
+    return () => observer.disconnect();
+  }, [sceneProperties]);
+
+  if (!sceneProperties.length) return null;
+  const copy = lang === "ar"
+    ? { kicker: "HORIZON / مشهد ثابت", title: "المدينة تتحرك\nوأنت تختار.", text: "خلفية واحدة هادئة، وفوقها تظهر الإقامات بتدرج مدروس مع كل تمرير.", scroll: "تابع النزول لاستكشاف الإقامات", book: "افتح الحجز", perNight: "لليلة", residence: "إقامة مختارة" }
+    : { kicker: "HORIZON / FIXED SCENE", title: "The city moves.\nYou choose.", text: "One calm visual field, with considered residences revealing themselves as you move through it.", scroll: "Scroll to explore the stays", book: "Open booking", perNight: "per night", residence: "Selected residence" };
+
+  return <section className="horizon-scroll-scene" aria-label={lang === "ar" ? "مشهد الإقامات المتحرك" : "Moving residence scene"}>
+    <div className="horizon-scene-fixed" aria-hidden="true">
+      <span className="horizon-scene-grid" /><span className="horizon-scene-glow horizon-scene-glow-a" /><span className="horizon-scene-glow horizon-scene-glow-b" />
+      <div className="container horizon-scene-static-copy"><span>{copy.kicker}</span><h2>{copy.title}</h2><p>{copy.text}</p><small>{copy.scroll}<i /></small></div>
+    </div>
+    <div className="container horizon-scene-panels">
+      {sceneProperties.map((property, index) => {
+        const name = propName(property, lang);
+        return <article key={property.id} data-scene-index={index} ref={(element) => { panelRefs.current[index] = element; }} className={`horizon-scene-panel horizon-scene-panel-${index + 1} ${visiblePanels.includes(index) ? "is-visible" : ""}`}>
+          <div className="horizon-scene-panel-media"><img src={propertyPhotos(property)[0] || FALLBACK_HERO} alt={name} loading="lazy" decoding="async" sizes="(max-width: 720px) 90vw, 62vw" /><span>{String(index + 1).padStart(2, "0")}</span></div>
+          <div className="horizon-scene-panel-copy"><span>{copy.residence} / {neighborhoodLabel(property.neighborhood, lang) || (lang === "ar" ? "الرياض" : "Riyadh")}</span><h3>{name}</h3><p>{property.bedrooms ? `${property.bedrooms} ${lang === "ar" ? "غرف" : "bedrooms"}` : (lang === "ar" ? "استوديو" : "Studio")} · {property.bathrooms} {lang === "ar" ? "حمام" : "baths"} · {property.max_guests} {lang === "ar" ? "ضيوف" : "guests"}</p><div><b>{property.price_per_night?.toLocaleString("en-US")} ﷼</b><small>{copy.perNight}</small><Link to={`/property/${property.slug}`}>{copy.book}<Icon name="arrow" /></Link></div></div>
+        </article>;
+      })}
+    </div>
+  </section>;
+}
+
 export default function Home() {
   const { content: liveContent, featureFlags } = useTheme();
   const editorContent = useContext(EditorContentContext);
@@ -413,12 +457,7 @@ export default function Home() {
         </div>
       </section>}
 
-      <section className="horizon-section horizon-journey-section">
-        <div className="container">
-          <div className="horizon-section-head horizon-split-head"><div><span className="horizon-section-index">{copy.journeyKicker}</span><h2>{copy.journeyTitle}</h2></div><p>{lang === "ar" ? "تجربة مصممة لتقليل الخطوات غير الضرورية وترك مساحة أكبر لاختيار الإقامة المناسبة." : "A path designed to remove unnecessary steps and leave more room for choosing the right stay."}</p></div>
-          <div className="horizon-journey-grid">{copy.journey.map((item, index) => <article className="horizon-journey-card" key={item.step}><span>{item.step}</span><div className="horizon-journey-visual" aria-hidden="true"><i /><i /><i /></div><h3>{item.title}</h3><p>{item.text}</p><b>{index === 2 ? <Icon name="arrow" /> : ""}</b></article>)}</div>
-        </div>
-      </section>
+      <ScrollScene properties={properties} lang={lang} />
 
       <section className="horizon-section horizon-section-deep horizon-services-section">
         <div className="horizon-space-grid" aria-hidden="true"><i /><i /><i /><i /></div>

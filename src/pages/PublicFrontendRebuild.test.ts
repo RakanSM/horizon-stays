@@ -18,7 +18,8 @@ describe("public frontend rebuild", () => {
     expect(home).toContain("checkOut");
     expect(home).toContain("TwoClickDateRangePicker");
     expect(home).not.toContain('<input type="date"');
-    expect(home).toContain("horizon-journey-grid");
+    expect(home).toContain("ScrollScene properties={properties}");
+    expect(home).not.toContain('className="horizon-section horizon-journey-section"');
     expect(home).not.toMatch(/testimonial|guest review|guest rating/i);
     expect(home).toContain('import { EditorContentContext } from "../lib/editorPreview"');
     expect(home).not.toContain('from "./ThemeEditor"');
@@ -33,6 +34,16 @@ describe("public frontend rebuild", () => {
     expect(home).toContain("horizon-favorite-button");
     expect(styles).toContain(".horizon-property-card:focus-within .horizon-card-reveal");
     expect(styles).toContain(".horizon-favorite-button");
+  });
+
+  it("uses a fixed scroll scene while residences reveal from verified live property data", () => {
+    const home = readSource("src/pages/Home.tsx");
+    const styles = readSource("src/public-rebuild.css");
+    expect(home).toContain("function ScrollScene");
+    expect(home).toContain("propertyPhotos(property)[0] || FALLBACK_HERO");
+    expect(styles).toContain(".horizon-scene-fixed { position: sticky;");
+    expect(styles).toContain(".horizon-scene-panel.is-visible");
+    expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
   });
 
   it("keeps the property page on the shared booking and availability flow", () => {

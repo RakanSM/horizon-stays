@@ -472,6 +472,17 @@ body:has(.horizon-public-shell) {
 .horizon-partnership-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(36px, 8vw, 130px); align-items: end; }.horizon-partnership-grid .horizon-kicker { color: var(--h-electric); }.horizon-partnership-grid .horizon-kicker::before { background: var(--h-electric); }
 .horizon-partnership-grid h2 { margin-top: 20px; max-width: 650px; color: var(--h-white); font-family: var(--font-display); font-size: clamp(2.7rem, 5.5vw, 6rem); font-weight: 700; line-height: .96; letter-spacing: -.06em; white-space: pre-line; }.horizon-partnership-grid p { margin-bottom: 28px; color: color-mix(in srgb, var(--h-white) 68%, transparent); font-size: 1rem; line-height: 1.9; }.horizon-partnership-grid .horizon-primary-btn { display: inline-flex; gap: 9px; align-items: center; background: var(--h-electric); }.horizon-partnership-grid .horizon-primary-btn:hover { background: var(--h-white); color: var(--h-space); }
 
+/* Fixed scene: the visual field remains in place while real residences move through it. */
+.horizon-scroll-scene { position: relative; z-index: 2; isolation: isolate; min-height: 250vh; background: var(--h-paper); }
+.horizon-scene-fixed { position: sticky; top: 0; z-index: 0; height: 100svh; overflow: hidden; color: var(--h-white); background: radial-gradient(circle at 76% 21%, color-mix(in srgb, var(--h-electric) 34%, transparent), transparent 28%), radial-gradient(circle at 19% 78%, color-mix(in srgb, var(--h-accent) 26%, transparent), transparent 35%), var(--h-space); }
+.horizon-scene-grid { position: absolute; inset: 0; opacity: .42; background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px); background-size: clamp(48px, 5vw, 78px) clamp(48px, 5vw, 78px); mask-image: linear-gradient(135deg, transparent 0%, #000 34%, #000 72%, transparent 100%); }
+.horizon-scene-glow { position: absolute; border: 1px solid color-mix(in srgb, var(--h-white) 22%, transparent); border-radius: 50%; pointer-events: none; }.horizon-scene-glow-a { width: min(55vw, 760px); aspect-ratio: 1; top: -25%; inset-inline-end: -16%; box-shadow: inset 0 0 0 34px rgba(255,255,255,.025); }.horizon-scene-glow-b { width: min(34vw, 440px); aspect-ratio: 1; bottom: -22%; inset-inline-start: 8%; border-color: color-mix(in srgb, var(--h-electric) 55%, transparent); }
+.horizon-scene-static-copy { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; pointer-events: none; }.horizon-scene-static-copy > span { color: color-mix(in srgb, var(--h-white) 62%, var(--h-electric)); font-family: var(--font-latin); font-size: .68rem; font-weight: 700; letter-spacing: .2em; }.horizon-scene-static-copy h2 { max-width: 690px; margin: 20px 0; color: var(--h-white); font-family: var(--font-display); font-size: clamp(3.3rem, 7.3vw, 8rem); font-weight: 700; line-height: .88; letter-spacing: -.07em; white-space: pre-line; }.horizon-scene-static-copy p { max-width: 410px; color: color-mix(in srgb, var(--h-white) 70%, transparent); font-size: 1rem; line-height: 1.85; }.horizon-scene-static-copy small { display: inline-flex; align-items: center; gap: 10px; margin-top: 45px; color: color-mix(in srgb, var(--h-white) 54%, transparent); font-size: .72rem; }.horizon-scene-static-copy small i { width: 30px; height: 1px; background: var(--h-electric); }
+.horizon-scene-panels { position: relative; z-index: 2; display: grid; gap: 38vh; margin-top: -100svh; padding-top: 34vh; padding-bottom: 31vh; }
+.horizon-scene-panel { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(260px, .68fr); align-items: end; gap: clamp(20px, 4vw, 64px); width: min(100%, 1080px); min-height: min(62vh, 620px); padding: clamp(14px, 2vw, 24px); color: var(--h-white); background: color-mix(in srgb, var(--h-space) 54%, transparent); border: 1px solid rgba(255,255,255,.22); box-shadow: 0 30px 90px rgba(3, 10, 13, .36); backdrop-filter: blur(14px); opacity: 0; transform: translateY(16vh) scale(.97); transition: opacity 720ms var(--ease-out), transform 900ms var(--ease-out); }.horizon-scene-panel.is-visible { opacity: 1; transform: translateY(0) scale(1); }.horizon-scene-panel-2 { margin-inline-start: auto; grid-template-columns: minmax(260px, .68fr) minmax(0, 1.12fr); }.horizon-scene-panel-2 .horizon-scene-panel-media { order: 2; }.horizon-scene-panel-3 { margin-inline: auto; }
+.horizon-scene-panel-media { position: relative; min-height: 420px; overflow: hidden; background: #17262d; }.horizon-scene-panel-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 52%, rgba(6,15,19,.62)); }.horizon-scene-panel-media img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; filter: saturate(.85) contrast(1.05); }.horizon-scene-panel-media span { position: absolute; z-index: 1; top: 18px; inset-inline-start: 19px; color: #fff; font-family: var(--font-latin); font-size: .72rem; letter-spacing: .18em; }
+.horizon-scene-panel-copy { padding: clamp(8px, 2vw, 20px) clamp(2px, 1vw, 10px) 18px; }.horizon-scene-panel-copy > span { color: var(--h-electric); font-family: var(--font-latin); font-size: .68rem; font-weight: 700; letter-spacing: .12em; }.horizon-scene-panel-copy h3 { margin: 17px 0 10px; color: var(--h-white); font-family: var(--font-display); font-size: clamp(1.9rem, 3.4vw, 3.5rem); font-weight: 700; line-height: .96; letter-spacing: -.055em; }.horizon-scene-panel-copy p { color: color-mix(in srgb, var(--h-white) 68%, transparent); font-size: .84rem; line-height: 1.75; }.horizon-scene-panel-copy > div { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 12px; margin-top: 29px; }.horizon-scene-panel-copy b { font-family: var(--font-latin); font-size: 1.22rem; }.horizon-scene-panel-copy small { color: color-mix(in srgb, var(--h-white) 55%, transparent); font-size: .67rem; }.horizon-scene-panel-copy a { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; margin-inline-start: auto; padding: 0 13px; color: var(--h-space); background: var(--h-white); font-size: .72rem; font-weight: 700; transition: transform 160ms var(--ease-out), background 180ms var(--ease-out); }.horizon-scene-panel-copy a:hover { background: var(--h-electric); transform: translateY(-2px); }.horizon-scene-panel-copy a svg { width: 14px; height: 14px; }
+
 @media (max-width: 1100px) {
   .horizon-search-module { grid-template-columns: repeat(3, 1fr); }.horizon-search-submit { min-height: 58px; }.horizon-search-type { border-inline-end: 0; }.horizon-destination-card { min-height: 340px; }
 }
@@ -496,6 +507,7 @@ body:has(.horizon-public-shell) {
 .horizon-future-public .horizon-collection-section { order: 3; }
 .horizon-future-public .horizon-destinations-section { order: 4; }
 .horizon-future-public .horizon-journey-section { order: 5; }
+.horizon-future-public .horizon-scroll-scene { order: 5; }
 .horizon-future-public .horizon-services-section { order: 6; }
 .horizon-future-public .horizon-map-section { order: 7; }
 .horizon-future-public .horizon-partnership-section { order: 8; }
@@ -646,6 +658,12 @@ body:has(.horizon-public-shell) {
   .horizon-future-public .horizon-property-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .horizon-future-public .horizon-property-card:nth-child(1) { grid-column: span 2; grid-row: auto; min-height: 520px; }
   .horizon-future-public .horizon-property-card:nth-child(2),.horizon-future-public .horizon-property-card:nth-child(3),.horizon-future-public .horizon-property-card:nth-child(4),.horizon-future-public .horizon-property-card:nth-child(5),.horizon-future-public .horizon-property-card:nth-child(n+6),.horizon-future-public .horizon-property-card:nth-child(n+6):nth-child(3n + 1) { grid-column: auto; min-height: 340px; }
+  .horizon-scroll-scene { min-height: 225vh; }
+  .horizon-scene-panels { gap: 28vh; padding-top: 31vh; padding-bottom: 25vh; }
+  .horizon-scene-panel,.horizon-scene-panel-2 { grid-template-columns: 1fr; gap: 12px; width: min(100%, 650px); min-height: 0; }
+  .horizon-scene-panel-2 .horizon-scene-panel-media { order: initial; }
+  .horizon-scene-panel-media,.horizon-scene-panel-media img { min-height: 350px; }
+  .horizon-scene-panel-copy { padding: 12px 4px 4px; }
 }
 @media (max-width: 620px) {
   .horizon-fixed-field::before { background-size: 64px 64px; opacity: .2; }
@@ -654,7 +672,18 @@ body:has(.horizon-public-shell) {
   .horizon-future-public .horizon-property-card,.horizon-future-public .horizon-property-card:nth-child(1),.horizon-future-public .horizon-property-card:nth-child(2),.horizon-future-public .horizon-property-card:nth-child(3),.horizon-future-public .horizon-property-card:nth-child(4),.horizon-future-public .horizon-property-card:nth-child(5),.horizon-future-public .horizon-property-card:nth-child(n+6),.horizon-future-public .horizon-property-card:nth-child(n+6):nth-child(3n + 1) { grid-column: auto; min-height: 390px; }
   .horizon-future-public .horizon-property-card:nth-child(1) { min-height: 470px; }
   .horizon-future-public .horizon-property-card-main { padding: 20px; }
+  .horizon-scroll-scene { min-height: 205vh; }
+  .horizon-scene-static-copy { justify-content: flex-start; padding-top: 18vh; }
+  .horizon-scene-static-copy h2 { font-size: clamp(3.2rem, 16vw, 5.2rem); }
+  .horizon-scene-static-copy p { max-width: 300px; font-size: .9rem; }
+  .horizon-scene-static-copy small { margin-top: 30px; }
+  .horizon-scene-panels { gap: 20vh; padding-top: 45vh; padding-bottom: 23vh; }
+  .horizon-scene-panel { padding: 10px; }
+  .horizon-scene-panel-media,.horizon-scene-panel-media img { min-height: 285px; }
+  .horizon-scene-panel-copy h3 { font-size: clamp(1.85rem, 10vw, 2.7rem); }
+  .horizon-scene-panel-copy a { width: 100%; margin-inline-start: 0; justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
   .horizon-future-public .horizon-property-card { transition: none; }
+  .horizon-scene-panel { opacity: 1; transform: none; transition: none; }
 }
