@@ -29,4 +29,10 @@ describe("public frontend rebuild", () => {
     expect(styles).toContain(".horizon-public");
     expect(styles).toContain(".horizon-shell-header");
   });
+
+  it("keeps the public shell's theme state in scope for the mode toggle", () => {
+    const app = readSource("src/App.tsx");
+    expect(app).toContain("const { content, featureFlags, theme, variant, toggleVariant } = useTheme();");
+    expect(app).toContain("theme.mode");
+  });
 });

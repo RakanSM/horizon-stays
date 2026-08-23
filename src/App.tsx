@@ -97,9 +97,8 @@ function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const location = useLocation();
-  const { content, featureFlags } = useTheme();
+  const { content, featureFlags, theme, variant, toggleVariant } = useTheme();
   const { lang, t, setLang } = useLang();
-  const { variant, toggleVariant } = useTheme();
   const isEditor = location.pathname.startsWith("/admin/editor");
   const isAdmin = location.pathname.startsWith("/admin") || location.pathname === "/calendar";
   useScrollReveal(content.animationsEnabled && !isEditor);
