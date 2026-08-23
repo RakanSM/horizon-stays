@@ -44,4 +44,15 @@ describe("public frontend rebuild", () => {
     expect(app).toContain("const { content, featureFlags, theme, variant, toggleVariant } = useTheme();");
     expect(app).toContain("theme.mode");
   });
+
+  it("keeps TTLock lock management isolated to an admin-only route", () => {
+    const app = readSource("src/App.tsx");
+    const locks = readSource("src/pages/admin/AdminLocks.tsx");
+    expect(app).toContain('path="/admin/locks"');
+    expect(locks).toContain("AdminLayout");
+    expect(locks).toContain('("rename", { lockId: selected.lockId');
+    expect(locks).toContain('("unlock", { lockId: selected.lockId');
+    expect(locks).toContain("window.confirm");
+    expect(locks).not.toContain("propertyId");
+  });
 });

@@ -8,7 +8,7 @@
  */
 import { rpc } from "./config.js";
 
-const API_BASES = ["https://euapi.ttlock.com", "https://api.ttlock.com"];
+const API_BASES = ["https://api.sciener.com", "https://euapi.sciener.com", "https://api.ttlock.com"];
 
 export type TTLockCreds = {
   clientId: string;
@@ -31,7 +31,7 @@ export async function getCreds(adminToken: string): Promise<TTLockCreds | null> 
     "admin_get_ttlock_config",
     { p_token: adminToken },
   );
-  if (!cfg?.ok || !cfg.config || !cfg.config.client_id) return null;
+  if (!cfg?.ok || !cfg.config || !cfg.config.client_id || !cfg.config.client_secret || !cfg.config.username || !cfg.config.password_md5) return null;
   return {
     clientId: cfg.config.client_id,
     clientSecret: cfg.config.client_secret,
@@ -59,8 +59,8 @@ export async function login(creds: TTLockCreds): Promise<TokenBundle> {
   let lastErr = "";
   for (const base of bases) {
     const { json } = await form(`${base}/oauth2/token`, {
-      clientId: creds.clientId,
-      clientSecret: creds.clientSecret,
+      client_id: creds.clientId,
+      client_secret: creds.clientSecret,
       username: creds.username,
       password: creds.passwordMd5,
     });
@@ -160,4 +160,8 @@ export async function remoteUnlock(tok: TokenBundle, creds: TTLockCreds, lockId:
 
 export async function unlockRecords(tok: TokenBundle, creds: TTLockCreds, lockId: number) {
   return api(tok, creds, "/v3/lockRecord/list", { lockId, pageNo: 1, pageSize: 20 });
+}
+
+export async function renameLock(tok: TokenBundle, creds: TTLockCreds, lockId: number, lockAlias: string) {
+  return api(tok, creds, "/v3/lock/rename", { lockId, lockAlias });
 }

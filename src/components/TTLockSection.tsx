@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { getAdminToken } from "../lib/ThemeContext";
 
 /**
@@ -228,15 +229,16 @@ export default function TTLockSection() {
                     <span dir="ltr">🔋 {l.electricQuantity ?? "?"}% · {l.lockMac || ""}</span>
                   </div>
                   <div className="theme-actions">
-                    <button className="btn-ghost sm" onClick={() => openLock(l.lockId)}>الرموز</button>
-                    <button className="btn-activate sm" onClick={() => doUnlock(l.lockId)} disabled={busy}>فتح عن بُعد</button>
+                    <Link className="btn-activate sm" to="/admin/locks">إدارة القفل</Link>
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          {selLock && (
+          <p className="odoo-hint">تتم إدارة الرموز، سجل الدخول، تغيير اسم القفل، والفتح عن بُعد من صفحة <Link to="/admin/locks">الأقفال الذكية</Link> فقط، حيث يتطلب كل إجراء مؤثر تأكيد المدير.</p>
+
+          {false && selLock && (
             <div className="ttlock-codes">
               <h3>رموز الدخول</h3>
               <div className="schedule-form">

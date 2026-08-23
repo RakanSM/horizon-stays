@@ -12,6 +12,7 @@ const AdminFinance = lazy(() => import("./pages/admin/AdminFinance"));
 const AdminLandlords = lazy(() => import("./pages/admin/AdminLandlords"));
 const AdminThemes = lazy(() => import("./pages/admin/AdminThemes"));
 const AdminIntegrations = lazy(() => import("./pages/admin/AdminIntegrations"));
+const AdminLocks = lazy(() => import("./pages/admin/AdminLocks"));
 const AdminCleaning = lazy(() => import("./pages/admin/AdminCleaning"));
 const AdminFeatures = lazy(() => import("./pages/admin/AdminFeatures"));
 const AdminMaintenance = lazy(() => import("./pages/admin/AdminMaintenance"));
@@ -138,6 +139,7 @@ function AppShell() {
             <Route path="/admin/landlords" element={<AdminLandlords />} />
             <Route path="/admin/themes" element={<AdminThemes />} />
             <Route path="/admin/integrations" element={<AdminIntegrations />} />
+            <Route path="/admin/locks" element={<AdminLocks />} />
             <Route path="/admin/cleaning" element={<AdminCleaning />} />
             <Route path="/admin/features" element={<AdminFeatures />} />
             <Route path="/admin/maintenance" element={<AdminMaintenance />} />

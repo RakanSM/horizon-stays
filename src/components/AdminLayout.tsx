@@ -13,6 +13,7 @@ const NAV = [
   { to: "/admin/landlords", icon: "🤝", label: "المُلّاك", en: "Landlords" },
   { to: "/admin/themes", icon: "🎨", label: "الطُّبوع", en: "Themes" },
   { to: "/admin/integrations", icon: "🔌", label: "التكاملات", en: "Integrations" },
+  { to: "/admin/locks", icon: "🔐", label: "الأقفال الذكية", en: "Smart locks" },
   { to: "/admin/cleaning", icon: "🧹", label: "النظافة", en: "Cleaning" },
   { to: "/admin/features", icon: "🎛️", label: "ظهور الميزات", en: "Feature visibility" },
 ];
