@@ -455,3 +455,69 @@ body:has(.horizon-public-shell) {
 @media (prefers-reduced-motion: reduce) {
   .horizon-search-submit,.horizon-journey-card,.horizon-destination-card img { transition: none; }.horizon-orbit { display: none; }
 }
+
+/* ===== Ordered discovery flow: search → stays → city → confidence ===== */
+.horizon-future-public { display: flex; flex-direction: column; }
+.horizon-future-public .horizon-future-hero { order: 1; }
+.horizon-future-public .horizon-future-metrics { order: 2; }
+.horizon-future-public .horizon-collection-section { order: 3; }
+.horizon-future-public .horizon-destinations-section { order: 4; }
+.horizon-future-public .horizon-journey-section { order: 5; }
+.horizon-future-public .horizon-services-section { order: 6; }
+.horizon-future-public .horizon-map-section { order: 7; }
+.horizon-future-public .horizon-partnership-section { order: 8; }
+
+.horizon-future-public .horizon-future-metrics { width: min(100% - 40px, 1180px); margin: 18px auto 0; }
+.horizon-future-public .horizon-collection-section { padding-top: clamp(70px, 8vw, 112px); }
+.horizon-future-public .horizon-collection-section .horizon-section-head { grid-template-columns: minmax(0, .96fr) minmax(300px, .72fr); max-width: 1040px; margin-bottom: 30px; }
+.horizon-future-public .horizon-collection-section .horizon-section-head p { justify-self: end; }
+.horizon-future-public .horizon-filter-row { padding: 14px 0 18px; border-top: 1px solid var(--h-line); border-bottom: 1px solid var(--h-line); }
+.horizon-future-public .horizon-property-grid { grid-template-columns: minmax(0, 1.38fr) minmax(0, .84fr) minmax(0, .78fr); grid-auto-flow: dense; gap: 12px; }
+.horizon-future-public .horizon-property-card { min-height: 320px; grid-column: auto; }
+.horizon-future-public .horizon-property-card:nth-child(1) { grid-column: span 2; grid-row: span 2; min-height: 652px; }
+.horizon-future-public .horizon-property-card:nth-child(2) { grid-column: 3; min-height: 320px; }
+.horizon-future-public .horizon-property-card:nth-child(3) { grid-column: 3; min-height: 320px; }
+.horizon-future-public .horizon-property-card:nth-child(4) { grid-column: span 2; min-height: 340px; }
+.horizon-future-public .horizon-property-card:nth-child(5) { grid-column: 3; min-height: 340px; }
+.horizon-future-public .horizon-property-card:nth-child(n+6) { grid-column: auto; min-height: 300px; }
+.horizon-future-public .horizon-property-card:nth-child(n+6):nth-child(3n+1) { grid-column: span 2; }
+.horizon-future-public .horizon-property-card-main { padding: 22px; }
+.horizon-future-public .horizon-property-card:nth-child(1) .horizon-property-card-main { padding: 30px; }
+.horizon-future-public .horizon-property-card:nth-child(1) h3 { font-size: clamp(1.65rem, 2.8vw, 2.5rem); }
+
+.horizon-future-public .horizon-destinations-section { padding: clamp(72px, 8vw, 110px) 0; background: color-mix(in srgb, var(--h-sand) 35%, var(--h-paper)); }
+.horizon-future-public .horizon-destinations-section .horizon-section-head { grid-template-columns: .72fr 1.28fr; align-items: end; margin-bottom: 27px; }
+.horizon-future-public .horizon-destinations-section .horizon-section-head p { justify-self: end; max-width: 420px; }
+.horizon-future-public .horizon-destination-rail { grid-template-columns: 1.1fr .9fr .9fr 1.1fr; gap: 10px; }
+.horizon-future-public .horizon-destination-card { min-height: 305px; }
+.horizon-future-public .horizon-destination-card:nth-child(1),.horizon-future-public .horizon-destination-card:nth-child(4) { min-height: 375px; }
+
+.horizon-future-public .horizon-journey-section { padding: clamp(72px, 8vw, 112px) 0; }
+.horizon-future-public .horizon-journey-section .horizon-section-head { grid-template-columns: .72fr 1.28fr; margin-bottom: 30px; }
+.horizon-future-public .horizon-journey-section .horizon-section-head p { justify-self: end; }
+.horizon-future-public .horizon-journey-grid { max-width: 1040px; margin-inline: auto; }
+.horizon-future-public .horizon-services-section { padding: clamp(70px, 7vw, 105px) 0; }
+.horizon-future-public .horizon-map-section { padding: clamp(74px, 8vw, 112px) 0; }
+.horizon-future-public .horizon-partnership-section { padding: clamp(68px, 7vw, 104px) 0; }
+
+@media (max-width: 900px) {
+  .horizon-future-public .horizon-future-metrics { width: calc(100% - 32px); margin-top: 14px; }
+  .horizon-future-public .horizon-collection-section .horizon-section-head,.horizon-future-public .horizon-destinations-section .horizon-section-head,.horizon-future-public .horizon-journey-section .horizon-section-head { grid-template-columns: 1fr; }
+  .horizon-future-public .horizon-collection-section .horizon-section-head p,.horizon-future-public .horizon-destinations-section .horizon-section-head p,.horizon-future-public .horizon-journey-section .horizon-section-head p { justify-self: start; }
+  .horizon-future-public .horizon-property-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .horizon-future-public .horizon-property-card:nth-child(1) { grid-column: span 2; grid-row: auto; min-height: 480px; }
+  .horizon-future-public .horizon-property-card:nth-child(2),.horizon-future-public .horizon-property-card:nth-child(3),.horizon-future-public .horizon-property-card:nth-child(5) { grid-column: auto; min-height: 320px; }
+  .horizon-future-public .horizon-property-card:nth-child(4) { grid-column: span 2; min-height: 380px; }
+  .horizon-future-public .horizon-property-card:nth-child(n+6):nth-child(3n+1) { grid-column: auto; }
+  .horizon-future-public .horizon-destination-rail { grid-template-columns: repeat(2, 1fr); }
+  .horizon-future-public .horizon-destination-card,.horizon-future-public .horizon-destination-card:nth-child(1),.horizon-future-public .horizon-destination-card:nth-child(4) { min-height: 285px; }
+}
+
+@media (max-width: 620px) {
+  .horizon-future-public .horizon-future-metrics { width: calc(100% - 24px); }
+  .horizon-future-public .horizon-property-grid { grid-template-columns: 1fr; gap: 10px; }
+  .horizon-future-public .horizon-property-card,.horizon-future-public .horizon-property-card:nth-child(1),.horizon-future-public .horizon-property-card:nth-child(2),.horizon-future-public .horizon-property-card:nth-child(3),.horizon-future-public .horizon-property-card:nth-child(4),.horizon-future-public .horizon-property-card:nth-child(5),.horizon-future-public .horizon-property-card:nth-child(n+6) { grid-column: auto; grid-row: auto; min-height: 340px; }
+  .horizon-future-public .horizon-property-card:nth-child(1) { min-height: 430px; }
+  .horizon-future-public .horizon-property-card:nth-child(1) .horizon-property-card-main { padding: 24px; }
+  .horizon-future-public .horizon-destinations-section { padding-bottom: 54px; }
+}
