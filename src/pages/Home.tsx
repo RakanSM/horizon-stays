@@ -3,87 +3,179 @@ import { Link } from "react-router-dom";
 import { fetchProperties, propertyPhotos, type Property } from "../lib/supabase";
 import { useTheme } from "../lib/ThemeContext";
 import { useLang, neighborhoodLabel, propName } from "../lib/i18n";
-import { EditorContentContext } from "./ThemeEditor";
+import { EditorContentContext } from "../lib/editorPreview";
 import MapFrame from "../components/MapFrame";
 
 const WHATSAPP = "https://wa.me/966920035843";
 const FALLBACK_HERO = "https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/kafd-penthouse-3bd-1.webp";
 
 type Copy = {
-  browseKicker: string;
-  browseTitle: string;
-  browseText: string;
+  heroKicker: string;
+  heroTitle: string;
+  heroText: string;
+  destination: string;
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+  apartmentType: string;
+  search: string;
+  explore: string;
+  contact: string;
+  availabilityNote: string;
+  collectionKicker: string;
+  collectionTitle: string;
+  collectionText: string;
   results: (count: number) => string;
-  storyKicker: string;
-  storyTitle: string;
+  perNight: string;
+  location: string;
+  destinationsKicker: string;
+  destinationsTitle: string;
+  journeyKicker: string;
+  journeyTitle: string;
+  serviceKicker: string;
+  serviceTitle: string;
   mapKicker: string;
   mapTitle: string;
   mapText: string;
-  explore: string;
-  contact: string;
-  perNight: string;
-  location: string;
-  heroCaption: string;
-  serviceItems: Array<{ title: string; text: string }>;
-  storyItems: Array<{ title: string; text: string }>;
+  partnershipKicker: string;
+  partnershipTitle: string;
+  partnershipText: string;
+  partnershipCta: string;
+  showAll: (count: number) => string;
+  showLess: string;
+  noResults: string;
+  datesError: string;
+  searchResult: string;
+  types: Array<{ key: string; label: string }>;
+  journey: Array<{ step: string; title: string; text: string }>;
+  services: Array<{ title: string; text: string; mark: string }>;
 };
 
 function getCopy(lang: string): Copy {
   if (lang === "ar") {
     return {
-      browseKicker: "01 / اكتشف الإقامة",
-      browseTitle: "مساحات لها طابعها الخاص.",
-      browseText: "اختر الإيقاع الذي يناسب رحلتك، من بنتهاوسات واسعة إلى أجنحة هادئة داخل أكثر أحياء الرياض حيوية.",
-      results: (count) => `${count} وحدة متاحة للاستكشاف`,
-      storyKicker: "02 / معيار هورايزن",
-      storyTitle: "تفاصيل تعطي الإقامة <em>معناها.</em>",
-      mapKicker: "03 / في قلب المدينة",
-      mapTitle: "قريب من كل ما يهمك.",
-      mapText: "تنتشر وحداتنا في أحياء مختارة في الرياض. استكشف المواقع، ثم اختر المساحة التي تناسب جدولك.",
+      heroKicker: "HORIZON STAYS / RIYADH",
+      heroTitle: "أفق جديد\nللإقامة اليومية.",
+      heroText: "شقق وبنتهاوسات مختارة بعين دقيقة—لإقامة تتحرك بإيقاعك، لا بقالب فندقي مكرر.",
+      destination: "الوجهة",
+      checkIn: "الوصول",
+      checkOut: "المغادرة",
+      guests: "الضيوف",
+      apartmentType: "نوع الوحدة",
+      search: "ابدأ الاستكشاف",
       explore: "اكتشف الوحدات",
       contact: "تحدث معنا",
+      availabilityNote: "التوفر النهائي والأسعار حسب التاريخ تظهر داخل كل وحدة.",
+      collectionKicker: "01 / الإقامات المختارة",
+      collectionTitle: "مساحتك التالية\nتبدأ من هنا.",
+      collectionText: "اكتشف وحدات واقعية بتفاصيل واضحة، أسعار بداية مباشرة، ومسارات سريعة للوصول إلى الخيار المناسب.",
+      results: (count) => `${count} وحدة ضمن خياراتك`,
       perNight: "لليلة",
       location: "الرياض",
-      heroCaption: "إقامة مختارة بعناية، على طريقتك.",
-      serviceItems: [
-        { title: "حجز مباشر", text: "تواصل واضح وسريع لبدء ترتيبات الإقامة." },
-        { title: "توفر متجدد", text: "التقويم مرتبط بقنوات الوحدات لتبقى الخيارات واضحة." },
-        { title: "مساحات كاملة", text: "صور وتفاصيل عملية تساعدك على اتخاذ القرار قبل الوصول." },
+      destinationsKicker: "02 / خريطة المدينة",
+      destinationsTitle: "اختر إيقاع\nالحي الذي يناسبك.",
+      journeyKicker: "03 / رحلة حجز أبسط",
+      journeyTitle: "من الفكرة إلى\nباب الوحدة.",
+      serviceKicker: "04 / معيار Horizon",
+      serviceTitle: "كل ما تحتاجه\nبدون ضوضاء.",
+      mapKicker: "05 / اكتشف موقعك",
+      mapTitle: "قريب من\nكل ما يهمك.",
+      mapText: "استكشف الوحدات في أحياء الرياض المختارة. اضغط الدبوس لتبدأ من المنطقة التي تناسب يومك.",
+      partnershipKicker: "للملاك / HORIZON PARTNERS",
+      partnershipTitle: "وحدتك تستحق\nمنصة أوسع.",
+      partnershipText: "إذا كنت تدير وحدة مميزة في الرياض، تواصل معنا لنناقش كيف يمكن لـ Horizon Stays تقديمها بطريقة أكثر وضوحاً وأناقة.",
+      partnershipCta: "ابدأ شراكة تشغيل",
+      showAll: (count) => `عرض كل الوحدات (${count})`,
+      showLess: "عرض عدد أقل",
+      noResults: "لا توجد وحدات مطابقة الآن. غيّر نوع الوحدة أو عدد الضيوف.",
+      datesError: "اختر تاريخ مغادرة بعد تاريخ الوصول.",
+      searchResult: "هذه الوحدات تناسب بحثك. افتح أي وحدة لتأكيد السعر والتوفر حسب التواريخ.",
+      types: [
+        { key: "all", label: "كل الإقامات" },
+        { key: "studio", label: "استوديو" },
+        { key: "1", label: "غرفة واحدة" },
+        { key: "2", label: "غرفتان" },
+        { key: "3+", label: "3 غرف أو أكثر" },
       ],
-      storyItems: [
-        { title: "اختيار مدروس", text: "كل وحدة تُعرض بتفاصيلها الأساسية وموقعها ضمن المدينة." },
-        { title: "تجربة مرنة", text: "من الليالي السريعة إلى الإقامات الأطول، مع أسعار حسب تاريخك." },
-        { title: "دعم حاضر", text: "فريق Horizon Stays حاضر لمساعدتك قبل الإقامة وأثناءها." },
+      journey: [
+        { step: "01", title: "اختر الإيقاع", text: "حدد تواريخك وعدد الضيوف ونوع المساحة التي تبحث عنها." },
+        { step: "02", title: "شاهد الصورة كاملة", text: "استعرض الصور، تفاصيل الوحدة، الموقع، والسعر حسب تاريخك." },
+        { step: "03", title: "رتّب وصولك", text: "أكمل طلب الحجز عبر المسار المناسب لك ثم نسّق تفاصيل الوصول." },
+      ],
+      services: [
+        { mark: "01", title: "وضوح من البداية", text: "تفاصيل وصور ومسارات حجز مباشرة تساعدك على اتخاذ القرار بهدوء." },
+        { mark: "02", title: "تقويم متصل", text: "تظهر حالة التوفر ضمن تجربة الوحدة حتى تعرف الخطوة التالية بوضوح." },
+        { mark: "03", title: "ضيافة عصرية", text: "تجربة محلية منظمة تضع الخصوصية والمرونة في صميم الإقامة." },
       ],
     };
   }
 
   return {
-    browseKicker: "01 / Explore stays",
-    browseTitle: "Spaces with their own point of view.",
-    browseText: "Choose the rhythm that fits your trip—from expansive penthouses to quiet suites across Riyadh’s most connected districts.",
-    results: (count) => `${count} stays to explore`,
-    storyKicker: "02 / The Horizon standard",
-    storyTitle: "Details that give a stay its <em>meaning.</em>",
-    mapKicker: "03 / In the heart of the city",
-    mapTitle: "Close to what matters.",
-    mapText: "Our stays are set across selected Riyadh districts. Explore the collection, then choose the space that works with your schedule.",
+    heroKicker: "HORIZON STAYS / RIYADH",
+    heroTitle: "Stay beyond\nexpectations.",
+    heroText: "Considered apartments and penthouses for a stay that moves at your pace—not a repeated hotel template.",
+    destination: "Destination",
+    checkIn: "Check in",
+    checkOut: "Check out",
+    guests: "Guests",
+    apartmentType: "Stay type",
+    search: "Start exploring",
     explore: "Explore stays",
     contact: "Talk to us",
+    availabilityNote: "Final availability and date-specific pricing are shown inside every stay.",
+    collectionKicker: "01 / Curated stays",
+    collectionTitle: "Your next space\nstarts here.",
+    collectionText: "Explore real homes with clear details, direct starting prices, and a quicker path to the right option.",
+    results: (count) => `${count} stays in your selection`,
     perNight: "per night",
     location: "Riyadh",
-    heroCaption: "A considered stay, on your terms.",
-    serviceItems: [
-      { title: "Direct booking", text: "A clear, quick conversation to begin arranging your stay." },
-      { title: "Updated availability", text: "Connected calendars keep the available dates visible and current." },
-      { title: "Complete spaces", text: "Photographs and practical details help you decide before arrival." },
+    destinationsKicker: "02 / City rhythm",
+    destinationsTitle: "Choose the district\nthat suits your day.",
+    journeyKicker: "03 / A clearer booking path",
+    journeyTitle: "From an idea\nto the front door.",
+    serviceKicker: "04 / The Horizon standard",
+    serviceTitle: "What you need,\nwithout the noise.",
+    mapKicker: "05 / Find your place",
+    mapTitle: "Close to what\nmatters most.",
+    mapText: "Explore stays across selected Riyadh districts. Choose a pin to begin in the part of the city that works for you.",
+    partnershipKicker: "FOR OWNERS / HORIZON PARTNERS",
+    partnershipTitle: "Your residence\ndeserves a wider horizon.",
+    partnershipText: "If you manage a distinctive Riyadh residence, talk to us about presenting it with more clarity, elegance, and reach.",
+    partnershipCta: "Start an operating partnership",
+    showAll: (count) => `View all ${count} stays`,
+    showLess: "Show fewer",
+    noResults: "No stays match this selection right now. Change the stay type or guest count.",
+    datesError: "Choose a check-out date after your check-in date.",
+    searchResult: "These stays fit your selection. Open any stay to confirm date-specific availability and pricing.",
+    types: [
+      { key: "all", label: "All stays" },
+      { key: "studio", label: "Studio" },
+      { key: "1", label: "1 bedroom" },
+      { key: "2", label: "2 bedrooms" },
+      { key: "3+", label: "3+ bedrooms" },
     ],
-    storyItems: [
-      { title: "Considered selection", text: "Every stay is shown with its essential details and place in the city." },
-      { title: "Flexible rhythm", text: "From quick nights to longer stays, with prices resolved for your dates." },
-      { title: "Present support", text: "The Horizon Stays team is here before and throughout your stay." },
+    journey: [
+      { step: "01", title: "Set the rhythm", text: "Choose your dates, guest count, and the kind of space you want." },
+      { step: "02", title: "See the full picture", text: "Explore photos, residence details, location, and date-specific pricing." },
+      { step: "03", title: "Arrange arrival", text: "Continue through the booking path that suits you, then coordinate arrival details." },
+    ],
+    services: [
+      { mark: "01", title: "Clarity from the start", text: "Direct details, photography, and booking paths to help you decide calmly." },
+      { mark: "02", title: "Connected calendars", text: "Availability is visible in the residence experience, so the next step is clear." },
+      { mark: "03", title: "Modern hospitality", text: "An organised local stay experience built around privacy and flexibility." },
     ],
   };
+}
+
+function Icon({ name }: { name: "pin" | "calendar" | "guests" | "spark" | "arrow" }) {
+  const paths = {
+    pin: <><circle cx="12" cy="10" r="3" /><path d="M19 10c0 5.1-7 11-7 11S5 15.1 5 10a7 7 0 1 1 14 0Z" /></>,
+    calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /></>,
+    guests: <><circle cx="9" cy="8" r="3" /><circle cx="17" cy="10" r="2" /><path d="M3.5 20c.5-3.2 2.4-5 5.5-5s5 1.8 5.5 5M15 15.6c2.5.1 4.1 1.5 4.5 4.1" /></>,
+    spark: <><path d="m12 2 1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6L12 2Z" /><path d="m19 17 .7 2.3L22 20l-2.3.7L19 23l-.7-2.3L16 20l2.3-.7L19 17Z" /></>,
+    arrow: <><path d="M5 12h14M13 6l6 6-6 6" /></>,
+  };
+  return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
 }
 
 export default function Home() {
@@ -96,29 +188,26 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("all");
   const [showAll, setShowAll] = useState(false);
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [guests, setGuests] = useState("2");
+  const [searchMessage, setSearchMessage] = useState("");
+
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   useEffect(() => {
     fetchProperties().then(setProperties).catch((cause) => setError(String(cause?.message || cause)));
   }, []);
 
-  const filters = useMemo(
-    () => [
-      { key: "all", label: lang === "ar" ? "الكل" : "All stays" },
-      { key: "studio", label: lang === "ar" ? "استوديو" : "Studio" },
-      { key: "1", label: lang === "ar" ? "غرفة واحدة" : "1 bedroom" },
-      { key: "2", label: lang === "ar" ? "غرفتان" : "2 bedrooms" },
-      { key: "3+", label: lang === "ar" ? "3 غرف أو أكثر" : "3+ bedrooms" },
-    ],
-    [lang]
-  );
-
   const filteredProperties = useMemo(() => {
     if (!properties) return null;
-    if (filter === "all") return properties;
-    if (filter === "studio") return properties.filter((property) => property.bedrooms === 0);
-    if (filter === "3+") return properties.filter((property) => property.bedrooms >= 3);
-    return properties.filter((property) => property.bedrooms === Number(filter));
-  }, [filter, properties]);
+    const count = Number(guests || 0);
+    return properties.filter((property) => {
+      const typeMatch = filter === "all" || (filter === "studio" ? property.bedrooms === 0 : filter === "3+" ? property.bedrooms >= 3 : property.bedrooms === Number(filter));
+      const guestMatch = !count || property.max_guests >= count;
+      return typeMatch && guestMatch;
+    });
+  }, [filter, guests, properties]);
 
   const visibleProperties = useMemo(() => {
     if (!filteredProperties) return null;
@@ -128,75 +217,125 @@ export default function Home() {
   const featured = properties?.[0];
   const featuredName = featured ? propName(featured, lang) : content.brandEn;
   const featuredImage = featured ? propertyPhotos(featured)[0] || FALLBACK_HERO : FALLBACK_HERO;
-  const heroTitle = lang === "ar" && content.heroTitle ? content.heroTitle : lang === "ar" ? "إقامة استثنائية في قلب الرياض" : "A stay with a sense of place.";
-  const heroSubtitle = lang === "ar" && content.heroSubtitle ? content.heroSubtitle : lang === "ar" ? "وحدات مختارة بعناية، بتفاصيل واضحة وحجز مباشر." : "Considered residences, clear details and a direct way to book.";
-  const heroBadge = lang === "ar" && content.heroBadge ? content.heroBadge : lang === "ar" ? "إقامات مختارة في الرياض" : "A curated Riyadh collection";
+  const destinationCards = useMemo(() => {
+    const seen = new Set<string>();
+    return (properties || []).filter((property) => {
+      const key = property.neighborhood || "Riyadh";
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 4);
+  }, [properties]);
+
+  const runSearch = () => {
+    if (checkIn && checkOut && checkOut <= checkIn) {
+      setSearchMessage(copy.datesError);
+      return;
+    }
+    setShowAll(true);
+    setSearchMessage(copy.searchResult);
+    window.setTimeout(() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+  };
 
   return (
-    <div className="horizon-public">
-      <section className="horizon-hero">
+    <div className="horizon-public horizon-future-public">
+      <section className="horizon-hero horizon-future-hero">
+        <div className="horizon-orbit horizon-orbit-a" aria-hidden="true" />
+        <div className="horizon-orbit horizon-orbit-b" aria-hidden="true" />
         <div className="container horizon-hero-grid">
           <div className="horizon-hero-copy">
             <div>
-              <span className="horizon-kicker">{heroBadge}</span>
-              <h1>{heroTitle}</h1>
-              <p className="horizon-hero-lead">{heroSubtitle}</p>
-              <div className="horizon-hero-actions">
-                <a className="horizon-primary-btn" href="#collection">{copy.explore}</a>
-                {featureFlags.booking_whatsapp && <a className="horizon-quiet-btn" href={WHATSAPP} target="_blank" rel="noreferrer">{copy.contact} <span aria-hidden>↗</span></a>}
-              </div>
+              <span className="horizon-kicker"><i className="horizon-live-dot" />{copy.heroKicker}</span>
+              <h1>{copy.heroTitle}</h1>
+              <p className="horizon-hero-lead">{copy.heroText}</p>
             </div>
-            <div className="horizon-hero-note">
-              <b>{properties?.length || "25"}+</b>
-              <span>{lang === "ar" ? "وحدة سكنية مختارة في الرياض" : "Curated residences across Riyadh"}</span>
+            <div className="horizon-hero-note horizon-signal-note">
+              <div><b>{properties?.length || "25"}+</b><span>{lang === "ar" ? "وحدة مختارة داخل الرياض" : "considered stays in Riyadh"}</span></div>
+              <div className="horizon-hero-signal"><span>{lang === "ar" ? "إتاحة حية" : "Live availability"}</span><i /></div>
             </div>
           </div>
-          <div className="horizon-hero-media">
+          <div className="horizon-hero-media horizon-cinematic-card">
             <img src={featuredImage} alt={featuredName} fetchPriority="high" />
             <div className="horizon-hero-media-caption">
-              <div>
-                <span>{copy.heroCaption}</span>
-                <b>{featuredName}</b>
-              </div>
-              {featured && <span>{featured.neighborhood || copy.location}</span>}
+              <div><span>{lang === "ar" ? "الإقامة المختارة الآن" : "Selected residence now"}</span><b>{featuredName}</b></div>
+              {featured && <span>{neighborhoodLabel(featured.neighborhood, lang) || copy.location}</span>}
             </div>
+            <span className="horizon-cinematic-index" aria-hidden="true">01</span>
+          </div>
+        </div>
+        <div className="container horizon-search-wrap">
+          <form className="horizon-search-module" onSubmit={(event) => { event.preventDefault(); runSearch(); }}>
+            <label className="horizon-search-field">
+              <span><Icon name="pin" />{copy.destination}</span>
+              <select aria-label={copy.destination} defaultValue="riyadh"><option value="riyadh">{copy.location}</option></select>
+            </label>
+            <label className="horizon-search-field">
+              <span><Icon name="calendar" />{copy.checkIn}</span>
+              <input type="date" min={today} value={checkIn} onChange={(event) => setCheckIn(event.target.value)} />
+            </label>
+            <label className="horizon-search-field">
+              <span><Icon name="calendar" />{copy.checkOut}</span>
+              <input type="date" min={checkIn || today} value={checkOut} onChange={(event) => setCheckOut(event.target.value)} />
+            </label>
+            <label className="horizon-search-field horizon-search-guests">
+              <span><Icon name="guests" />{copy.guests}</span>
+              <select aria-label={copy.guests} value={guests} onChange={(event) => setGuests(event.target.value)}>{[1, 2, 3, 4, 5, 6, 8].map((value) => <option key={value} value={value}>{value}</option>)}</select>
+            </label>
+            <label className="horizon-search-field horizon-search-type">
+              <span><Icon name="spark" />{copy.apartmentType}</span>
+              <select aria-label={copy.apartmentType} value={filter} onChange={(event) => setFilter(event.target.value)}>{copy.types.map((item) => <option key={item.key} value={item.key}>{item.label}</option>)}</select>
+            </label>
+            <button className="horizon-search-submit" type="submit">{copy.search}<Icon name="arrow" /></button>
+          </form>
+          <p className={`horizon-search-note ${searchMessage ? "is-active" : ""}`}>{searchMessage || copy.availabilityNote}</p>
+        </div>
+      </section>
+
+      {content.showStats && <div className="container horizon-metrics horizon-future-metrics" aria-label={lang === "ar" ? "مؤشرات Horizon Stays" : "Horizon Stays indicators"}>
+        <div className="horizon-metric"><b>{properties?.length || "—"}</b><span>{lang === "ar" ? "وحدة مميزة" : "distinct stays"}</span></div>
+        <div className="horizon-metric"><b>7+</b><span>{lang === "ar" ? "أحياء مختارة" : "selected districts"}</span></div>
+        <div className="horizon-metric"><b>24/7</b><span>{lang === "ar" ? "تواصل للضيوف" : "guest communication"}</span></div>
+        <div className="horizon-metric"><b>{lang === "ar" ? "حي" : "Live"}</b><span>{lang === "ar" ? "تحديث التوفر" : "availability updates"}</span></div>
+      </div>}
+
+      <section className="horizon-section horizon-destinations-section">
+        <div className="container">
+          <div className="horizon-section-head horizon-split-head">
+            <div><span className="horizon-section-index">{copy.destinationsKicker}</span><h2>{copy.destinationsTitle}</h2></div>
+            <p>{lang === "ar" ? "كل حي يقدّم مشهداً مختلفاً من الرياض. ابدأ من المكان الذي ينسجم مع موعدك، ثم اكتشف وحدته." : "Every district brings a different view of Riyadh. Begin with the place that matches your plans, then find its residence."}</p>
+          </div>
+          <div className="horizon-destination-rail">
+            {destinationCards.map((property, index) => <Link key={property.id} className="horizon-destination-card" to={`/property/${property.slug}`}>
+              <img src={propertyPhotos(property)[0] || FALLBACK_HERO} alt={propName(property, lang)} loading="lazy" />
+              <span className="horizon-destination-card-count">0{index + 1}</span>
+              <div><span>{neighborhoodLabel(property.neighborhood, lang) || copy.location}</span><b>{propName(property, lang)}</b><small>{property.max_guests} {lang === "ar" ? "ضيوف" : "guests"}</small></div>
+            </Link>)}
           </div>
         </div>
       </section>
 
-      {content.showStats && <div className="container horizon-metrics" aria-label={lang === "ar" ? "أرقام Horizon Stays" : "Horizon Stays figures"}>
-        <div className="horizon-metric"><b>{properties?.length || "—"}</b><span>{lang === "ar" ? "وحدة فاخرة" : "curated stays"}</span></div>
-        <div className="horizon-metric"><b>7+</b><span>{lang === "ar" ? "أحياء مميزة" : "prime districts"}</span></div>
-        <div className="horizon-metric"><b>24/7</b><span>{lang === "ar" ? "دعم للضيوف" : "guest support"}</span></div>
-        <div className="horizon-metric"><b>{lang === "ar" ? "حي" : "Live"}</b><span>{lang === "ar" ? "تحديث التوفر" : "availability updates"}</span></div>
-      </div>}
-
-      {featureFlags.nav_properties && <section className="horizon-section" id="collection">
+      {featureFlags.nav_properties && <section className="horizon-section horizon-collection-section" id="collection">
         <div className="container">
           <div className="horizon-section-head">
-            <div>
-              <span className="horizon-section-index">{copy.browseKicker}</span>
-              <h2>{copy.browseTitle}</h2>
-            </div>
-            <p>{copy.browseText}</p>
+            <div><span className="horizon-section-index">{copy.collectionKicker}</span><h2>{copy.collectionTitle}</h2></div>
+            <p>{copy.collectionText}</p>
           </div>
-
           <div className="horizon-filter-row">
             <div className="horizon-filters" aria-label={lang === "ar" ? "تصفية الوحدات" : "Filter stays"}>
-              {filters.map((item) => <button key={item.key} className={`horizon-filter ${filter === item.key ? "active" : ""}`} onClick={() => { setFilter(item.key); setShowAll(item.key !== "all"); }}>{item.label}</button>)}
+              {copy.types.map((item) => <button type="button" key={item.key} className={`horizon-filter ${filter === item.key ? "active" : ""}`} onClick={() => { setFilter(item.key); setShowAll(item.key !== "all"); }}>{item.label}</button>)}
             </div>
             {filteredProperties && <span className="horizon-results-count">{copy.results(filteredProperties.length)}</span>}
           </div>
-
           {error && <div className="empty-state">{t("load_failed")} {error}</div>}
           {!error && !visibleProperties && <div className="horizon-property-grid">{Array.from({ length: 5 }).map((_, index) => <div className="skeleton" style={{ minHeight: 420 }} key={index} />)}</div>}
-          {visibleProperties?.length === 0 && <div className="empty-state">{t("no_results")}</div>}
+          {visibleProperties?.length === 0 && <div className="horizon-empty-search"><Icon name="spark" /><p>{copy.noResults}</p><button type="button" className="horizon-quiet-btn" onClick={() => { setFilter("all"); setGuests("2"); }}>{lang === "ar" ? "إعادة الضبط" : "Reset search"}</button></div>}
           {visibleProperties && visibleProperties.length > 0 && <div className="horizon-property-grid">
-            {visibleProperties.map((property) => {
+            {visibleProperties.map((property, index) => {
               const name = propName(property, lang);
               const photo = propertyPhotos(property)[0] || FALLBACK_HERO;
-              return <Link className="horizon-property-card" to={`/property/${property.slug}`} key={property.id}>
+              return <Link className={`horizon-property-card horizon-property-card-${index + 1}`} to={`/property/${property.slug}`} key={property.id}>
                 <img src={photo} alt={name} loading="lazy" />
+                <span className="horizon-card-orbit" aria-hidden="true" />
                 <div className="horizon-property-card-main">
                   <span className="horizon-property-card-type">{property.type || (lang === "ar" ? "إقامة مختارة" : "Curated stay")}</span>
                   <h3>{name}</h3>
@@ -208,50 +347,30 @@ export default function Home() {
               </Link>;
             })}
           </div>}
-          {filteredProperties && filter === "all" && filteredProperties.length > 5 && <div className="horizon-show-more"><button className="horizon-quiet-btn" onClick={() => setShowAll((current) => !current)}>{showAll ? (lang === "ar" ? "عرض عدد أقل" : "Show fewer") : (lang === "ar" ? `عرض كل الوحدات (${filteredProperties.length})` : `View all ${filteredProperties.length} stays`)}</button></div>}
+          {filteredProperties && filter === "all" && filteredProperties.length > 5 && <div className="horizon-show-more"><button type="button" className="horizon-quiet-btn" onClick={() => setShowAll((current) => !current)}>{showAll ? copy.showLess : copy.showAll(filteredProperties.length)}</button></div>}
         </div>
       </section>}
 
-      <section className="horizon-section horizon-section-deep">
-        <div className="container horizon-story-grid">
-          <div>
-            <span className="horizon-section-index">{copy.storyKicker}</span>
-            <h2 className="horizon-story-big" dangerouslySetInnerHTML={{ __html: copy.storyTitle }} />
-          </div>
-          <div className="horizon-story-list">
-            {copy.storyItems.map((item, index) => <article className="horizon-story-item" key={item.title}>
-              <span className="horizon-story-number">0{index + 1}</span>
-              <div><h3>{item.title}</h3><p>{item.text}</p></div>
-            </article>)}
-          </div>
-        </div>
-      </section>
-
-      {featureFlags.feature_map && properties && <section className="horizon-section horizon-section-sand">
-        <div className="container horizon-map-grid">
-          <div className="horizon-map-copy">
-            <span className="horizon-section-index">{copy.mapKicker}</span>
-            <h2>{copy.mapTitle}</h2>
-            <p>{copy.mapText}</p>
-          </div>
-          <div className="horizon-map-zone"><MapFrame locations={properties} lang={lang} variant="collection" /></div>
-        </div>
-      </section>}
-
-      <section className="horizon-section">
+      <section className="horizon-section horizon-journey-section">
         <div className="container">
-          <div className="horizon-section-head">
-            <div><span className="horizon-section-index">04 / {lang === "ar" ? "قبل الوصول" : "Before you arrive"}</span><h2>{lang === "ar" ? "الأساسيات واضحة." : "The essentials, clear."}</h2></div>
-            <p>{lang === "ar" ? "نبقي تفاصيل الإقامة بسيطة من أول استكشاف الوحدة إلى ترتيب موعد الوصول." : "We keep the stay straightforward, from discovering a space to arranging your arrival."}</p>
-          </div>
-          <div className="horizon-story-list" style={{ borderColor: "var(--h-line)" }}>
-            {copy.serviceItems.map((item, index) => <article className="horizon-story-item" style={{ borderColor: "var(--h-line)" }} key={item.title}>
-              <span className="horizon-story-number">0{index + 1}</span>
-              <div><h3 style={{ color: "var(--h-ink)" }}>{item.title}</h3><p style={{ color: "var(--h-ink-soft)" }}>{item.text}</p></div>
-            </article>)}
-          </div>
+          <div className="horizon-section-head horizon-split-head"><div><span className="horizon-section-index">{copy.journeyKicker}</span><h2>{copy.journeyTitle}</h2></div><p>{lang === "ar" ? "تجربة مصممة لتقليل الخطوات غير الضرورية وترك مساحة أكبر لاختيار الإقامة المناسبة." : "A path designed to remove unnecessary steps and leave more room for choosing the right stay."}</p></div>
+          <div className="horizon-journey-grid">{copy.journey.map((item, index) => <article className="horizon-journey-card" key={item.step}><span>{item.step}</span><div className="horizon-journey-visual" aria-hidden="true"><i /><i /><i /></div><h3>{item.title}</h3><p>{item.text}</p><b>{index === 2 ? <Icon name="arrow" /> : ""}</b></article>)}</div>
         </div>
       </section>
+
+      <section className="horizon-section horizon-section-deep horizon-services-section">
+        <div className="horizon-space-grid" aria-hidden="true"><i /><i /><i /><i /></div>
+        <div className="container horizon-story-grid horizon-services-grid">
+          <div><span className="horizon-section-index">{copy.serviceKicker}</span><h2 className="horizon-story-big">{copy.serviceTitle}</h2><a className="horizon-dark-cta" href="#collection">{copy.explore}<Icon name="arrow" /></a></div>
+          <div className="horizon-story-list">{copy.services.map((item) => <article className="horizon-story-item" key={item.mark}><span className="horizon-story-number">{item.mark}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
+        </div>
+      </section>
+
+      {featureFlags.feature_map && properties && <section className="horizon-section horizon-section-sand horizon-map-section">
+        <div className="container horizon-map-grid"><div className="horizon-map-copy"><span className="horizon-section-index">{copy.mapKicker}</span><h2>{copy.mapTitle}</h2><p>{copy.mapText}</p><a className="horizon-quiet-btn" href="#collection">{copy.explore}<Icon name="arrow" /></a></div><div className="horizon-map-zone"><MapFrame locations={properties} lang={lang} variant="collection" /></div></div>
+      </section>}
+
+      <section className="horizon-partnership-section"><div className="container horizon-partnership-grid"><div><span className="horizon-kicker">{copy.partnershipKicker}</span><h2>{copy.partnershipTitle}</h2></div><div><p>{copy.partnershipText}</p><Link className="horizon-primary-btn" to="/contact">{copy.partnershipCta}<Icon name="arrow" /></Link></div></div></section>
     </div>
   );
 }

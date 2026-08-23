@@ -12,6 +12,13 @@ describe("public frontend rebuild", () => {
     expect(home).toContain("MapFrame locations={properties}");
     expect(home).toContain("horizon-property-card");
     expect(home).toContain("horizon-hero");
+    expect(home).toContain("horizon-search-module");
+    expect(home).toContain("checkIn");
+    expect(home).toContain("checkOut");
+    expect(home).toContain("horizon-journey-grid");
+    expect(home).not.toMatch(/testimonial|guest review|guest rating/i);
+    expect(home).toContain('import { EditorContentContext } from "../lib/editorPreview"');
+    expect(home).not.toContain('from "./ThemeEditor"');
   });
 
   it("keeps the property page on the shared booking and availability flow", () => {

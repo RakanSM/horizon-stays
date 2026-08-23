@@ -347,3 +347,111 @@ body:has(.horizon-public-shell) {
   .horizon-detail-page .detail-hero .main-img { aspect-ratio: 4 / 3; }
   .horizon-detail-page .book-box { position: relative; top: auto; margin-top: 26px; }
 }
+
+/* ===== Horizon Future-Stay experience ===== */
+.horizon-future-public {
+  --h-electric: #3d9ee8;
+  --h-space: #0b151c;
+  --h-silver: #dce0df;
+}
+
+.horizon-future-hero { padding-bottom: clamp(54px, 8vw, 106px); isolation: isolate; }
+.horizon-future-hero::before { content: ""; position: absolute; z-index: -1; inset: 8% 0 auto; height: 60%; background: linear-gradient(100deg, color-mix(in srgb, var(--h-electric) 9%, transparent), transparent 50%); pointer-events: none; }
+.horizon-future-hero .horizon-hero-grid { min-height: min(690px, 72vh); }
+.horizon-future-hero .horizon-hero-copy { position: relative; }
+.horizon-future-hero .horizon-hero-copy::after { content: ""; position: absolute; width: 180px; height: 180px; inset: auto auto 28px -70px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--h-electric) 26%, transparent); pointer-events: none; }
+.horizon-future-hero .horizon-hero-media::before { content: ""; position: absolute; z-index: 1; inset: 20px 20px auto auto; width: 88px; aspect-ratio: 1; border: 1px solid rgba(255,255,255,.52); border-radius: 50%; box-shadow: inset 0 0 0 10px rgba(255,255,255,.08); }
+.horizon-future-hero .horizon-hero-media img { filter: saturate(.9) contrast(1.07); transform: scale(1.01); }
+.horizon-future-hero h1 { white-space: pre-line; max-width: 700px; }
+.horizon-future-hero .horizon-kicker { color: var(--h-electric); }
+.horizon-future-hero .horizon-kicker::before { background: var(--h-electric); }
+.horizon-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--h-electric); box-shadow: 0 0 0 6px color-mix(in srgb, var(--h-electric) 14%, transparent); }
+.horizon-signal-note { align-items: end; }
+.horizon-signal-note > div:first-child { display: flex; align-items: end; gap: 12px; }
+.horizon-hero-signal { display: inline-flex; align-items: center; gap: 8px; color: var(--h-ink-soft); font-size: .72rem; }
+.horizon-hero-signal i { width: 7px; height: 7px; border-radius: 99px; background: #39b178; box-shadow: 0 0 0 5px rgba(57,177,120,.12); }
+.horizon-cinematic-index { position: absolute; z-index: 2; top: 22px; inset-inline-start: 23px; color: #fff; font-family: var(--font-latin); letter-spacing: .22em; font-size: .7rem; }
+.horizon-orbit { position: absolute; z-index: -1; border: 1px solid color-mix(in srgb, var(--h-electric) 16%, transparent); border-radius: 50%; pointer-events: none; }
+.horizon-orbit-a { width: 440px; height: 440px; inset: 18% -250px auto auto; }
+.horizon-orbit-b { width: 260px; height: 260px; inset: auto auto -128px 9%; border-color: color-mix(in srgb, var(--h-accent) 17%, transparent); }
+
+.horizon-search-wrap { position: relative; z-index: 4; margin-top: clamp(-40px, -4vw, -58px); }
+.horizon-search-module { display: grid; grid-template-columns: 1.25fr repeat(2, 1fr) .78fr 1fr auto; align-items: stretch; padding: 10px; color: var(--h-ink); background: color-mix(in srgb, var(--h-white) 91%, transparent); border: 1px solid var(--h-line); box-shadow: 0 22px 45px rgba(13, 24, 20, .13); backdrop-filter: blur(18px); }
+.horizon-search-field { min-width: 0; padding: 8px 15px; border-inline-end: 1px solid var(--h-line); }
+.horizon-search-field > span { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; color: var(--h-ink-soft); font-size: .65rem; font-weight: 700; letter-spacing: .04em; }
+.horizon-search-field svg { width: 14px; height: 14px; color: var(--h-electric); }
+.horizon-search-field input,.horizon-search-field select { width: 100%; color: var(--h-ink); font: inherit; font-size: .86rem; font-weight: 700; border: 0; outline: 0; background: transparent; appearance: none; }
+.horizon-search-field select { cursor: pointer; }
+.horizon-search-field input::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .66; }
+.horizon-search-submit { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-width: 156px; padding: 0 20px; color: #f8faf9; background: var(--h-space); border: 0; font: inherit; font-size: .82rem; font-weight: 700; transition: transform 180ms var(--ease-out), background 180ms var(--ease-out); }
+.horizon-search-submit:hover { background: var(--h-electric); transform: translateY(-2px); }
+.horizon-search-submit:active { transform: scale(.98); }
+.horizon-search-submit svg,.horizon-map-copy .horizon-quiet-btn svg,.horizon-partnership-section .horizon-primary-btn svg,.horizon-dark-cta svg { width: 16px; height: 16px; }
+.horizon-search-note { min-height: 1.25em; margin: 11px 2px 0; color: var(--h-ink-soft); font-size: .72rem; transition: color 180ms var(--ease-out); }
+.horizon-search-note.is-active { color: var(--h-electric); }
+
+.horizon-future-metrics { position: relative; z-index: 2; margin-top: 28px; }
+.horizon-destinations-section { padding-top: clamp(84px, 11vw, 160px); }
+.horizon-split-head { grid-template-columns: .95fr 1.05fr; }
+.horizon-split-head h2 { white-space: pre-line; }
+.horizon-destination-rail { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.horizon-destination-card { position: relative; display: flex; min-height: 390px; overflow: hidden; color: #fff; background: var(--h-space); }
+.horizon-destination-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,13,17,.03), rgba(6,13,17,.88)); }
+.horizon-destination-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.68) contrast(1.05); transition: transform 650ms var(--ease-out), filter 300ms var(--ease-out); }
+.horizon-destination-card:hover img { transform: scale(1.07); filter: saturate(1); }
+.horizon-destination-card-count { position: absolute; z-index: 1; top: 17px; inset-inline-start: 17px; font-family: var(--font-latin); font-size: .68rem; letter-spacing: .13em; }
+.horizon-destination-card > div { position: relative; z-index: 1; align-self: end; width: 100%; padding: 20px; }
+.horizon-destination-card > div span,.horizon-destination-card > div small { display: block; color: rgba(255,255,255,.74); font-size: .7rem; }
+.horizon-destination-card > div b { display: block; min-height: 2.6em; margin: 7px 0; font-family: var(--font-display); font-size: 1.18rem; line-height: 1.23; }
+
+.horizon-collection-section { background: linear-gradient(180deg, var(--h-paper), color-mix(in srgb, var(--h-sand) 52%, var(--h-paper))); }
+.horizon-collection-section .horizon-section-head h2 { white-space: pre-line; }
+.horizon-property-card { isolation: isolate; }
+.horizon-card-orbit { position: absolute; z-index: 1; top: 18px; inset-inline-end: 18px; width: 32px; height: 32px; border: 1px solid rgba(255,255,255,.55); border-radius: 50%; opacity: 0; transform: scale(.7); transition: opacity 240ms var(--ease-out), transform 240ms var(--ease-out); }
+.horizon-property-card:hover .horizon-card-orbit { opacity: 1; transform: scale(1); }
+.horizon-empty-search { display: grid; place-items: center; justify-items: center; gap: 13px; min-height: 300px; color: var(--h-ink-soft); text-align: center; border: 1px dashed var(--h-line); }
+.horizon-empty-search svg { width: 28px; height: 28px; color: var(--h-electric); }
+.horizon-empty-search p { max-width: 400px; }
+
+.horizon-journey-section { background: var(--h-white); }
+.horizon-journey-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--h-line); }
+.horizon-journey-card { position: relative; min-height: 360px; padding: 27px; overflow: hidden; border-inline-end: 1px solid var(--h-line); transition: background 250ms var(--ease-out), transform 250ms var(--ease-out); }
+.horizon-journey-card:last-child { border-inline-end: 0; }
+.horizon-journey-card:hover { background: color-mix(in srgb, var(--h-electric) 7%, var(--h-white)); transform: translateY(-4px); }
+.horizon-journey-card > span { color: var(--h-electric); font-family: var(--font-latin); font-size: .72rem; letter-spacing: .15em; }
+.horizon-journey-card h3 { margin: 28px 0 9px; color: var(--h-ink); font-family: var(--font-display); font-size: 1.55rem; }
+.horizon-journey-card p { max-width: 270px; color: var(--h-ink-soft); font-size: .86rem; line-height: 1.75; }
+.horizon-journey-card > b { position: absolute; bottom: 24px; inset-inline-end: 26px; color: var(--h-electric); }
+.horizon-journey-card > b svg { width: 28px; height: 28px; }
+.horizon-journey-visual { display: flex; align-items: end; gap: 7px; height: 76px; margin-top: 25px; }
+.horizon-journey-visual i { display: block; width: 24%; background: var(--h-ink); }
+.horizon-journey-visual i:nth-child(1) { height: 28%; background: var(--h-electric); }.horizon-journey-visual i:nth-child(2) { height: 62%; }.horizon-journey-visual i:nth-child(3) { height: 100%; background: var(--h-accent); }
+
+.horizon-services-section { overflow: hidden; }
+.horizon-space-grid { position: absolute; inset: 0; opacity: .45; pointer-events: none; background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px); background-size: 84px 84px; mask-image: linear-gradient(90deg, transparent, #000 42%, #000 80%, transparent); }
+.horizon-space-grid i { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--h-electric); box-shadow: 0 0 0 5px color-mix(in srgb, var(--h-electric) 12%, transparent); }.horizon-space-grid i:nth-child(1) { top: 22%; right: 16%; }.horizon-space-grid i:nth-child(2) { top: 70%; right: 39%; background: var(--h-accent); }.horizon-space-grid i:nth-child(3) { top: 32%; left: 32%; }.horizon-space-grid i:nth-child(4) { top: 82%; left: 9%; background: var(--h-accent); }
+.horizon-services-grid { position: relative; }.horizon-services-grid .horizon-section-index { color: var(--h-electric); }.horizon-services-grid .horizon-section-index::before { background: var(--h-electric); }
+.horizon-dark-cta { display: inline-flex; align-items: center; gap: 9px; margin-top: 36px; padding-bottom: 7px; color: var(--h-white); border-bottom: 1px solid var(--h-electric); font-size: .84rem; font-weight: 700; }
+.horizon-dark-cta:hover { color: var(--h-electric); }
+
+.horizon-map-section .horizon-map-copy .horizon-quiet-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; }
+.horizon-partnership-section { padding: clamp(70px, 9vw, 130px) 0; color: var(--h-white); background: radial-gradient(60% 200% at 100% 0%, color-mix(in srgb, var(--h-electric) 24%, transparent), transparent 65%), var(--h-space); }
+.horizon-partnership-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(36px, 8vw, 130px); align-items: end; }.horizon-partnership-grid .horizon-kicker { color: var(--h-electric); }.horizon-partnership-grid .horizon-kicker::before { background: var(--h-electric); }
+.horizon-partnership-grid h2 { margin-top: 20px; max-width: 650px; color: var(--h-white); font-family: var(--font-display); font-size: clamp(2.7rem, 5.5vw, 6rem); font-weight: 700; line-height: .96; letter-spacing: -.06em; white-space: pre-line; }.horizon-partnership-grid p { margin-bottom: 28px; color: color-mix(in srgb, var(--h-white) 68%, transparent); font-size: 1rem; line-height: 1.9; }.horizon-partnership-grid .horizon-primary-btn { display: inline-flex; gap: 9px; align-items: center; background: var(--h-electric); }.horizon-partnership-grid .horizon-primary-btn:hover { background: var(--h-white); color: var(--h-space); }
+
+@media (max-width: 1100px) {
+  .horizon-search-module { grid-template-columns: repeat(3, 1fr); }.horizon-search-submit { min-height: 58px; }.horizon-search-type { border-inline-end: 0; }.horizon-destination-card { min-height: 340px; }
+}
+@media (max-width: 900px) {
+  .horizon-search-wrap { margin-top: -30px; }.horizon-destination-rail { grid-template-columns: repeat(2, 1fr); }.horizon-journey-grid { grid-template-columns: 1fr; }.horizon-journey-card { min-height: 280px; border-inline-end: 0; border-bottom: 1px solid var(--h-line); }.horizon-journey-card:last-child { border-bottom: 0; }.horizon-partnership-grid { grid-template-columns: 1fr; }.horizon-future-hero .horizon-hero-copy::after { display: none; }
+}
+@media (max-width: 620px) {
+  .horizon-future-hero { padding-bottom: 48px; }.horizon-future-hero .horizon-hero-grid { min-height: auto; }.horizon-future-hero .horizon-hero-copy { min-height: 500px; }.horizon-search-wrap { margin-top: -24px; }.horizon-search-module { grid-template-columns: 1fr 1fr; padding: 5px; }.horizon-search-field { padding: 12px 10px; }.horizon-search-field:nth-child(2) { border-inline-end: 0; }.horizon-search-field:nth-child(3),.horizon-search-field:nth-child(4) { border-top: 1px solid var(--h-line); }.horizon-search-field:nth-child(4) { border-inline-end: 0; }.horizon-search-type { grid-column: 1 / -1; border-top: 1px solid var(--h-line); border-inline-end: 0; }.horizon-search-submit { grid-column: 1 / -1; min-height: 52px; }.horizon-search-note { padding-inline: 4px; }.horizon-destination-rail { display: flex; overflow-x: auto; margin-inline: -20px; padding-inline: 20px; scroll-snap-type: x mandatory; }.horizon-destination-card { flex: 0 0 min(78vw, 290px); min-height: 350px; scroll-snap-align: start; }.horizon-journey-card { min-height: 245px; }.horizon-partnership-grid h2 { font-size: clamp(2.65rem, 14vw, 4.3rem); }.horizon-orbit { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .horizon-orbit-a { animation: horizon-orbit 18s linear infinite; }.horizon-orbit-b { animation: horizon-orbit 13s linear infinite reverse; }.horizon-live-dot { animation: horizon-pulse 2.2s ease-out infinite; }.horizon-cinematic-card img { animation: horizon-drift 16s ease-in-out infinite alternate; }
+  @keyframes horizon-orbit { to { transform: rotate(360deg); } } @keyframes horizon-pulse { 0%,100% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--h-electric) 14%, transparent); } 55% { box-shadow: 0 0 0 13px transparent; } } @keyframes horizon-drift { to { transform: scale(1.065); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .horizon-search-submit,.horizon-journey-card,.horizon-destination-card img { transition: none; }.horizon-orbit { display: none; }
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, createContext } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ThemeQuestionnaireModal from "../components/ThemeQuestionnaireModal";
 import {
@@ -6,9 +6,8 @@ import {
   type ThemeOverrides, type ThemeTokens, type SiteContent, type ThemePreset,
 } from "../lib/themes";
 import { useTheme, getAdminToken, adminCheck } from "../lib/ThemeContext";
+import { EditorContentContext } from "../lib/editorPreview";
 import Home from "./Home";
-
-export const EditorContentContext = createContext<SiteContent | null>(null);
 
 type TokenKey = keyof ThemeTokens;
 
