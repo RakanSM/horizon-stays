@@ -52,6 +52,33 @@ export type FinanceSummary = {
   by_source: { source: string; gross: number; bookings: number }[];
 };
 
+export type FinanceStatusBucket = {
+  status: string;
+  booking_count?: number;
+  record_count?: number;
+  gross_revenue?: number;
+  total_sar?: number;
+  paid_amount_sar?: number;
+  unpaid_amount_sar?: number;
+};
+
+export type AdminFinancialReport = {
+  ok: boolean;
+  settlement_status: "collection_review" | "expense_approval" | "ready_for_review";
+  totals: {
+    gross_revenue: number; fully_paid_revenue: number; collection_review_revenue: number; refunded_revenue: number;
+    fully_paid_bookings: number; collection_review_bookings: number; horizon_commission: number;
+    landlord_before_expenses: number; approved_expenses: number; paid_expenses: number;
+    landlord_expense_share: number; bookings: number; nights: number;
+  };
+  invoice_summary: { issued: number; missing: number; issued_total_sar: number };
+  booking_statuses: FinanceStatusBucket[];
+  payment_statuses: FinanceStatusBucket[];
+  expense_statuses: FinanceStatusBucket[];
+  by_property: Array<{ property_id: number; name_ar: string; gross_revenue: number; horizon_commission: number; approved_expenses: number; landlord_expense_share: number }>;
+  expense_categories: Array<{ category: string; total: number; count: number }>;
+};
+
 export type Invoice = {
   id: number; invoice_no: string; booking_id: string; guest_name: string | null;
   property_name: string | null; check_in: string; check_out: string; nights: number;

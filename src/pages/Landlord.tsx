@@ -56,9 +56,19 @@ type LLData = {
 
 type LandlordFinancialReport = {
   ok: boolean;
-  totals: { gross_revenue: number; horizon_commission: number; owner_before_expenses: number; owner_expenses: number; bookings: number; nights: number };
+  settlement_status: "collection_review" | "expense_approval" | "ready_for_review";
+  totals: { gross_revenue: number; fully_paid_revenue: number; collection_review_revenue: number; horizon_commission: number; owner_before_expenses: number; owner_expenses: number; bookings: number; nights: number };
+  invoice_summary: { issued: number; missing: number };
+  booking_statuses: { status: string; booking_count: number; gross_revenue: number }[];
+  payment_statuses: { status: string; booking_count: number; gross_revenue: number }[];
+  expense_statuses: { status: string; record_count: number; owner_share_sar: number; paid_owner_share_sar: number; unpaid_owner_share_sar: number }[];
   expenses: { id: string; property_name_ar: string | null; expense_date: string; category: string; description: string; total_sar: number; owner_share_sar: number; status: string; invoice_number: string | null }[];
 };
+
+const PAYMENT_LABEL: Record<string, string> = { paid: "محصل بالكامل", partial: "محصل جزئياً", pending: "بانتظار التحصيل", refunded: "مسترد", failed: "فشل التحصيل", unrecorded: "غير مسجل" };
+const BOOKING_LABEL: Record<string, string> = { pending: "قيد المراجعة", confirmed: "مؤكد", completed: "مكتمل", unrecorded: "غير مسجل" };
+const EXPENSE_LABEL: Record<string, string> = { draft: "مسودة", submitted: "بانتظار الاعتماد", approved: "معتمد", partially_paid: "مدفوع جزئياً", paid: "مدفوع", rejected: "مرفوض", void: "ملغي" };
+const SETTLEMENT_LABEL: Record<string, string> = { collection_review: "قيد مراجعة التحصيل", expense_approval: "بانتظار اعتماد مصروف", ready_for_review: "جاهز لمراجعة التسوية" };
 
 export default function Landlord() {
   const [tok, setTok] = useState<string | null>(() => localStorage.getItem(LL_KEY));
@@ -287,36 +297,41 @@ export default function Landlord() {
         )}
       </div>
 
-      {/* KPI cards including costs */}
+      {/* Legacy cost ledgers remain visible but do not alter the operational statement below. */}
       <div className="adm-kpis" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
         <div className="adm-kpi" style={{ borderRight: "4px solid #2e7d32" }}>
-          <span className="adm-kpi-label">🏠 إجمالي الدخل</span>
+          <span className="adm-kpi-label">🏠 إيراد الحجوزات المرجعي</span>
           <strong className="adm-kpi-val gold">{fmtSAR(f_net)}</strong>
           <small style={{ color: "#666", marginTop: "4px", display: "block" }}>{filteredBookings.length} حجز مصفى</small>
         </div>
         <div className="adm-kpi" style={{ borderRight: "4px solid #c53030" }}>
-          <span className="adm-kpi-label">🔧 إجمالي التكاليف والصيانة</span>
+          <span className="adm-kpi-label">🔧 سجلات تكاليف وصيانة سابقة</span>
           <strong className="adm-kpi-val" style={{ color: "#c53030" }}>− {fmtSAR(grandTotalCosts)}</strong>
           <small style={{ color: "#666", marginTop: "4px", display: "block" }}>{filteredMaintenance.length} صيانة + {filteredCosts.length} تكلفة دورية</small>
         </div>
         <div className="adm-kpi" style={{ borderRight: "4px solid #C9A96A" }}>
-          <span className="adm-kpi-label">صافي المستحق النهائي</span>
-          <strong className="adm-kpi-val gold">{fmtSAR(finalNetWithCosts)}</strong>
-          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>بعد خصم كافة التكاليف</small>
+          <span className="adm-kpi-label">منع التكرار المحاسبي</span>
+          <strong className="adm-kpi-val gold">منفصلة</strong>
+          <small style={{ color: "#666", marginTop: "4px", display: "block" }}>لا تُخصم تلقائياً من صافي التقرير التشغيلي أدناه</small>
         </div>
       </div>
 
       {financialReport && (
         <div className="odoo-card" style={{ marginTop: "20px" }}>
-          <div className="odoo-card-head"><div><h2>التقرير المالي التشغيلي</h2><p>إيراد حجوزاتك، عمولة Horizon، المصروفات المعتمدة وحصتك منها للفترة والوحدة المحددتين.</p></div></div>
+          <div className="odoo-card-head"><div><h2>التقرير المالي التشغيلي</h2><p>إيراد حجوزاتك، عمولة Horizon، المصروفات المعتمدة وحصتك منها للفترة والوحدة المحددتين. لا يُعتبر صافي المستحق أمراً بصرف دفعة.</p></div></div>
           <div className="adm-kpis" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
             <div className="adm-kpi"><span className="adm-kpi-label">إيراد الحجوزات</span><strong className="adm-kpi-val gold">{fmtSAR(financialReport.totals.gross_revenue)}</strong></div>
+            <div className="adm-kpi"><span className="adm-kpi-label">تحصيل مسجل بالكامل</span><strong className="adm-kpi-val gold">{fmtSAR(financialReport.totals.fully_paid_revenue)}</strong></div>
+            <div className="adm-kpi"><span className="adm-kpi-label">حجوزات تحتاج تسوية</span><strong className="adm-kpi-val" style={{ color: "#b26a00" }}>{fmtSAR(financialReport.totals.collection_review_revenue)}</strong></div>
             <div className="adm-kpi"><span className="adm-kpi-label">عمولة Horizon</span><strong className="adm-kpi-val">{fmtSAR(financialReport.totals.horizon_commission)}</strong></div>
             <div className="adm-kpi"><span className="adm-kpi-label">قبل المصروفات</span><strong className="adm-kpi-val gold">{fmtSAR(financialReport.totals.owner_before_expenses)}</strong></div>
             <div className="adm-kpi"><span className="adm-kpi-label">حصتك من المصروفات</span><strong className="adm-kpi-val" style={{ color: "#c53030" }}>− {fmtSAR(financialReport.totals.owner_expenses)}</strong></div>
             <div className="adm-kpi"><span className="adm-kpi-label">صافي المستحق التشغيلي</span><strong className="adm-kpi-val gold">{fmtSAR(financialReport.totals.owner_before_expenses - financialReport.totals.owner_expenses)}</strong></div>
+            <div className="adm-kpi"><span className="adm-kpi-label">حالة مراجعة التسوية</span><strong className="adm-kpi-val gold">{SETTLEMENT_LABEL[financialReport.settlement_status]}</strong><small style={{ color: "#666", marginTop: "4px", display: "block" }}>لا تعني تنفيذ تحويل مالي</small></div>
           </div>
-          {financialReport.expenses.length > 0 ? <div className="adm-table-wrap"><table className="adm-table"><thead><tr><th>التاريخ</th><th>الوحدة</th><th>البند</th><th>الإجمالي</th><th>حصتك</th><th>الفاتورة</th></tr></thead><tbody>{financialReport.expenses.map((item) => <tr key={item.id}><td dir="ltr">{item.expense_date}</td><td>{item.property_name_ar || "عام"}</td><td><strong>{item.description}</strong><small style={{ display: "block", color: "#777" }}>{item.category}</small></td><td>{fmtSAR(item.total_sar)}</td><td>{fmtSAR(item.owner_share_sar)}</td><td dir="ltr">{item.invoice_number || "—"}</td></tr>)}</tbody></table></div> : <p className="odoo-hint">لا توجد مصروفات تشغيلية معتمدة ضمن هذا الفلتر بعد.</p>}
+          <div className="adm-table-wrap" style={{ marginTop: "16px" }}><table className="adm-table"><thead><tr><th>المسار</th><th>الحالة</th><th>العدد</th><th>القيمة</th><th>المسدد</th></tr></thead><tbody>{financialReport.booking_statuses.map((item) => <tr key={`booking-${item.status}`}><td>الحجز</td><td><span className={`ops-status ${item.status}`}>{BOOKING_LABEL[item.status] || item.status}</span></td><td>{item.booking_count}</td><td>{fmtSAR(item.gross_revenue)}</td><td>—</td></tr>)}{financialReport.payment_statuses.map((item) => <tr key={`payment-${item.status}`}><td>تحصيل الحجز</td><td><span className={`ops-status ${item.status}`}>{PAYMENT_LABEL[item.status] || item.status}</span></td><td>{item.booking_count}</td><td>{fmtSAR(item.gross_revenue)}</td><td>—</td></tr>)}{financialReport.expense_statuses.map((item) => <tr key={`expense-${item.status}`}><td>مصروفك</td><td><span className={`ops-status ${item.status}`}>{EXPENSE_LABEL[item.status] || item.status}</span></td><td>{item.record_count}</td><td>{fmtSAR(item.owner_share_sar)}</td><td>{fmtSAR(item.paid_owner_share_sar)}</td></tr>)}{!financialReport.booking_statuses.length && !financialReport.expense_statuses.length && <tr><td colSpan={5}>لا توجد حالات مالية ضمن الفلتر المحدد.</td></tr>}</tbody></table></div>
+          <p className="ll-note" style={{ marginTop: "12px" }}>فواتير الضيوف ضمن الفلتر: {financialReport.invoice_summary.issued} صادرة، و{financialReport.invoice_summary.missing} لم تصدر بعد. قيمة «تحتاج تسوية» ليست رصيداً نهائياً عندما تكون الدفعة جزئية.</p>
+          {financialReport.expenses.length > 0 ? <div className="adm-table-wrap"><table className="adm-table"><thead><tr><th>التاريخ</th><th>الوحدة</th><th>البند</th><th>الإجمالي</th><th>حصتك</th><th>الحالة</th><th>الفاتورة</th></tr></thead><tbody>{financialReport.expenses.map((item) => <tr key={item.id}><td dir="ltr">{item.expense_date}</td><td>{item.property_name_ar || "عام"}</td><td><strong>{item.description}</strong><small style={{ display: "block", color: "#777" }}>{item.category}</small></td><td>{fmtSAR(item.total_sar)}</td><td>{fmtSAR(item.owner_share_sar)}</td><td><span className={`ops-status ${item.status}`}>{EXPENSE_LABEL[item.status] || item.status}</span></td><td dir="ltr">{item.invoice_number || "—"}</td></tr>)}</tbody></table></div> : <p className="odoo-hint">لا توجد مصروفات تشغيلية معتمدة ضمن هذا الفلتر بعد.</p>}
         </div>
       )}
 
@@ -434,7 +449,7 @@ export default function Landlord() {
           </div>
         )}
       </div>
-      <p className="ll-note">تُحسب التكاليف اليومية والشهرية وفواتير الصيانة وتُخصم تلقائياً من إجمالي مستحقات الشقق في كشف الحساب. للاستفسار: واتساب +966 56 090 3335</p>
+      <p className="ll-note">سجلات التكاليف الدورية والصيانة أعلاه مرجعية ومنفصلة عن دفتر المصروفات التشغيلية، ولا تُخصم تلقائياً من صافي التقرير التشغيلي لتفادي احتساب نفس البند مرتين. للاستفسار: واتساب +966 56 090 3335</p>
     </div>
   );
 }
