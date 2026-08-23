@@ -54,12 +54,19 @@ type LLData = {
   monthly: { month: string; gross: number; commission: number; net: number }[];
 };
 
+type LandlordFinancialReport = {
+  ok: boolean;
+  totals: { gross_revenue: number; horizon_commission: number; owner_before_expenses: number; owner_expenses: number; bookings: number; nights: number };
+  expenses: { id: string; property_name_ar: string | null; expense_date: string; category: string; description: string; total_sar: number; owner_share_sar: number; status: string; invoice_number: string | null }[];
+};
+
 export default function Landlord() {
   const [tok, setTok] = useState<string | null>(() => localStorage.getItem(LL_KEY));
   const [code, setCode] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const [data, setData] = useState<LLData | null>(null);
+  const [financialReport, setFinancialReport] = useState<LandlordFinancialReport | null>(null);
 
   // Filter states
   const [periodFilter, setPeriodFilter] = useState<"all" | "today" | "week" | "month" | "custom">("all");
@@ -79,6 +86,19 @@ export default function Landlord() {
   };
 
   useEffect(() => { if (tok) load(tok); }, [tok]);
+
+  useEffect(() => {
+    if (!tok) return;
+    const now = new Date();
+    const nowDate = now.toISOString().slice(0, 10);
+    const yearStart = `${now.getFullYear()}-01-01`;
+    const sevenDaysAgo = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const monthStart = `${nowDate.slice(0, 7)}-01`;
+    const from = periodFilter === "today" ? nowDate : periodFilter === "week" ? sevenDaysAgo : periodFilter === "month" ? monthStart : periodFilter === "custom" && customStart ? customStart : yearStart;
+    const to = periodFilter === "custom" && customEnd ? customEnd : nowDate;
+    supabase.rpc("landlord_financial_report", { p_token: tok, p_from: from, p_to: to, p_property_id: selectedPropId === "all" ? null : Number(selectedPropId) })
+      .then(({ data: report, error }) => { if (!error && report?.ok) setFinancialReport(report as LandlordFinancialReport); else setFinancialReport(null); });
+  }, [tok, periodFilter, customStart, customEnd, selectedPropId]);
 
   const doLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -285,6 +305,20 @@ export default function Landlord() {
           <small style={{ color: "#666", marginTop: "4px", display: "block" }}>بعد خصم كافة التكاليف</small>
         </div>
       </div>
+
+      {financialReport && (
+        <div className="odoo-card" style={{ marginTop: "20px" }}>
+          <div className="odoo-card-head"><div><h2>التقرير المالي التشغيلي</h2><p>إيراد حجوزاتك، عمولة Horizon، المصروفات المعتمدة وحصتك منها للفترة والوحدة المحددتين.</p></div></div>
+          <div className="adm-kpis" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+            <div className="adm-kpi"><span className="adm-kpi-label">إيراد الحجوزات</span><strong className="adm-kpi-val gold">{fmtSAR(financialReport.totals.gross_revenue)}</strong></div>
+            <div className="adm-kpi"><span className="adm-kpi-label">عمولة Horizon</span><strong className="adm-kpi-val">{fmtSAR(financialReport.totals.horizon_commission)}</strong></div>
+            <div className="adm-kpi"><span className="adm-kpi-label">قبل المصروفات</span><strong className="adm-kpi-val gold">{fmtSAR(financialReport.totals.owner_before_expenses)}</strong></div>
+            <div className="adm-kpi"><span className="adm-kpi-label">حصتك من المصروفات</span><strong className="adm-kpi-val" style={{ color: "#c53030" }}>− {fmtSAR(financialReport.totals.owner_expenses)}</strong></div>
+            <div className="adm-kpi"><span className="adm-kpi-label">صافي المستحق التشغيلي</span><strong className="adm-kpi-val gold">{fmtSAR(financialReport.totals.owner_before_expenses - financialReport.totals.owner_expenses)}</strong></div>
+          </div>
+          {financialReport.expenses.length > 0 ? <div className="adm-table-wrap"><table className="adm-table"><thead><tr><th>التاريخ</th><th>الوحدة</th><th>البند</th><th>الإجمالي</th><th>حصتك</th><th>الفاتورة</th></tr></thead><tbody>{financialReport.expenses.map((item) => <tr key={item.id}><td dir="ltr">{item.expense_date}</td><td>{item.property_name_ar || "عام"}</td><td><strong>{item.description}</strong><small style={{ display: "block", color: "#777" }}>{item.category}</small></td><td>{fmtSAR(item.total_sar)}</td><td>{fmtSAR(item.owner_share_sar)}</td><td dir="ltr">{item.invoice_number || "—"}</td></tr>)}</tbody></table></div> : <p className="odoo-hint">لا توجد مصروفات تشغيلية معتمدة ضمن هذا الفلتر بعد.</p>}
+        </div>
+      )}
 
       {/* Property Costs (Daily/Monthly) Section */}
       <div className="odoo-card">

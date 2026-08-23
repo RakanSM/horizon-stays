@@ -9,7 +9,8 @@ describe("public frontend rebuild", () => {
     const home = readSource("src/pages/Home.tsx");
     expect(home).toContain("fetchProperties");
     expect(home).toContain("propertyPhotos");
-    expect(home).toContain("MapFrame locations={properties}");
+    expect(home).toContain("const MapFrame = lazy");
+    expect(home).toContain("DeferredMap locations={properties}");
     expect(home).toContain("horizon-property-card");
     expect(home).toContain("horizon-hero");
     expect(home).toContain("horizon-search-module");
@@ -21,6 +22,17 @@ describe("public frontend rebuild", () => {
     expect(home).not.toMatch(/testimonial|guest review|guest rating/i);
     expect(home).toContain('import { EditorContentContext } from "../lib/editorPreview"');
     expect(home).not.toContain('from "./ThemeEditor"');
+  });
+
+  it("keeps property-card hover controls connected to the property journey and local favourites", () => {
+    const home = readSource("src/pages/Home.tsx");
+    const styles = readSource("src/public-rebuild.css");
+    expect(home).toContain('"horizon-favorite-properties"');
+    expect(home).toContain("horizon-card-reveal");
+    expect(home).toContain('to={`/property/${property.slug}`}');
+    expect(home).toContain("horizon-favorite-button");
+    expect(styles).toContain(".horizon-property-card:focus-within .horizon-card-reveal");
+    expect(styles).toContain(".horizon-favorite-button");
   });
 
   it("keeps the property page on the shared booking and availability flow", () => {

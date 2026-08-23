@@ -65,7 +65,7 @@ function readCache(): Cache | null {
 /** Resolve schedule override → returns effective theme id */
 function effective(baseId: string, schedules: ThemeSchedule[]): { id: string; scheduleId: string | null } {
   const scheduled = resolveScheduledTheme(schedules);
-  if (scheduled && getAllThemes().some((t) => t.id === scheduled)) {
+  if (scheduled && getTheme(scheduled).id === scheduled) {
     const s = schedules.find((x) => x.enabled && x.themeId === scheduled);
     return { id: scheduled, scheduleId: s?.id || null };
   }

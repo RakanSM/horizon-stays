@@ -653,61 +653,74 @@ export function getCustomThemes(): ThemePreset[] {
   return CUSTOM_THEMES;
 }
 
+const GENERATED_THEME_CATEGORIES = [
+  { prefix: "shopify-store", ar: "متجر شوبيفاي", en: "Shopify Storefront", mode: "light" as const, colors: ["#000000", "#111827", "#2563eb", "#059669", "#7c3aed", "#d97706", "#db2777", "#0891b2"] },
+  { prefix: "wordpress-mag", ar: "مدونة ووردبريس", en: "WordPress Editorial", mode: "light" as const, colors: ["#2563eb", "#0d9488", "#dc2626", "#4f46e5", "#b45309", "#047857", "#be185d", "#1e40af"] },
+  { prefix: "luxury-horizon", ar: "فخامة الأفق", en: "Luxury Horizon", mode: "dark" as const, colors: ["#d4a84b", "#e0a94e", "#34d399", "#a78bfa", "#f43f5e", "#38bdf8", "#fbbf24", "#c084fc"] },
+  { prefix: "celebration-fest", ar: "موسم واحتفال", en: "Celebration Fest", mode: "dark" as const, colors: ["#f2b545", "#178a4c", "#e0a94e", "#22d3ee", "#e879f9", "#fb7185", "#4ade80", "#f97316"] },
+];
+
+/** Resolve one generated theme without constructing the entire marketplace catalogue. */
+function generatedTheme(id: string): ThemePreset | null {
+  const category = GENERATED_THEME_CATEGORIES.find((item) => id.startsWith(`${item.prefix}-`));
+  const suffix = Number(id.slice((category?.prefix.length || 0) + 1));
+  if (!category || !Number.isInteger(suffix) || suffix < 1 || suffix > 650) return null;
+  const color = category.colors[suffix % category.colors.length];
+  const isDark = category.mode === "dark" || suffix % 4 === 0;
+  return {
+    id,
+    nameAr: `${category.ar} الاحترافي #${suffix}`,
+    nameEn: `${category.en} Professional #${suffix}`,
+    mode: isDark ? "dark" : "light",
+    description: `طابع رقم ${suffix} ضمن إصدارات ${category.ar} المعتمدة لتخصيص الهوية البصرية، البنرات والألوان`,
+    tokens: {
+      bg: isDark ? (suffix % 2 === 0 ? "#07090e" : "#0a0d14") : (suffix % 2 === 0 ? "#ffffff" : "#f8fafc"),
+      bg2: isDark ? "#111622" : "#f1f5f9",
+      card: isDark ? "#171e2e" : "#ffffff",
+      card2: isDark ? "#1f293d" : "#f8fafc",
+      border: isDark ? "#28354f" : "#e2e8f0",
+      text: isDark ? "#f8fafc" : "#0f172a",
+      textMuted: isDark ? "#94a3b8" : "#64748b",
+      accent: color,
+      accent2: color,
+      accentSoft: `${color}22`,
+      radius: `${(suffix % 5) * 4 + 4}px`,
+      fontBody: arabicFonts,
+      fontDisplay: cairoDisplay,
+      fontLatin: `"Space Grotesk", sans-serif`,
+      heroOverlay: isDark ? "linear-gradient(180deg, rgba(7,9,14,0.5), rgba(7,9,14,0.92))" : "linear-gradient(180deg, rgba(15,23,42,0.4), rgba(15,23,42,0.78))",
+      headerBg: isDark ? "rgba(7,9,14,0.85)" : "rgba(255,255,255,0.9)",
+      ctaText: isDark ? "#07090e" : "#ffffff",
+    },
+  };
+}
+
 export function getAllThemes(): ThemePreset[] {
-  if ((window as any).__HUGE_2500_THEMES_CACHE__) {
+  if (typeof window !== "undefined" && (window as any).__HUGE_2500_THEMES_CACHE__) {
     return [...(window as any).__HUGE_2500_THEMES_CACHE__, ...CUSTOM_THEMES];
   }
 
   const generated: ThemePreset[] = [...THEMES];
-  const categories = [
-    { prefix: "shopify-store", ar: "متجر شوبيفاي", en: "Shopify Storefront", mode: "light" as const, colors: ["#000000", "#111827", "#2563eb", "#059669", "#7c3aed", "#d97706", "#db2777", "#0891b2"] },
-    { prefix: "wordpress-mag", ar: "مدونة ووردبريس", en: "WordPress Editorial", mode: "light" as const, colors: ["#2563eb", "#0d9488", "#dc2626", "#4f46e5", "#b45309", "#047857", "#be185d", "#1e40af"] },
-    { prefix: "luxury-horizon", ar: "فخامة الأفق", en: "Luxury Horizon", mode: "dark" as const, colors: ["#d4a84b", "#e0a94e", "#34d399", "#a78bfa", "#f43f5e", "#38bdf8", "#fbbf24", "#c084fc"] },
-    { prefix: "celebration-fest", ar: "موسم واحتفال", en: "Celebration Fest", mode: "dark" as const, colors: ["#f2b545", "#178a4c", "#e0a94e", "#22d3ee", "#e879f9", "#fb7185", "#4ade80", "#f97316"] },
-  ];
-
-  let idCounter = 1;
-  for (const cat of categories) {
+  for (const category of GENERATED_THEME_CATEGORIES) {
     for (let i = 1; i <= 650; i++) {
-      const id = `${cat.prefix}-${i}`;
-      const color = cat.colors[i % cat.colors.length];
-      const isDark = cat.mode === "dark" || i % 4 === 0;
-      generated.push({
-        id,
-        nameAr: `${cat.ar} الاحترافي #${i}`,
-        nameEn: `${cat.en} Professional #${i}`,
-        mode: isDark ? "dark" : "light",
-        description: `طابع رقم ${i} ضمن إصدارات ${cat.ar} المعتمدة لتخصيص الهوية البصرية، البنرات والألوان`,
-        tokens: {
-          bg: isDark ? (i % 2 === 0 ? "#07090e" : "#0a0d14") : (i % 2 === 0 ? "#ffffff" : "#f8fafc"),
-          bg2: isDark ? "#111622" : "#f1f5f9",
-          card: isDark ? "#171e2e" : "#ffffff",
-          card2: isDark ? "#1f293d" : "#f8fafc",
-          border: isDark ? "#28354f" : "#e2e8f0",
-          text: isDark ? "#f8fafc" : "#0f172a",
-          textMuted: isDark ? "#94a3b8" : "#64748b",
-          accent: color,
-          accent2: color,
-          accentSoft: `${color}22`,
-          radius: `${(i % 5) * 4 + 4}px`,
-          fontBody: arabicFonts,
-          fontDisplay: cairoDisplay,
-          fontLatin: `"Space Grotesk", sans-serif`,
-          heroOverlay: isDark ? "linear-gradient(180deg, rgba(7,9,14,0.5), rgba(7,9,14,0.92))" : "linear-gradient(180deg, rgba(15,23,42,0.4), rgba(15,23,42,0.78))",
-          headerBg: isDark ? "rgba(7,9,14,0.85)" : "rgba(255,255,255,0.9)",
-          ctaText: isDark ? "#07090e" : "#ffffff",
-        },
-      });
-      idCounter++;
+      const theme = generatedTheme(`${category.prefix}-${i}`);
+      if (theme) generated.push(theme);
     }
   }
 
-  (window as any).__HUGE_2500_THEMES_CACHE__ = generated;
+  if (typeof window !== "undefined") (window as any).__HUGE_2500_THEMES_CACHE__ = generated;
   return [...generated, ...CUSTOM_THEMES];
 }
 
 export function getTheme(id: string): ThemePreset {
-  return getAllThemes().find((t) => t.id === id) || THEMES[0];
+  const staticTheme = THEMES.find((theme) => theme.id === id) || CUSTOM_THEMES.find((theme) => theme.id === id);
+  if (staticTheme) return staticTheme;
+  if (typeof window !== "undefined") {
+    const cached = (window as any).__HUGE_2500_THEMES_CACHE__ as ThemePreset[] | undefined;
+    const cachedTheme = cached?.find((theme) => theme.id === id);
+    if (cachedTheme) return cachedTheme;
+  }
+  return generatedTheme(id) || THEMES[0];
 }
 
 /** Theme schedule: auto-activate a theme within a date range */

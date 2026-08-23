@@ -1,14 +1,14 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchProperties, propertyPhotos, type Property } from "../lib/supabase";
 import { useTheme } from "../lib/ThemeContext";
 import { useLang, neighborhoodLabel, propName } from "../lib/i18n";
 import { EditorContentContext } from "../lib/editorPreview";
-import MapFrame from "../components/MapFrame";
 import { TwoClickDateRangePicker } from "../components/TwoClickDateRangePicker";
 
 const WHATSAPP = "https://wa.me/966920035843";
 const FALLBACK_HERO = "https://bwffhalzuvvmuzjfmdyp.supabase.co/storage/v1/object/public/property-images/kafd-penthouse-3bd-1.webp";
+const MapFrame = lazy(() => import("../components/MapFrame"));
 
 type Copy = {
   heroKicker: string;
@@ -179,6 +179,29 @@ function Icon({ name }: { name: "pin" | "calendar" | "guests" | "spark" | "arrow
   return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
 }
 
+function DeferredMap({ locations, lang }: { locations: Property[]; lang: "ar" | "en" }) {
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const [isNearViewport, setIsNearViewport] = useState(false);
+
+  useEffect(() => {
+    if (!hostRef.current || !("IntersectionObserver" in window)) {
+      setIsNearViewport(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setIsNearViewport(true);
+      observer.disconnect();
+    }, { rootMargin: "520px 0px" });
+    observer.observe(hostRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={hostRef} className="horizon-map-deferred">
+    {isNearViewport ? <Suspense fallback={<div className="horizon-map-loading">{lang === "ar" ? "يتم تجهيز خريطة الوحدات…" : "Preparing the stay map…"}</div>}><MapFrame locations={locations} lang={lang} variant="collection" /></Suspense> : <div className="horizon-map-loading">{lang === "ar" ? "تظهر الخريطة عند الاقتراب منها" : "The map loads as you reach it"}</div>}
+  </div>;
+}
+
 export default function Home() {
   const { content: liveContent, featureFlags } = useTheme();
   const editorContent = useContext(EditorContentContext);
@@ -193,12 +216,28 @@ export default function Home() {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("2");
   const [searchMessage, setSearchMessage] = useState("");
+  const [favorites, setFavorites] = useState<number[]>([]);
 
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   useEffect(() => {
     fetchProperties().then(setProperties).catch((cause) => setError(String(cause?.message || cause)));
   }, []);
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem("horizon-favorite-properties") || "[]");
+      if (Array.isArray(saved)) setFavorites(saved.filter((id): id is number => typeof id === "number"));
+    } catch { /* An unavailable or malformed preference must not block discovery. */ }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("horizon-favorite-properties", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = (propertyId: number) => {
+    setFavorites((current) => current.includes(propertyId) ? current.filter((id) => id !== propertyId) : [...current, propertyId]);
+  };
 
   const filteredProperties = useMemo(() => {
     if (!properties) return null;
@@ -240,10 +279,11 @@ export default function Home() {
 
   return (
     <div className="horizon-public horizon-future-public">
+      <div className="horizon-fixed-field" aria-hidden="true"><i /><i /><i /><span /></div>
       <section className="horizon-hero horizon-future-hero">
         <div className="horizon-orbit horizon-orbit-a" aria-hidden="true" />
         <div className="horizon-orbit horizon-orbit-b" aria-hidden="true" />
-        <div className="container horizon-hero-grid">
+        <div className="container horizon-hero-grid horizon-hero-stage">
           <div className="horizon-hero-copy">
             <div>
               <span className="horizon-kicker"><i className="horizon-live-dot" />{copy.heroKicker}</span>
@@ -256,7 +296,8 @@ export default function Home() {
             </div>
           </div>
           <div className="horizon-hero-media horizon-cinematic-card">
-            <img src={featuredImage} alt={featuredName} fetchPriority="high" />
+            <img src={featuredImage} alt={featuredName} fetchPriority="high" decoding="async" sizes="(max-width: 900px) 100vw, 54vw" />
+            <span className="horizon-media-grain" aria-hidden="true" />
             <div className="horizon-hero-media-caption">
               <div><span>{lang === "ar" ? "الإقامة المختارة الآن" : "Selected residence now"}</span><b>{featuredName}</b></div>
               {featured && <span>{neighborhoodLabel(featured.neighborhood, lang) || copy.location}</span>}
@@ -325,6 +366,7 @@ export default function Home() {
             <div><span className="horizon-section-index">{copy.collectionKicker}</span><h2>{copy.collectionTitle}</h2></div>
             <p>{copy.collectionText}</p>
           </div>
+          <div className="horizon-catalogue-cue" aria-hidden="true"><span>{lang === "ar" ? "اسحب لاستكشاف الإيقاع" : "Scroll to explore the collection"}</span><i /></div>
           <div className="horizon-filter-row">
             <div className="horizon-filters" aria-label={lang === "ar" ? "تصفية الوحدات" : "Filter stays"}>
               {copy.types.map((item) => <button type="button" key={item.key} className={`horizon-filter ${filter === item.key ? "active" : ""}`} onClick={() => { setFilter(item.key); setShowAll(item.key !== "all"); }}>{item.label}</button>)}
@@ -338,18 +380,33 @@ export default function Home() {
             {visibleProperties.map((property, index) => {
               const name = propName(property, lang);
               const photo = propertyPhotos(property)[0] || FALLBACK_HERO;
-              return <Link className={`horizon-property-card horizon-property-card-${index + 1}`} to={`/property/${property.slug}`} key={property.id}>
-                <img src={photo} alt={name} loading="lazy" />
+              const isFavorite = favorites.includes(property.id);
+              const summary = lang === "ar"
+                ? `${property.bedrooms ? `${property.bedrooms} غرف` : "استوديو"} · ${property.bathrooms} حمام · ${property.area_m2 ? `${property.area_m2} م²` : "إقامة مجهزة"}`
+                : `${property.bedrooms ? `${property.bedrooms} bedrooms` : "Studio"} · ${property.bathrooms} baths · ${property.area_m2 ? `${property.area_m2} m²` : "Ready-to-stay"}`;
+              return <article className={`horizon-property-card horizon-property-card-${index + 1}`} key={property.id}>
+                <Link className="horizon-card-media" to={`/property/${property.slug}`} aria-label={`${lang === "ar" ? "فتح" : "Open"} ${name}`}>
+                  <img src={photo} alt={name} loading="lazy" decoding="async" sizes="(max-width: 620px) 100vw, (max-width: 900px) 50vw, 42vw" />
+                </Link>
                 <span className="horizon-card-orbit" aria-hidden="true" />
+                <button type="button" className={`horizon-favorite-button ${isFavorite ? "active" : ""}`} onClick={() => toggleFavorite(property.id)} aria-pressed={isFavorite} aria-label={isFavorite ? (lang === "ar" ? "إزالة من المفضلة" : "Remove from favourites") : (lang === "ar" ? "حفظ في المفضلة" : "Save to favourites")}>{isFavorite ? "♥" : "♡"}</button>
                 <div className="horizon-property-card-main">
                   <span className="horizon-property-card-type">{property.type || (lang === "ar" ? "إقامة مختارة" : "Curated stay")}</span>
                   <h3>{name}</h3>
                   <div className="horizon-property-card-meta">
-                    <p>{copy.location} · {neighborhoodLabel(property.neighborhood, lang) || (lang === "ar" ? "حي مميز" : "Prime district")}</p>
+                    <p>{copy.location} · {neighborhoodLabel(property.neighborhood, lang) || (lang === "ar" ? "حي مميز" : "Prime district")} · {property.max_guests} {lang === "ar" ? "ضيوف" : "guests"}</p>
                     <div className="horizon-property-card-price"><b>{property.price_per_night?.toLocaleString("en-US")} ﷼</b><span>{copy.perNight}</span></div>
                   </div>
                 </div>
-              </Link>;
+                <div className="horizon-card-reveal" aria-label={lang === "ar" ? `ملخص ${name}` : `${name} summary`}>
+                  <span>{summary}</span>
+                  <p>{property.description_ar || (lang === "ar" ? "تفاصيل واضحة وصور حقيقية وتجربة حجز مباشرة." : "Clear details, real photography, and a direct booking path.")}</p>
+                  <div className="horizon-card-reveal-actions">
+                    <Link className="horizon-card-book" to={`/property/${property.slug}`}>{lang === "ar" ? "احجز الآن" : "Book now"}<Icon name="arrow" /></Link>
+                    <Link className="horizon-card-detail" to={`/property/${property.slug}`}>{lang === "ar" ? "عرض الملخص" : "View summary"}</Link>
+                  </div>
+                </div>
+              </article>;
             })}
           </div>}
           {filteredProperties && filter === "all" && filteredProperties.length > 5 && <div className="horizon-show-more"><button type="button" className="horizon-quiet-btn" onClick={() => setShowAll((current) => !current)}>{showAll ? copy.showLess : copy.showAll(filteredProperties.length)}</button></div>}
@@ -372,7 +429,7 @@ export default function Home() {
       </section>
 
       {featureFlags.feature_map && properties && <section className="horizon-section horizon-section-sand horizon-map-section">
-        <div className="container horizon-map-grid"><div className="horizon-map-copy"><span className="horizon-section-index">{copy.mapKicker}</span><h2>{copy.mapTitle}</h2><p>{copy.mapText}</p><a className="horizon-quiet-btn" href="#collection">{copy.explore}<Icon name="arrow" /></a></div><div className="horizon-map-zone"><MapFrame locations={properties} lang={lang} variant="collection" /></div></div>
+        <div className="container horizon-map-grid"><div className="horizon-map-copy"><span className="horizon-section-index">{copy.mapKicker}</span><h2>{copy.mapTitle}</h2><p>{copy.mapText}</p><a className="horizon-quiet-btn" href="#collection">{copy.explore}<Icon name="arrow" /></a></div><div className="horizon-map-zone"><DeferredMap locations={properties} lang={lang} /></div></div>
       </section>}
 
       <section className="horizon-partnership-section"><div className="container horizon-partnership-grid"><div><span className="horizon-kicker">{copy.partnershipKicker}</span><h2>{copy.partnershipTitle}</h2></div><div><p>{copy.partnershipText}</p><Link className="horizon-primary-btn" to="/contact">{copy.partnershipCta}<Icon name="arrow" /></Link></div></div></section>

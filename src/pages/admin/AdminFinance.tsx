@@ -10,7 +10,7 @@ export default function AdminFinance() {
   const [err, setErr] = useState("");
 
   useEffect(() => {
-    adminRpc<FinanceSummary>("admin_finance_summary", { p_year: year })
+    adminRpc<FinanceSummary>("admin_finance_summary", { p_from: `${year}-01-01`, p_to: `${year}-12-31` })
       .then(setFin)
       .catch((e) => setErr(e.message));
   }, [year]);
