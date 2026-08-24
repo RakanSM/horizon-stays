@@ -369,3 +369,10 @@
 
 ## Public Background Palette Refinement (User request Aug 24)
 - [x] T241: Replace the public scene’s blue background/glow palette with a dark violet palette while preserving readable typography, image contrast, motion, and responsive/reduced-motion behavior. Completed: replaced the electric blue and deep blue-black field with violet `#a879f7` and night-violet `#170d2b`, updated the scene media fallback and overlay tones, and added regression coverage. The full test suite and production build pass.
+
+## Dark-Mode Green Contrast Fix (User request Aug 24)
+- [ ] T242: Raise contrast for green text and status elements in the dark public experience while preserving their semantic availability/success meaning.
+
+## Airbnb-Verified Map Accuracy (User request Aug 24)
+- [x] T243: Inventory current Horizon property coordinates and map links, then verify each Airbnb listing association and location evidence in the logged-in host session without changing Airbnb data. Completed: 17 associations are confirmed from read-only host evidence; 7 stored Airbnb links do not match their Horizon unit and one matching listing remains detail-pending. No Airbnb data was changed.
+- [x] T244: Apply only confirmed coordinate and direction-link corrections to Horizon, then verify public map pins and property maps without fabricating or inferring a precise address. Completed: applied 15 verified, neighbourhood-level coordinate corrections and verified four corrected live property maps. The seven mismatched channel links and one detail-pending listing were intentionally left unchanged rather than guessed.

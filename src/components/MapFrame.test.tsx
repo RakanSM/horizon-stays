@@ -24,5 +24,6 @@ describe("MapFrame", () => {
     expect(markup.match(/property-map-pin(?:\s|\")/g)).toHaveLength(1);
     expect(markup).toContain("وحدة كافد");
     expect(markup).toContain("من ١٬٢٥٠ ر.س / ليلة");
+    expect(markup).toContain("query=24.7741%2C46.658");
   });
 });
