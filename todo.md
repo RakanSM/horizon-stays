@@ -366,3 +366,6 @@
 
 ## Public Scroll-Scene Copy Refinement (User request Aug 24)
 - [x] T240: Replace the current public fixed-scene headline and supporting sentence with clearer Arabic copy that guides a guest toward selecting a stay, without changing the scene design or verified property content. Completed: replaced it with “اختر ما يناسبك. واحجز بثقة.” and a clear date-specific availability/pricing message; added bilingual equivalent copy and a regression test. The full test suite and production build pass.
+
+## Public Background Palette Refinement (User request Aug 24)
+- [x] T241: Replace the public scene’s blue background/glow palette with a dark violet palette while preserving readable typography, image contrast, motion, and responsive/reduced-motion behavior. Completed: replaced the electric blue and deep blue-black field with violet `#a879f7` and night-violet `#170d2b`, updated the scene media fallback and overlay tones, and added regression coverage. The full test suite and production build pass.

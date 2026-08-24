@@ -44,6 +44,8 @@ describe("public frontend rebuild", () => {
     expect(home).toContain("اختر ما يناسبك");
     expect(home).toContain("شاهد السعر والتوفر حسب تاريخك");
     expect(home).not.toContain("المدينة تتحرك\\nوأنت تختار");
+    expect(styles).toContain("--h-electric: #a879f7");
+    expect(styles).toContain("--h-space: #170d2b");
     expect(styles).toContain(".horizon-scene-fixed { position: sticky;");
     expect(styles).toContain(".horizon-scene-panel.is-visible");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
