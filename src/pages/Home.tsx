@@ -226,8 +226,8 @@ function ScrollScene({ properties, lang }: { properties: Property[] | null; lang
 
   if (!sceneProperties.length) return null;
   const copy = lang === "ar"
-    ? { kicker: "HORIZON / مشهد ثابت", title: "المدينة تتحرك\nوأنت تختار.", text: "خلفية واحدة هادئة، وفوقها تظهر الإقامات بتدرج مدروس مع كل تمرير.", scroll: "تابع النزول لاستكشاف الإقامات", book: "افتح الحجز", perNight: "لليلة", residence: "إقامة مختارة" }
-    : { kicker: "HORIZON / FIXED SCENE", title: "The city moves.\nYou choose.", text: "One calm visual field, with considered residences revealing themselves as you move through it.", scroll: "Scroll to explore the stays", book: "Open booking", perNight: "per night", residence: "Selected residence" };
+    ? { kicker: "HORIZON / اختر إقامتك", title: "اختر ما يناسبك.\nواحجز بثقة.", text: "قارن الوحدات، شاهد السعر والتوفر حسب تاريخك، ثم أكمل الحجز من المكان نفسه.", scroll: "تابع لاستكشاف الوحدات", book: "افتح الحجز", perNight: "لليلة", residence: "إقامة مختارة" }
+    : { kicker: "HORIZON / CHOOSE YOUR STAY", title: "Find your stay.\nBook with clarity.", text: "Compare residences, see date-specific price and availability, then continue to booking from one place.", scroll: "Scroll to explore stays", book: "Open booking", perNight: "per night", residence: "Selected residence" };
 
   return <section className="horizon-scroll-scene" aria-label={lang === "ar" ? "مشهد الإقامات المتحرك" : "Moving residence scene"}>
     <div className="horizon-scene-fixed" aria-hidden="true">

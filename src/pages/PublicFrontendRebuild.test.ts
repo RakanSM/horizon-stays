@@ -41,6 +41,9 @@ describe("public frontend rebuild", () => {
     const styles = readSource("src/public-rebuild.css");
     expect(home).toContain("function ScrollScene");
     expect(home).toContain("propertyPhotos(property)[0] || FALLBACK_HERO");
+    expect(home).toContain("اختر ما يناسبك");
+    expect(home).toContain("شاهد السعر والتوفر حسب تاريخك");
+    expect(home).not.toContain("المدينة تتحرك\\nوأنت تختار");
     expect(styles).toContain(".horizon-scene-fixed { position: sticky;");
     expect(styles).toContain(".horizon-scene-panel.is-visible");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
