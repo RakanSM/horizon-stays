@@ -57,6 +57,9 @@ describe("public frontend rebuild", () => {
     expect(detail).toContain("fetchBlockedDates");
     expect(detail).toContain("horizon-detail-page");
     expect(detail).toContain("MapFrame locations={[property]}");
+    expect(detail).toContain("date-price-comparison");
+    expect(detail).toContain("date-price-breakdown");
+    expect(detail).toContain("Before dates");
   });
 
   it("loads the public frontend layer after legacy styles so public routes are isolated", () => {

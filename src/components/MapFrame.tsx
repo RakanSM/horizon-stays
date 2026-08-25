@@ -1,7 +1,12 @@
-import { useState } from "react";
-import type { Property } from "../lib/supabase";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { divIcon, latLngBounds, type LeafletMouseEvent, type Marker as LeafletMarker } from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { propertyPhotoUrls, type Property } from "../lib/supabase";
 
-type MapLocation = Pick<Property, "id" | "name_ar" | "name_en" | "neighborhood" | "price_per_night" | "lat" | "lng">;
+type MapLocation = Pick<Property, "id" | "name_ar" | "name_en" | "neighborhood" | "price_per_night" | "lat" | "lng"> &
+  Partial<Pick<Property, "slug" | "type" | "hero_image" | "gallery_images" | "description_ar">>;
 type ValidMapLocation = MapLocation & { lat: number; lng: number };
 
 type MapFrameProps = {
@@ -10,9 +15,16 @@ type MapFrameProps = {
   variant?: "collection" | "property";
 };
 
-const RIYADH = { lat: 24.7136, lng: 46.6753 };
+const RIYADH: [number, number] = [24.7136, 46.6753];
+const HORIZON_PIN = divIcon({
+  className: "horizon-leaflet-pin-icon",
+  html: '<span class="horizon-leaflet-pin" aria-hidden="true">⌖</span>',
+  iconSize: [42, 48],
+  iconAnchor: [21, 44],
+  popupAnchor: [0, -42],
+});
 
-function numericCoordinate(value: number | null) {
+function numericCoordinate(value: number | null | undefined) {
   const coordinate = typeof value === "number" ? value : Number(value);
   return Number.isFinite(coordinate) ? coordinate : null;
 }
@@ -25,11 +37,6 @@ function pointLink(location: ValidMapLocation) {
   return `https://www.google.com/maps/search/?api=1&query=${location.lat},${location.lng}`;
 }
 
-function projectLatitude(latitude: number) {
-  const radians = (latitude * Math.PI) / 180;
-  return Math.log(Math.tan(Math.PI / 4 + radians / 2));
-}
-
 function priceLabel(location: MapLocation, lang: "ar" | "en") {
   const price = Number(location.price_per_night);
   if (!Number.isFinite(price) || price <= 0) return null;
@@ -37,45 +44,160 @@ function priceLabel(location: MapLocation, lang: "ar" | "en") {
   return lang === "ar" ? `من ${formatted} ر.س / ليلة` : `From ${formatted} SAR / night`;
 }
 
+function shortDescription(location: MapLocation, lang: "ar" | "en") {
+  const sourceDescription = location.description_ar?.trim();
+  if (lang === "ar" && sourceDescription) return sourceDescription.slice(0, 128);
+  const factualSummary = [location.type, location.neighborhood].filter(Boolean).join(" · ");
+  return factualSummary || (lang === "ar" ? "إقامة مختارة في الرياض" : "A selected stay in Riyadh");
+}
+
+function MapViewport({ locations, variant }: { locations: ValidMapLocation[]; variant: "collection" | "property" }) {
+  const map = useMap();
+  const locationKey = locations.map((location) => `${location.id}:${location.lat}:${location.lng}`).join("|");
+
+  useEffect(() => {
+    if (!locations.length) {
+      map.setView(RIYADH, 10, { animate: false });
+      return;
+    }
+    if (variant === "property" || locations.length === 1) {
+      map.setView([locations[0].lat, locations[0].lng], 13, { animate: false });
+      return;
+    }
+    map.fitBounds(latLngBounds(locations.map((location) => [location.lat, location.lng])), { padding: [46, 46], maxZoom: 13, animate: false });
+  }, [locationKey, locations, map, variant]);
+
+  return null;
+}
+
+function MapPinCard({
+  location,
+  lang,
+  onPointerEnter,
+  onPointerLeave,
+}: {
+  location: ValidMapLocation;
+  lang: "ar" | "en";
+  onPointerEnter: () => void;
+  onPointerLeave: () => void;
+}) {
+  const [selectedPhoto, setSelectedPhoto] = useState(0);
+  const photos = useMemo(
+    () => propertyPhotoUrls(location.slug || "", location.hero_image, location.gallery_images),
+    [location.gallery_images, location.hero_image, location.slug]
+  );
+  const name = labelFor(location, lang);
+  const price = priceLabel(location, lang);
+  const description = shortDescription(location, lang);
+
+  return (
+    <article className="map-pin-card" dir={lang === "ar" ? "rtl" : "ltr"} onMouseEnter={onPointerEnter} onMouseLeave={onPointerLeave}>
+      <div className="map-pin-card-media">
+        {photos.length ? (
+          <img src={photos[selectedPhoto] || photos[0]} alt={name} loading="lazy" />
+        ) : (
+          <div className="map-pin-card-media-fallback" aria-hidden />
+        )}
+        {photos.length > 1 && <span className="map-pin-card-count">{selectedPhoto + 1} / {photos.length}</span>}
+      </div>
+      {photos.length > 1 && (
+        <div className="map-pin-card-photo-strip" aria-label={lang === "ar" ? "صور الوحدة" : "Stay photos"}>
+          {photos.slice(0, 12).map((photo, index) => (
+            <button
+              type="button"
+              key={photo}
+              className={index === selectedPhoto ? "is-selected" : ""}
+              onClick={() => setSelectedPhoto(index)}
+              aria-label={`${lang === "ar" ? "عرض الصورة" : "Show photo"} ${index + 1}`}
+            >
+              <img src={photo} alt="" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="map-pin-card-copy">
+        <div className="map-pin-card-title-row">
+          <strong>{name}</strong>
+          {price && <span>{price}</span>}
+        </div>
+        <p>{description}</p>
+        <div className="map-pin-card-actions">
+          {location.slug ? (
+            <Link to={`/property/${location.slug}#availability`} className="map-pin-card-book">
+              {lang === "ar" ? "احجز الآن" : "Book now"}
+            </Link>
+          ) : (
+            <a href={pointLink(location)} target="_blank" rel="noreferrer" className="map-pin-card-book">
+              {lang === "ar" ? "عرض الموقع" : "View location"}
+            </a>
+          )}
+          <a href={pointLink(location)} target="_blank" rel="noreferrer" className="map-pin-card-location">
+            {lang === "ar" ? "الخريطة ↗" : "Map ↗"}
+          </a>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function MarkerWithCard({
+  location,
+  lang,
+  isActive,
+  openPin,
+  scheduleClose,
+  cancelClose,
+}: {
+  location: ValidMapLocation;
+  lang: "ar" | "en";
+  isActive: boolean;
+  openPin: () => void;
+  scheduleClose: () => void;
+  cancelClose: () => void;
+}) {
+  const markerRef = useRef<LeafletMarker | null>(null);
+  const openFromMarker = useCallback((event?: LeafletMouseEvent) => {
+    openPin();
+    event?.target.openPopup();
+  }, [openPin]);
+
+  useEffect(() => {
+    if (isActive) markerRef.current?.openPopup();
+    else markerRef.current?.closePopup();
+  }, [isActive]);
+
+  return (
+    <Marker
+      ref={markerRef}
+      position={[location.lat, location.lng]}
+      icon={HORIZON_PIN}
+      eventHandlers={{
+        mouseover: openFromMarker,
+        mouseout: scheduleClose,
+        focus: openFromMarker,
+        click: openFromMarker,
+      }}
+    >
+      <Popup className="horizon-map-popup" closeButton={false} autoPanPadding={[36, 36]} eventHandlers={{ remove: scheduleClose }}>
+        <MapPinCard location={location} lang={lang} onPointerEnter={cancelClose} onPointerLeave={scheduleClose} />
+      </Popup>
+    </Marker>
+  );
+}
+
 export default function MapFrame({ locations, lang, variant = "collection" }: MapFrameProps) {
-  const [activePinId, setActivePinId] = useState<number | null>(variant === "property" ? locations[0]?.id || null : null);
+  const [activePinId, setActivePinId] = useState<number | null>(null);
+  const closeTimer = useRef<number | null>(null);
   const validLocations = locations.reduce<ValidMapLocation[]>((accumulator, location) => {
     const lat = numericCoordinate(location.lat);
     const lng = numericCoordinate(location.lng);
     if (lat !== null && lng !== null) accumulator.push({ ...location, lat, lng });
     return accumulator;
   }, []);
-
   const visibleLocations = variant === "property" ? validLocations.slice(0, 1) : validLocations;
-  const sourceLocations = visibleLocations.length ? visibleLocations : validLocations;
-  const latitudes = sourceLocations.map((location) => location.lat);
-  const longitudes = sourceLocations.map((location) => location.lng);
-  const minLat = latitudes.length ? Math.min(...latitudes) : RIYADH.lat;
-  const maxLat = latitudes.length ? Math.max(...latitudes) : RIYADH.lat;
-  const minLng = longitudes.length ? Math.min(...longitudes) : RIYADH.lng;
-  const maxLng = longitudes.length ? Math.max(...longitudes) : RIYADH.lng;
-  const latPadding = Math.max(variant === "collection" ? 0.012 : 0.006, (maxLat - minLat) * 0.18);
-  const lngPadding = Math.max(variant === "collection" ? 0.012 : 0.006, (maxLng - minLng) * 0.18);
-  const bounds = {
-    south: minLat - latPadding,
-    north: maxLat + latPadding,
-    west: minLng - lngPadding,
-    east: maxLng + lngPadding,
-  };
-  const center = {
-    lat: (bounds.south + bounds.north) / 2,
-    lng: (bounds.west + bounds.east) / 2,
-  };
-  const bbox = [bounds.west, bounds.south, bounds.east, bounds.north]
-    .map((value) => value.toFixed(6))
-    .join(",");
-  const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik`;
-  const mapQuery = variant === "collection" && validLocations.length > 1
-    ? "Riyadh, Saudi Arabia"
-    : `${center.lat},${center.lng}`;
-  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
-  const title = lang === "ar" ? "موقع الإقامة" : "Where you’ll be";
   const primary = visibleLocations[0];
+  const mapCenter: [number, number] = primary ? [primary.lat, primary.lng] : RIYADH;
+  const title = lang === "ar" ? "موقع الإقامة" : "Where you’ll be";
   const subtitle =
     variant === "property" && primary?.neighborhood
       ? `${lang === "ar" ? "الرياض،" : "Riyadh,"} ${primary.neighborhood}`
@@ -85,15 +207,26 @@ export default function MapFrame({ locations, lang, variant = "collection" }: Ma
   const mapLabel =
     variant === "collection"
       ? lang === "ar"
-        ? `${validLocations.length || locations.length} وحدة ضمن مجموعتنا في الرياض`
-        : `${validLocations.length || locations.length} stays across Riyadh`
+        ? "استكشف الإقامات المختارة في الرياض"
+        : "Explore selected stays across Riyadh"
       : primary
         ? labelFor(primary, lang)
         : lang === "ar"
           ? "موقع الوحدة في الرياض"
           : "Your stay in Riyadh";
-  const northProjection = projectLatitude(bounds.north);
-  const southProjection = projectLatitude(bounds.south);
+  const mapUrl = primary ? pointLink(primary) : "https://www.google.com/maps/search/?api=1&query=Riyadh%2C%20Saudi%20Arabia";
+  const isBrowser = typeof window !== "undefined";
+
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  }, []);
+  const scheduleClose = useCallback(() => {
+    cancelClose();
+    closeTimer.current = window.setTimeout(() => setActivePinId(null), 180);
+  }, [cancelClose]);
 
   return (
     <section className={`map-frame-section map-frame-${variant}`} aria-label={title}>
@@ -109,50 +242,31 @@ export default function MapFrame({ locations, lang, variant = "collection" }: Ma
       </div>
 
       <div className="map-frame-shell">
-        <iframe
-          title={mapLabel}
-          src={mapSrc}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          allowFullScreen
-        />
-        {visibleLocations.length > 0 && (
-          <div className="map-pins-layer" aria-label={lang === "ar" ? "دبابيس مواقع الوحدات" : "Property location pins"}>
-            {visibleLocations.map((location) => {
-              const left = ((location.lng - bounds.west) / (bounds.east - bounds.west)) * 100;
-              const top = ((northProjection - projectLatitude(location.lat)) / (northProjection - southProjection)) * 100;
-              const name = labelFor(location, lang);
-              const price = priceLabel(location, lang);
-              const isOpen = activePinId === location.id;
-              return (
-                <div
-                  key={location.id}
-                  className={`property-map-pin ${variant === "property" ? "is-property-pin" : ""} ${top < 22 ? "is-near-top" : ""} ${isOpen ? "is-open" : ""}`}
-                  style={{ left: `${Math.min(97, Math.max(3, left))}%`, top: `${Math.min(97, Math.max(3, top))}%` }}
-                  onMouseEnter={() => setActivePinId(location.id)}
-                  onMouseLeave={() => setActivePinId(variant === "property" ? location.id : null)}
-                >
-                  <button
-                    type="button"
-                    className="property-map-pin-button"
-                    aria-label={`${name} — ${lang === "ar" ? "عرض تفاصيل الموقع" : "show location details"}`}
-                    aria-expanded={isOpen}
-                    aria-controls={`map-pin-tooltip-${location.id}`}
-                    onClick={() => setActivePinId((current) => current === location.id && variant !== "property" ? null : location.id)}
-                    onFocus={() => setActivePinId(location.id)}
-                  >
-                    <span className="property-map-pin-core" aria-hidden>⌖</span>
-                  </button>
-                  <div id={`map-pin-tooltip-${location.id}`} className="property-map-pin-tooltip" role="tooltip">
-                    <strong>{name}</strong>
-                    {price && <span>{price}</span>}
-                    <a href={pointLink(location)} target="_blank" rel="noreferrer">
-                      {lang === "ar" ? "فتح في الخرائط ↗" : "Open in Maps ↗"}
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
+        {isBrowser ? (
+          <MapContainer className="horizon-leaflet-map" center={mapCenter} zoom={variant === "property" ? 13 : 11} scrollWheelZoom zoomControl aria-label={mapLabel}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <MapViewport locations={visibleLocations} variant={variant} />
+            {visibleLocations.map((location) => (
+              <MarkerWithCard
+                key={location.id}
+                location={location}
+                lang={lang}
+                isActive={activePinId === location.id}
+                openPin={() => {
+                  cancelClose();
+                  setActivePinId(location.id);
+                }}
+                scheduleClose={scheduleClose}
+                cancelClose={cancelClose}
+              />
+            ))}
+          </MapContainer>
+        ) : (
+          <div className="horizon-map-ssr-fallback" aria-label={mapLabel}>
+            {visibleLocations.map((location) => <MapPinCard key={location.id} location={location} lang={lang} onPointerEnter={() => {}} onPointerLeave={() => {}} />)}
           </div>
         )}
         <div className="map-frame-badge">
@@ -167,19 +281,6 @@ export default function MapFrame({ locations, lang, variant = "collection" }: Ma
           </div>
         )}
       </div>
-
-      {variant === "collection" && validLocations.length > 0 && (
-        <div className="map-frame-places" aria-label={lang === "ar" ? "مواقع الوحدات" : "Property locations"}>
-          {validLocations.slice(0, 8).map((location) => (
-            <a key={location.id} className="map-place-chip" href={pointLink(location)} target="_blank" rel="noreferrer">
-              <i aria-hidden /> {labelFor(location, lang)}
-            </a>
-          ))}
-          {validLocations.length > 8 && (
-            <span className="map-place-chip map-place-more">+{validLocations.length - 8}</span>
-          )}
-        </div>
-      )}
     </section>
   );
 }

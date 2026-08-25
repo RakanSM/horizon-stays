@@ -387,6 +387,55 @@ body:has(.horizon-public-shell) {
 .horizon-detail-page .book-box .btn-gold { color: var(--h-white); background: var(--h-accent); border-radius: 999px; }
 .horizon-detail-page .book-box .btn-gold:hover { background: var(--h-white); color: var(--h-ink); }
 
+.horizon-public-shell .horizon-leaflet-map { width: 100%; height: 440px; background: var(--h-sand); font-family: var(--font-body); }
+.horizon-public-shell .leaflet-control-zoom { overflow: hidden; border: 1px solid var(--h-line); border-radius: 0; box-shadow: 0 12px 28px rgba(20, 11, 31, .18); }
+.horizon-public-shell .leaflet-control-zoom a { width: 32px; height: 32px; color: var(--h-ink); background: var(--h-white); border-bottom-color: var(--h-line); line-height: 30px; }
+.horizon-public-shell .leaflet-control-zoom a:hover { color: var(--h-space); background: color-mix(in srgb, var(--h-electric) 13%, var(--h-white)); }
+.horizon-public-shell .horizon-leaflet-pin-icon { width: 42px !important; height: 48px !important; margin: 0 !important; background: transparent; border: 0; }
+.horizon-public-shell .horizon-leaflet-pin { display: grid; place-items: center; width: 36px; height: 36px; color: var(--h-space); border: 2px solid var(--h-white); border-radius: 50% 50% 50% 7px; background: linear-gradient(145deg, var(--h-electric), #d1a6ff); box-shadow: 0 8px 20px rgba(22, 10, 38, .34), 0 0 0 5px rgba(255,255,255,.58); font-size: 1.12rem; line-height: 1; transform: rotate(-45deg); transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out); }
+.horizon-public-shell .horizon-leaflet-pin:hover { transform: rotate(-45deg) scale(1.12); box-shadow: 0 12px 24px rgba(22, 10, 38, .42), 0 0 0 7px color-mix(in srgb, var(--h-electric) 31%, transparent); }
+.horizon-public-shell .leaflet-popup { margin-bottom: 37px; }
+.horizon-public-shell .leaflet-popup-content-wrapper,.horizon-public-shell .leaflet-popup-tip { background: var(--h-white); box-shadow: 0 20px 52px rgba(20, 10, 31, .28); }
+.horizon-public-shell .leaflet-popup-content-wrapper { overflow: hidden; padding: 0; border-radius: 0; }
+.horizon-public-shell .leaflet-popup-content { width: min(304px, calc(100vw - 52px)) !important; margin: 0; }
+.map-pin-card { overflow: hidden; color: var(--h-ink); background: var(--h-white); }
+.map-pin-card-media { position: relative; aspect-ratio: 16 / 8.5; background: var(--h-sand); }
+.map-pin-card-media img,.map-pin-card-media-fallback { display: block; width: 100%; height: 100%; object-fit: cover; }
+.map-pin-card-media-fallback { background: linear-gradient(135deg, var(--h-space), #50306f); }
+.map-pin-card-count { position: absolute; right: 10px; bottom: 10px; padding: 3px 6px; color: var(--h-white); background: rgba(14, 8, 23, .72); font-family: var(--font-latin); font-size: .64rem; }
+[dir="rtl"] .map-pin-card-count { right: auto; left: 10px; }
+.map-pin-card-photo-strip { display: flex; gap: 5px; padding: 8px 10px 0; overflow-x: auto; scrollbar-width: thin; }
+.map-pin-card-photo-strip button { flex: 0 0 38px; height: 30px; padding: 0; overflow: hidden; opacity: .56; border: 1px solid transparent; background: transparent; transition: opacity 160ms var(--ease-out), border-color 160ms var(--ease-out); }
+.map-pin-card-photo-strip button.is-selected,.map-pin-card-photo-strip button:hover,.map-pin-card-photo-strip button:focus-visible { opacity: 1; border-color: var(--h-electric); outline: 0; }
+.map-pin-card-photo-strip img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.map-pin-card-copy { display: grid; gap: 7px; padding: 12px 13px 14px; }
+.map-pin-card-title-row { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+.map-pin-card-title-row strong { max-width: 56%; color: var(--h-ink); font-size: .82rem; line-height: 1.2; }
+.map-pin-card-title-row span { color: var(--h-accent); font-family: var(--font-latin); font-size: .65rem; font-weight: 700; text-align: end; }
+.map-pin-card-copy p { display: -webkit-box; margin: 0; overflow: hidden; color: var(--h-ink-soft); font-size: .7rem; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.map-pin-card-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; }
+.map-pin-card-book,.map-pin-card-location { font-size: .7rem; font-weight: 800; }
+.map-pin-card-book { padding: 8px 10px; color: var(--h-white); background: var(--h-space); transition: transform 160ms var(--ease-out), background 160ms var(--ease-out); }
+.map-pin-card-book:hover { color: var(--h-space); background: var(--h-electric); transform: translateY(-1px); }
+.map-pin-card-location { color: var(--h-accent); }
+.horizon-map-ssr-fallback { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; padding: 18px; }
+
+.date-price-comparison { display: grid; gap: 8px; margin: 0 0 12px; padding: 10px; border: 1px solid color-mix(in srgb, var(--h-electric) 28%, var(--h-line)); background: color-mix(in srgb, var(--h-electric) 7%, transparent); }
+.date-price-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.date-price-row > div { display: grid; gap: 2px; }
+.date-price-row span { color: var(--h-ink); font-size: .71rem; font-weight: 800; }
+.date-price-row small { color: var(--h-ink-soft); font-size: .67rem; }
+.date-price-row b { color: var(--h-ink); font-family: var(--font-latin); font-size: .85rem; white-space: nowrap; }
+.date-price-base b { color: var(--h-ink-soft); text-decoration: line-through; text-decoration-thickness: 1px; }
+.date-price-selected b { color: var(--h-electric); }
+.date-price-delta { margin: 1px 0 0; padding-top: 8px; border-top: 1px solid color-mix(in srgb, var(--h-electric) 18%, var(--h-line)); font-size: .69rem; font-weight: 800; }
+.date-price-delta.is-saving { color: var(--h-electric); }
+.date-price-delta.is-higher { color: var(--h-accent); }
+.date-price-breakdown { display: flex; gap: 7px; margin: 0 -1px 12px; padding-bottom: 4px; overflow-x: auto; scrollbar-width: thin; }
+.date-price-breakdown > div { display: grid; flex: 0 0 79px; gap: 3px; padding: 7px 8px; border: 1px solid var(--h-line); background: color-mix(in srgb, var(--h-white) 84%, transparent); }
+.date-price-breakdown span { color: var(--h-ink-soft); font-size: .63rem; }
+.date-price-breakdown b { color: var(--h-ink); font-family: var(--font-latin); font-size: .7rem; white-space: nowrap; }
+
 .horizon-detail-page .map-frame-section { margin-top: 58px; }
 .horizon-detail-page .map-frame-head { padding: 18px 22px; background: var(--h-white); border: 1px solid var(--h-line); border-bottom: 0; }
 .horizon-detail-page .map-frame-head h2 { color: var(--h-ink); font-family: var(--font-display); }
@@ -399,6 +448,12 @@ body:has(.horizon-public-shell) {
   .horizon-detail-page .detail-hero .side { display: none; }
   .horizon-detail-page .detail-hero .main-img { aspect-ratio: 4 / 3; }
   .horizon-detail-page .book-box { position: relative; top: auto; margin-top: 26px; }
+}
+
+@media (max-width: 700px) {
+  .horizon-public-shell .horizon-leaflet-map { height: 320px; }
+  .horizon-detail-page .horizon-leaflet-map { height: 300px; }
+  .horizon-public-shell .leaflet-popup-content { width: min(280px, calc(100vw - 38px)) !important; }
 }
 
 /* ===== Horizon Future-Stay experience ===== */

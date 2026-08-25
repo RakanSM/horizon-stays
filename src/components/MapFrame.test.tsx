@@ -1,29 +1,28 @@
-import { renderToStaticMarkup } from "react-dom/server";
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import MapFrame from "./MapFrame";
+
+const source = readFileSync(new URL("./MapFrame.tsx", import.meta.url), "utf8");
 
 describe("MapFrame", () => {
-  const locations = [
-    { id: 1, name_ar: "وحدة كافد", name_en: "KAFD stay", neighborhood: "KAFD", price_per_night: 1250, lat: 24.7741, lng: 46.658 },
-    { id: 2, name_ar: "وحدة العليا", name_en: "Olaya stay", neighborhood: "Al Olaya", price_per_night: 900, lat: 24.7136, lng: 46.6753 },
-  ];
-
-  it("renders one interactive pin for every coordinate on the collection map", () => {
-    const markup = renderToStaticMarkup(<MapFrame locations={locations} lang="en" variant="collection" />);
-
-    expect(markup.match(/property-map-pin(?:\s|\")/g)).toHaveLength(2);
-    expect(markup).toContain("KAFD stay");
-    expect(markup).toContain("Olaya stay");
-    expect(markup).toContain("From 1,250 SAR / night");
-    expect(markup).toContain('role="tooltip"');
+  it("uses coordinate-bound Leaflet markers rather than an absolute layer over an iframe", () => {
+    expect(source).toContain("MapContainer");
+    expect(source).toContain("<Marker");
+    expect(source).toContain("MapViewport");
+    expect(source).toContain("map.fitBounds");
+    expect(source).not.toContain("map-pins-layer");
+    expect(source).not.toContain("export/embed.html");
   });
 
-  it("renders exactly one precise pin on an individual property map", () => {
-    const markup = renderToStaticMarkup(<MapFrame locations={locations} lang="ar" variant="property" />);
+  it("provides an Airbnb-style pin card with gallery browsing, a price, and a booking action", () => {
+    expect(source).toContain("map-pin-card-photo-strip");
+    expect(source).toContain("propertyPhotoUrls");
+    expect(source).toContain('to={`/property/${location.slug}#availability`}');
+    expect(source).toContain('"Book now"');
+    expect(source).toContain("shortDescription");
+  });
 
-    expect(markup.match(/property-map-pin(?:\s|\")/g)).toHaveLength(1);
-    expect(markup).toContain("وحدة كافد");
-    expect(markup).toContain("من ١٬٢٥٠ ر.س / ليلة");
-    expect(markup).toContain("query=24.7741%2C46.658");
+  it("does not restore the collection chip list below the map", () => {
+    expect(source).not.toContain("map-frame-places");
+    expect(source).not.toContain("map-place-chip");
   });
 });

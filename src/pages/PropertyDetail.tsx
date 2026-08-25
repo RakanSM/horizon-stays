@@ -182,6 +182,13 @@ export default function PropertyDetail() {
 
   const total = priceQuote?.available && priceQuote.total !== null ? priceQuote.total : nights * (property.price_per_night || 0);
   const averageNightly = nights > 0 ? Math.round(total / nights) : property.price_per_night || 0;
+  const baselineNightly = property.price_per_night || 0;
+  const baselineStayTotal = baselineNightly * nights;
+  const datePriceDifference = total - baselineStayTotal;
+  const hasSelectedDateQuote = Boolean(checkIn && checkOut && priceQuote?.available && priceQuote.total !== null);
+  const money = (value: number) => value.toLocaleString(lang === "ar" ? "ar-SA" : "en-US");
+  const stayDateLabel = (date: string) =>
+    new Intl.DateTimeFormat(lang === "ar" ? "ar-SA" : "en-US", { month: "short", day: "numeric" }).format(new Date(`${date}T12:00:00Z`));
 
   const waText =
     `${t("wa_greeting")}: ${name}` +
@@ -395,7 +402,7 @@ export default function PropertyDetail() {
         <aside>
           <div className="book-box" ref={bookBoxRef}>
             <div className="bb-price">
-              {property.price_per_night?.toLocaleString("en-US")} ﷼ <span>/ {t("night")}</span>
+              <span>{lang === "ar" ? "يبدأ من" : "From"}</span> {money(baselineNightly)} ﷼ <span>/ {t("night")}</span>
             </div>
 
             <div className="bb-dates">
@@ -411,28 +418,42 @@ export default function PropertyDetail() {
 
             {nights > 0 && (
               <div className="bb-summary">
-                {nights >= 7 && (
-                  <div style={{ background: "rgba(16, 185, 129, 0.12)", color: "#059669", padding: "8px 12px", borderRadius: "8px", fontSize: "13px", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px", marginBottom: "12px", border: "1px solid rgba(16, 185, 129, 0.25)" }}>
-                    <span>🏷️</span>
-                    <span>{nights >= 30 ? (lang === "ar" ? "هذا المضيف يقدم خصماً شهرياً!" : "This host is offering a monthly discount!") : (lang === "ar" ? "هذا المضيف يقدم خصماً أسبوعياً!" : "This host is offering a weekly discount!")}</span>
+                <div className="date-price-comparison" aria-label={lang === "ar" ? "مقارنة السعر حسب التواريخ" : "Date-based price comparison"}>
+                  <div className="date-price-row date-price-base">
+                    <div>
+                      <span>{lang === "ar" ? "قبل اختيار التواريخ" : "Before dates"}</span>
+                      <small>{money(baselineNightly)} ﷼ × {nights} {t("nights_word")}</small>
+                    </div>
+                    <b>{money(baselineStayTotal)} ﷼</b>
                   </div>
-                )}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
-                  <span style={{ fontSize: "14px", color: "var(--text-muted)" }}>
-                    {averageNightly.toLocaleString("en-US")} ﷼ × {nights} {t("nights_word")}
-                  </span>
-                  <div style={{ textAlign: "left" }}>
-                    {nights >= 7 && (
-                      <span style={{ textDecoration: "line-through", color: "#9ca3af", fontSize: "14px", marginInlineEnd: "8px" }}>
-                        {Math.round(total * 1.15).toLocaleString("en-US")} ﷼
-                      </span>
-                    )}
-                    <b style={{ fontSize: "16px" }}>{total.toLocaleString("en-US")} ﷼</b>
+                  <div className="date-price-row date-price-selected">
+                    <div>
+                      <span>{lang === "ar" ? "للتواريخ المختارة" : "Selected dates"}</span>
+                      <small>{money(averageNightly)} ﷼ × {nights} {t("nights_word")}</small>
+                    </div>
+                    <b>{money(total)} ﷼</b>
                   </div>
+                  {hasSelectedDateQuote && datePriceDifference !== 0 && (
+                    <p className={datePriceDifference < 0 ? "date-price-delta is-saving" : "date-price-delta is-higher"}>
+                      {datePriceDifference < 0
+                        ? (lang === "ar" ? `توفير ${money(Math.abs(datePriceDifference))} ﷼ لهذه التواريخ` : `Save ${money(Math.abs(datePriceDifference))} SAR for these dates`)
+                        : (lang === "ar" ? `زيادة ${money(datePriceDifference)} ﷼ لهذه التواريخ` : `Add ${money(datePriceDifference)} SAR for these dates`)}
+                    </p>
+                  )}
                 </div>
+                {hasSelectedDateQuote && priceQuote?.days.length ? (
+                  <div className="date-price-breakdown" aria-label={lang === "ar" ? "تفصيل سعر كل ليلة" : "Nightly price breakdown"}>
+                    {priceQuote.days.map((day) => (
+                      <div key={day.date}>
+                        <span>{stayDateLabel(day.date)}</span>
+                        <b>{money(day.price)} ﷼</b>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
                 <div className="bb-total" style={{ borderTop: "1px solid var(--border)", paddingTop: "10px", marginTop: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontSize: "16px", fontWeight: "bold" }}>{t("total")}</span>
-                  <b style={{ fontSize: "18px", color: "var(--gold)" }}>{total.toLocaleString("en-US")} ﷼</b>
+                  <b style={{ fontSize: "18px", color: "var(--gold)" }}>{money(total)} ﷼</b>
                 </div>
               </div>
             )}
