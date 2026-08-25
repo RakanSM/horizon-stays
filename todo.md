@@ -385,3 +385,4 @@
 
 ## Remaining Dark Green Removal (User request Aug 25)
 - [x] T249: Identify and replace any remaining dark-green public visual treatment with a non-green Horizon-compatible accent, then verify dark-mode legibility and production rendering. Completed: replaced the public dark-green foundations, overlays, card treatments, and search shadows with deep plum and violet tones; 34 tests and the production build pass.
+- [x] T250: Isolate public-route dark background and hero tokens from the global editable theme variables so the public dark mode stays plum/violet rather than inheriting any green theme palette; verify on production. Completed: public-route aliases now override the global background, card, border, typography, accent, header, and hero-overlay tokens in both modes; 34 tests and the production build pass.

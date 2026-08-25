@@ -78,6 +78,8 @@ describe("public frontend rebuild", () => {
     expect(styles).toContain('--h-paper: #181021');
     expect(styles).toContain('--h-deep: #0f0918');
     expect(styles).toContain('--h-ink: #261a34');
+    expect(styles).toContain('--bg: var(--h-paper)');
+    expect(styles).toContain('--hero-overlay: linear-gradient(180deg, rgba(24, 12, 35, 0.5), rgba(15, 9, 24, 0.94))');
     expect(styles).not.toContain('#15201d');
     expect(styles).not.toContain('#1e2d28');
     expect(styles).not.toContain('#0e1613');

@@ -11,6 +11,19 @@ body:has(.horizon-public-shell) {
   --h-accent-soft: #fae6d9;
   --h-deep: #2a1a3a;
   --h-white: #fffcf7;
+  --bg: var(--h-paper);
+  --bg-2: var(--h-sand);
+  --card: var(--h-white);
+  --card-2: var(--h-sand);
+  --border: var(--h-line);
+  --text: var(--h-ink);
+  --text-muted: var(--h-ink-soft);
+  --gold: var(--h-accent);
+  --gold-2: #8b4fc0;
+  --gold-soft: color-mix(in srgb, var(--h-accent) 13%, transparent);
+  --hero-overlay: linear-gradient(180deg, rgba(38, 26, 52, 0.38), rgba(38, 26, 52, 0.8));
+  --header-bg: color-mix(in srgb, var(--h-paper) 89%, transparent);
+  --cta-text: #fffcf7;
   background: var(--h-paper);
 }
 
@@ -24,6 +37,19 @@ body:has(.horizon-public-shell) {
   --h-accent-soft: #3c2820;
   --h-deep: #0f0918;
   --h-white: #23182e;
+  --bg: var(--h-paper);
+  --bg-2: var(--h-sand);
+  --card: var(--h-white);
+  --card-2: var(--h-sand);
+  --border: var(--h-line);
+  --text: var(--h-ink);
+  --text-muted: var(--h-ink-soft);
+  --gold: #a879f7;
+  --gold-2: #7b49bd;
+  --gold-soft: color-mix(in srgb, #a879f7 15%, transparent);
+  --hero-overlay: linear-gradient(180deg, rgba(24, 12, 35, 0.5), rgba(15, 9, 24, 0.94));
+  --header-bg: color-mix(in srgb, #181021 91%, transparent);
+  --cta-text: #f9f4fb;
 }
 
 .horizon-public {
