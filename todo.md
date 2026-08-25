@@ -406,3 +406,6 @@
 
 ## Bilingual Typography System Repair (User request Aug 25)
 - [x] T260: Normalize Arabic and English font families, weights, spacing, and responsive type scales across public headings, body text, controls, cards, maps, and footer content. Completed: public Arabic uses IBM Plex Sans Arabic/Tajawal with adjusted Arabic line height and sizing; English uses Space Grotesk for display labels plus a readable system body stack. Shared title, copy, card, control, map, footer, and mobile scales are normalized; 38 tests and the production build pass.
+
+## Gold & Brown Brand Palette Restoration (User request Aug 25)
+- [x] T261: Restore the public Horizon color system to a refined gold-and-warm-brown palette in light and dark modes, including public accents, map treatment, motion scene, and trust surface while retaining accessible contrast. Completed: replaced public violet foundations and overlays with warm gold, cream, espresso, and brown tokens in both modes; map pins, trust dialog, scenes, search, and controls share the restored palette. All 38 tests and the production build pass.

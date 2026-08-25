@@ -44,8 +44,8 @@ describe("public frontend rebuild", () => {
     expect(home).toContain("اختر ما يناسبك");
     expect(home).toContain("شاهد السعر والتوفر حسب تاريخك");
     expect(home).not.toContain("المدينة تتحرك\\nوأنت تختار");
-    expect(styles).toContain("--h-electric: #a879f7");
-    expect(styles).toContain("--h-space: #170d2b");
+    expect(styles).toContain("--h-electric: #d6a64c");
+    expect(styles).toContain("--h-space: #1d0f05");
     expect(styles).toContain(".horizon-scene-fixed { position: sticky;");
     expect(styles).toContain(".horizon-scene-panel.is-visible");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
@@ -86,16 +86,20 @@ describe("public frontend rebuild", () => {
     expect(app).toContain("theme.mode");
   });
 
-  it("uses a plum dark-mode foundation rather than the previous dark green palette", () => {
+  it("uses a warm gold-and-brown foundation rather than the previous violet or dark green palette", () => {
     const styles = readSource("src/public-rebuild.css");
-    expect(styles).toContain('--h-paper: #181021');
-    expect(styles).toContain('--h-deep: #0f0918');
-    expect(styles).toContain('--h-ink: #261a34');
+    expect(styles).toContain('--h-paper: #1b1007');
+    expect(styles).toContain('--h-deep: #100804');
+    expect(styles).toContain('--h-ink: #2d1b0c');
+    expect(styles).toContain('--h-electric: #d6a64c');
+    expect(styles).toContain('--h-space: #1d0f05');
     expect(styles).toContain('--bg: var(--h-paper)');
-    expect(styles).toContain('--hero-overlay: linear-gradient(180deg, rgba(24, 12, 35, 0.5), rgba(15, 9, 24, 0.94))');
+    expect(styles).toContain('--hero-overlay: linear-gradient(180deg, rgba(27, 16, 7, 0.5), rgba(16, 8, 4, 0.94))');
     expect(styles).not.toContain('#15201d');
     expect(styles).not.toContain('#1e2d28');
     expect(styles).not.toContain('#0e1613');
+    expect(styles).not.toContain('#a879f7');
+    expect(styles).not.toContain('#170d2b');
   });
 
   it("keeps a language-aware public typography scale for Arabic and English", () => {

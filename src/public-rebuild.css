@@ -2,15 +2,15 @@
    This layer is scoped to public routes; the admin, landlord and editor remain intact. */
 
 body:has(.horizon-public-shell) {
-  --h-paper: #f5f1ea;
-  --h-sand: #e7ded1;
-  --h-ink: #261a34;
-  --h-ink-soft: #62586c;
-  --h-line: rgba(38, 26, 52, 0.14);
-  --h-accent: #b8552f;
-  --h-accent-soft: #fae6d9;
-  --h-deep: #2a1a3a;
-  --h-white: #fffcf7;
+  --h-paper: #f6efe3;
+  --h-sand: #e9dcc7;
+  --h-ink: #2d1b0c;
+  --h-ink-soft: #675842;
+  --h-line: rgba(45, 27, 12, 0.14);
+  --h-accent: #9f6421;
+  --h-accent-soft: #f1dfc6;
+  --h-deep: #2a1709;
+  --h-white: #fffaf1;
   --bg: var(--h-paper);
   --bg-2: var(--h-sand);
   --card: var(--h-white);
@@ -19,9 +19,9 @@ body:has(.horizon-public-shell) {
   --text: var(--h-ink);
   --text-muted: var(--h-ink-soft);
   --gold: var(--h-accent);
-  --gold-2: #8b4fc0;
+  --gold-2: #a8722a;
   --gold-soft: color-mix(in srgb, var(--h-accent) 13%, transparent);
-  --hero-overlay: linear-gradient(180deg, rgba(38, 26, 52, 0.38), rgba(38, 26, 52, 0.8));
+  --hero-overlay: linear-gradient(180deg, rgba(45, 27, 12, 0.32), rgba(45, 27, 12, 0.82));
   --header-bg: color-mix(in srgb, var(--h-paper) 89%, transparent);
   --cta-text: #fffcf7;
   background: var(--h-paper);
@@ -39,15 +39,15 @@ body:has(.horizon-public-shell) #root,
 }
 
 :root[data-mode="dark"] body:has(.horizon-public-shell) {
-  --h-paper: #181021;
-  --h-sand: #251a31;
-  --h-ink: #f9f4fb;
-  --h-ink-soft: #cfc4d7;
-  --h-line: rgba(249, 244, 251, 0.16);
-  --h-accent: #ef8a5c;
-  --h-accent-soft: #3c2820;
-  --h-deep: #0f0918;
-  --h-white: #23182e;
+  --h-paper: #1b1007;
+  --h-sand: #2b1a0d;
+  --h-ink: #fff7ea;
+  --h-ink-soft: #d9c6aa;
+  --h-line: rgba(255, 247, 234, 0.16);
+  --h-accent: #e0aa58;
+  --h-accent-soft: #4a2c12;
+  --h-deep: #100804;
+  --h-white: #25160b;
   --bg: var(--h-paper);
   --bg-2: var(--h-sand);
   --card: var(--h-white);
@@ -55,12 +55,12 @@ body:has(.horizon-public-shell) #root,
   --border: var(--h-line);
   --text: var(--h-ink);
   --text-muted: var(--h-ink-soft);
-  --gold: #a879f7;
-  --gold-2: #7b49bd;
-  --gold-soft: color-mix(in srgb, #a879f7 15%, transparent);
-  --hero-overlay: linear-gradient(180deg, rgba(24, 12, 35, 0.5), rgba(15, 9, 24, 0.94));
-  --header-bg: color-mix(in srgb, #181021 91%, transparent);
-  --cta-text: #f9f4fb;
+  --gold: #d6a64c;
+  --gold-2: #9c6723;
+  --gold-soft: color-mix(in srgb, #d6a64c 15%, transparent);
+  --hero-overlay: linear-gradient(180deg, rgba(27, 16, 7, 0.5), rgba(16, 8, 4, 0.94));
+  --header-bg: color-mix(in srgb, #1b1007 91%, transparent);
+  --cta-text: #fff7ea;
 }
 
 .horizon-public {
@@ -274,7 +274,7 @@ body:has(.horizon-public-shell) #root,
 .horizon-trust-trigger:hover,.horizon-trust-trigger:focus-visible { background: color-mix(in srgb, var(--h-electric) 40%, transparent); border-color: var(--h-electric); }
 .horizon-trust-trigger:active { transform: scale(.97); }
 .horizon-trust-overlay { position: fixed; z-index: 200; inset: 0; display: grid; place-items: center; padding: clamp(16px, 4vw, 48px); background: rgba(10, 6, 18, .78); backdrop-filter: blur(12px); }
-.horizon-trust-dialog { position: relative; width: min(100%, 1040px); max-height: min(880px, calc(100svh - 32px)); overflow: auto; padding: clamp(20px, 3.5vw, 36px); color: var(--h-white); background: linear-gradient(145deg, #211239, #140b28); border: 1px solid color-mix(in srgb, var(--h-electric) 54%, transparent); box-shadow: 0 36px 120px rgba(0,0,0,.45); }
+.horizon-trust-dialog { position: relative; width: min(100%, 1040px); max-height: min(880px, calc(100svh - 32px)); overflow: auto; padding: clamp(20px, 3.5vw, 36px); color: var(--h-white); background: linear-gradient(145deg, #301907, #160a03); border: 1px solid color-mix(in srgb, var(--h-electric) 54%, transparent); box-shadow: 0 36px 120px rgba(0,0,0,.45); }
 .horizon-trust-heading { margin-bottom: 22px; padding-inline-end: 44px; }
 .horizon-trust-heading > span { color: var(--h-electric); font-family: var(--font-latin); font-size: .67rem; font-weight: 700; letter-spacing: .16em; }
 .horizon-trust-heading h2 { margin: 9px 0 6px; color: var(--h-white); font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3.3rem); line-height: 1; }
@@ -451,8 +451,8 @@ body:has(.horizon-public-shell) #root,
 .horizon-public-shell .leaflet-control-zoom a { width: 32px; height: 32px; color: var(--h-ink); background: var(--h-white); border-bottom-color: var(--h-line); line-height: 30px; }
 .horizon-public-shell .leaflet-control-zoom a:hover { color: var(--h-space); background: color-mix(in srgb, var(--h-electric) 13%, var(--h-white)); }
 .horizon-public-shell .horizon-leaflet-pin-icon { width: 42px !important; height: 48px !important; margin: 0 !important; background: transparent; border: 0; }
-.horizon-public-shell .horizon-leaflet-pin { display: grid; place-items: center; width: 36px; height: 36px; color: var(--h-space); border: 2px solid var(--h-white); border-radius: 50% 50% 50% 7px; background: linear-gradient(145deg, var(--h-electric), #d1a6ff); box-shadow: 0 8px 20px rgba(22, 10, 38, .34), 0 0 0 5px rgba(255,255,255,.58); font-size: 1.12rem; line-height: 1; transform: rotate(-45deg); transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out); }
-.horizon-public-shell .horizon-leaflet-pin:hover { transform: rotate(-45deg) scale(1.12); box-shadow: 0 12px 24px rgba(22, 10, 38, .42), 0 0 0 7px color-mix(in srgb, var(--h-electric) 31%, transparent); }
+.horizon-public-shell .horizon-leaflet-pin { display: grid; place-items: center; width: 36px; height: 36px; color: var(--h-space); border: 2px solid var(--h-white); border-radius: 50% 50% 50% 7px; background: linear-gradient(145deg, var(--h-electric), #f2c978); box-shadow: 0 8px 20px rgba(35, 17, 5, .34), 0 0 0 5px rgba(255,255,255,.58); font-size: 1.12rem; line-height: 1; transform: rotate(-45deg); transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out); }
+.horizon-public-shell .horizon-leaflet-pin:hover { transform: rotate(-45deg) scale(1.12); box-shadow: 0 12px 24px rgba(35, 17, 5, .42), 0 0 0 7px color-mix(in srgb, var(--h-electric) 31%, transparent); }
 .horizon-public-shell .leaflet-popup { margin-bottom: 37px; }
 .horizon-public-shell .leaflet-popup-content-wrapper,.horizon-public-shell .leaflet-popup-tip { background: var(--h-white); box-shadow: 0 20px 52px rgba(20, 10, 31, .28); }
 .horizon-public-shell .leaflet-popup-content-wrapper { overflow: hidden; padding: 0; border-radius: 0; }
@@ -460,7 +460,7 @@ body:has(.horizon-public-shell) #root,
 .map-pin-card { overflow: hidden; color: var(--h-ink); background: var(--h-white); }
 .map-pin-card-media { position: relative; aspect-ratio: 16 / 8.5; background: var(--h-sand); }
 .map-pin-card-media img,.map-pin-card-media-fallback { display: block; width: 100%; height: 100%; object-fit: cover; }
-.map-pin-card-media-fallback { background: linear-gradient(135deg, var(--h-space), #50306f); }
+.map-pin-card-media-fallback { background: linear-gradient(135deg, var(--h-space), #70471d); }
 .map-pin-card-count { position: absolute; right: 10px; bottom: 10px; padding: 3px 6px; color: var(--h-white); background: rgba(14, 8, 23, .72); font-family: var(--font-latin); font-size: .64rem; }
 [dir="rtl"] .map-pin-card-count { right: auto; left: 10px; }
 .map-pin-card-photo-strip { display: flex; gap: 5px; padding: 8px 10px 0; overflow-x: auto; scrollbar-width: thin; }
@@ -527,9 +527,9 @@ body:has(.horizon-public-shell) #root,
 
 /* ===== Horizon Future-Stay experience ===== */
 .horizon-future-public {
-  --h-electric: #a879f7;
-  --h-space: #170d2b;
-  --h-silver: #dce0df;
+  --h-electric: #d6a64c;
+  --h-space: #1d0f05;
+  --h-silver: #eee2cf;
 }
 
 .horizon-future-hero { padding-bottom: clamp(54px, 8vw, 106px); isolation: isolate; }
@@ -553,7 +553,7 @@ body:has(.horizon-public-shell) #root,
 .horizon-orbit-b { width: 260px; height: 260px; inset: auto auto -128px 9%; border-color: color-mix(in srgb, var(--h-accent) 17%, transparent); }
 
 .horizon-search-wrap { position: relative; z-index: 4; margin-top: clamp(-40px, -4vw, -58px); }
-.horizon-search-module { display: grid; grid-template-columns: 1.15fr 1.45fr .78fr 1fr auto; align-items: stretch; padding: 10px; color: var(--h-ink); background: color-mix(in srgb, var(--h-white) 91%, transparent); border: 1px solid var(--h-line); box-shadow: 0 22px 45px rgba(28, 17, 42, .13); backdrop-filter: blur(18px); }
+.horizon-search-module { display: grid; grid-template-columns: 1.15fr 1.45fr .78fr 1fr auto; align-items: stretch; padding: 10px; color: var(--h-ink); background: color-mix(in srgb, var(--h-white) 91%, transparent); border: 1px solid var(--h-line); box-shadow: 0 22px 45px rgba(49, 29, 10, .13); backdrop-filter: blur(18px); }
 .horizon-search-field { min-width: 0; padding: 8px 15px; border-inline-end: 1px solid var(--h-line); }
 .horizon-search-field > span { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; color: var(--h-ink-soft); font-size: .65rem; font-weight: 700; letter-spacing: .04em; }
 .horizon-search-field svg { width: 14px; height: 14px; color: var(--h-electric); }
@@ -566,7 +566,7 @@ body:has(.horizon-public-shell) #root,
 .horizon-range-trigger span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .horizon-range-trigger i { flex: 0 0 auto; width: 7px; height: 7px; margin-inline-end: 2px; border-right: 1.5px solid var(--h-electric); border-bottom: 1.5px solid var(--h-electric); transform: rotate(45deg) translateY(-2px); }
 .horizon-range-trigger:focus-visible,.horizon-range-popover button:focus-visible { outline: 2px solid var(--h-electric); outline-offset: 3px; }
-.horizon-range-popover { position: absolute; z-index: 30; top: calc(100% + 16px); inset-inline-start: -15px; width: min(336px, calc(100vw - 32px)); padding: 14px; color: var(--h-ink); background: var(--h-white); border: 1px solid var(--h-line); box-shadow: 0 20px 46px rgba(28, 17, 42, .2); }
+.horizon-range-popover { position: absolute; z-index: 30; top: calc(100% + 16px); inset-inline-start: -15px; width: min(336px, calc(100vw - 32px)); padding: 14px; color: var(--h-ink); background: var(--h-white); border: 1px solid var(--h-line); box-shadow: 0 20px 46px rgba(49, 29, 10, .2); }
 .horizon-range-header { display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; gap: 6px; margin-bottom: 12px; }
 .horizon-range-header strong { color: var(--h-ink); font-family: var(--font-latin); font-size: .84rem; font-weight: 700; text-align: center; }
 .horizon-range-header button { display: grid; place-items: center; width: 32px; height: 32px; color: var(--h-ink); background: transparent; border: 1px solid var(--h-line); border-radius: 50%; cursor: pointer; }
@@ -594,7 +594,7 @@ body:has(.horizon-public-shell) #root,
 .horizon-split-head h2 { white-space: pre-line; }
 .horizon-destination-rail { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .horizon-destination-card { position: relative; display: flex; min-height: 390px; overflow: hidden; color: #fff; background: var(--h-space); }
-.horizon-destination-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,8,24,.03), rgba(15,8,24,.88)); }
+.horizon-destination-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(24,11,3,.03), rgba(24,11,3,.88)); }
 .horizon-destination-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.68) contrast(1.05); transition: transform 650ms var(--ease-out), filter 300ms var(--ease-out); }
 .horizon-destination-card:hover img { transform: scale(1.07); filter: saturate(1); }
 .horizon-destination-card-count { position: absolute; z-index: 1; top: 17px; inset-inline-start: 17px; font-family: var(--font-latin); font-size: .68rem; letter-spacing: .13em; }
@@ -645,7 +645,7 @@ body:has(.horizon-public-shell) #root,
 .horizon-scene-static-copy { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; pointer-events: none; }.horizon-scene-static-copy > span { color: color-mix(in srgb, var(--h-white) 62%, var(--h-electric)); font-family: var(--font-latin); font-size: .68rem; font-weight: 700; letter-spacing: .2em; }.horizon-scene-static-copy h2 { max-width: 690px; margin: 20px 0; color: var(--h-white); font-family: var(--font-display); font-size: clamp(3.3rem, 7.3vw, 8rem); font-weight: 700; line-height: .88; letter-spacing: -.07em; white-space: pre-line; }.horizon-scene-static-copy p { max-width: 410px; color: color-mix(in srgb, var(--h-white) 70%, transparent); font-size: 1rem; line-height: 1.85; }.horizon-scene-static-copy small { display: inline-flex; align-items: center; gap: 10px; margin-top: 45px; color: color-mix(in srgb, var(--h-white) 54%, transparent); font-size: .72rem; }.horizon-scene-static-copy small i { width: 30px; height: 1px; background: var(--h-electric); }
 .horizon-scene-panels { position: relative; z-index: 2; display: grid; gap: 38vh; margin-top: -100svh; padding-top: 34vh; padding-bottom: 31vh; }
 .horizon-scene-panel { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(260px, .68fr); align-items: end; gap: clamp(20px, 4vw, 64px); width: min(100%, 1080px); min-height: min(62vh, 620px); padding: clamp(14px, 2vw, 24px); color: var(--h-white); background: color-mix(in srgb, var(--h-space) 54%, transparent); border: 1px solid rgba(255,255,255,.22); box-shadow: 0 30px 90px rgba(12, 6, 20, .42); backdrop-filter: blur(14px); opacity: 0; transform: translateY(16vh) scale(.97); transition: opacity 720ms var(--ease-out), transform 900ms var(--ease-out); }.horizon-scene-panel.is-visible { opacity: 1; transform: translateY(0) scale(1); }.horizon-scene-panel-2 { margin-inline-start: auto; grid-template-columns: minmax(260px, .68fr) minmax(0, 1.12fr); }.horizon-scene-panel-2 .horizon-scene-panel-media { order: 2; }.horizon-scene-panel-3 { margin-inline: auto; }
-.horizon-scene-panel-media { position: relative; min-height: 420px; overflow: hidden; background: #251631; }.horizon-scene-panel-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 52%, rgba(19,10,31,.64)); }.horizon-scene-panel-media img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; filter: saturate(.85) contrast(1.05); }.horizon-scene-panel-media span { position: absolute; z-index: 1; top: 18px; inset-inline-start: 19px; color: #fff; font-family: var(--font-latin); font-size: .72rem; letter-spacing: .18em; }
+.horizon-scene-panel-media { position: relative; min-height: 420px; overflow: hidden; background: #2f190b; }.horizon-scene-panel-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 52%, rgba(25,11,3,.64)); }.horizon-scene-panel-media img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; filter: saturate(.85) contrast(1.05); }.horizon-scene-panel-media span { position: absolute; z-index: 1; top: 18px; inset-inline-start: 19px; color: #fff; font-family: var(--font-latin); font-size: .72rem; letter-spacing: .18em; }
 .horizon-scene-panel-copy { padding: clamp(8px, 2vw, 20px) clamp(2px, 1vw, 10px) 18px; }.horizon-scene-panel-copy > span { color: var(--h-electric); font-family: var(--font-latin); font-size: .68rem; font-weight: 700; letter-spacing: .12em; }.horizon-scene-panel-copy h3 { margin: 17px 0 10px; color: var(--h-white); font-family: var(--font-display); font-size: clamp(1.9rem, 3.4vw, 3.5rem); font-weight: 700; line-height: .96; letter-spacing: -.055em; }.horizon-scene-panel-copy p { color: color-mix(in srgb, var(--h-white) 68%, transparent); font-size: .84rem; line-height: 1.75; }.horizon-scene-panel-copy > div { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 12px; margin-top: 29px; }.horizon-scene-panel-copy b { font-family: var(--font-latin); font-size: 1.22rem; }.horizon-scene-panel-copy small { color: color-mix(in srgb, var(--h-white) 55%, transparent); font-size: .67rem; }.horizon-scene-panel-copy a { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; margin-inline-start: auto; padding: 0 13px; color: var(--h-space); background: var(--h-white); font-size: .72rem; font-weight: 700; transition: transform 160ms var(--ease-out), background 180ms var(--ease-out); }.horizon-scene-panel-copy a:hover { background: var(--h-electric); transform: translateY(-2px); }.horizon-scene-panel-copy a svg { width: 14px; height: 14px; }
 
 @media (max-width: 1100px) {
