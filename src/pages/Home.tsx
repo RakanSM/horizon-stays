@@ -77,15 +77,15 @@ function getCopy(lang: string): Copy {
       destinationsTitle: "اختر إيقاع\nالحي الذي يناسبك.",
       journeyKicker: "03 / رحلة حجز أبسط",
       journeyTitle: "من الفكرة إلى\nباب الوحدة.",
-      serviceKicker: "04 / معيار Horizon",
-      serviceTitle: "كل ما تحتاجه\nبدون ضوضاء.",
+      serviceKicker: "04 / مزايا إقامتك",
+      serviceTitle: "إقامة مرتبة\nمن أول اختيار.",
       mapKicker: "05 / اكتشف موقعك",
       mapTitle: "قريب من\nكل ما يهمك.",
       mapText: "استكشف الوحدات في أحياء الرياض المختارة. اضغط الدبوس لتبدأ من المنطقة التي تناسب يومك.",
-      partnershipKicker: "للملاك / HORIZON PARTNERS",
-      partnershipTitle: "وحدتك تستحق\nمنصة أوسع.",
-      partnershipText: "إذا كنت تدير وحدة مميزة في الرياض، تواصل معنا لنناقش كيف يمكن لـ Horizon Stays تقديمها بطريقة أكثر وضوحاً وأناقة.",
-      partnershipCta: "ابدأ شراكة تشغيل",
+      partnershipKicker: "",
+      partnershipTitle: "",
+      partnershipText: "",
+      partnershipCta: "",
       showAll: (count) => `عرض كل الوحدات (${count})`,
       showLess: "عرض عدد أقل",
       noResults: "لا توجد وحدات مطابقة الآن. غيّر نوع الوحدة أو عدد الضيوف.",
@@ -104,9 +104,9 @@ function getCopy(lang: string): Copy {
         { step: "03", title: "رتّب وصولك", text: "أكمل طلب الحجز عبر المسار المناسب لك ثم نسّق تفاصيل الوصول." },
       ],
       services: [
-        { mark: "01", title: "وضوح من البداية", text: "تفاصيل وصور ومسارات حجز مباشرة تساعدك على اتخاذ القرار بهدوء." },
-        { mark: "02", title: "تقويم متصل", text: "تظهر حالة التوفر ضمن تجربة الوحدة حتى تعرف الخطوة التالية بوضوح." },
-        { mark: "03", title: "ضيافة عصرية", text: "تجربة محلية منظمة تضع الخصوصية والمرونة في صميم الإقامة." },
+        { mark: "01", title: "تعرف ما الذي ستحجزه", text: "شاهد صور الوحدة وتفاصيلها وتجهيزاتها والحي قبل أن تبدأ الحجز." },
+        { mark: "02", title: "سعرك حسب تواريخك", text: "اختر الوصول والمغادرة لتظهر لك تكلفة الليالي المختارة بوضوح." },
+        { mark: "03", title: "وصول أسهل", text: "أكمل طلبك من صفحة الوحدة وتواصل معنا لترتيب دخولك وإقامتك." },
       ],
     };
   }
@@ -134,15 +134,15 @@ function getCopy(lang: string): Copy {
     destinationsTitle: "Choose the district\nthat suits your day.",
     journeyKicker: "03 / A clearer booking path",
     journeyTitle: "From an idea\nto the front door.",
-    serviceKicker: "04 / The Horizon standard",
-    serviceTitle: "What you need,\nwithout the noise.",
+    serviceKicker: "04 / YOUR STAY, MADE CLEAR",
+    serviceTitle: "A smoother stay\nfrom the first choice.",
     mapKicker: "05 / Find your place",
     mapTitle: "Close to what\nmatters most.",
     mapText: "Explore stays across selected Riyadh districts. Choose a pin to begin in the part of the city that works for you.",
-    partnershipKicker: "FOR OWNERS / HORIZON PARTNERS",
-    partnershipTitle: "Your residence\ndeserves a wider horizon.",
-    partnershipText: "If you manage a distinctive Riyadh residence, talk to us about presenting it with more clarity, elegance, and reach.",
-    partnershipCta: "Start an operating partnership",
+    partnershipKicker: "",
+    partnershipTitle: "",
+    partnershipText: "",
+    partnershipCta: "",
     showAll: (count) => `View all ${count} stays`,
     showLess: "Show fewer",
     noResults: "No stays match this selection right now. Change the stay type or guest count.",
@@ -161,9 +161,9 @@ function getCopy(lang: string): Copy {
       { step: "03", title: "Arrange arrival", text: "Continue through the booking path that suits you, then coordinate arrival details." },
     ],
     services: [
-      { mark: "01", title: "Clarity from the start", text: "Direct details, photography, and booking paths to help you decide calmly." },
-      { mark: "02", title: "Connected calendars", text: "Availability is visible in the residence experience, so the next step is clear." },
-      { mark: "03", title: "Modern hospitality", text: "An organised local stay experience built around privacy and flexibility." },
+      { mark: "01", title: "Know what you are booking", text: "See the residence photography, details, amenities, and district before you start booking." },
+      { mark: "02", title: "Your price for your dates", text: "Choose check-in and check-out to see the actual cost for your selected nights." },
+      { mark: "03", title: "An easier arrival", text: "Continue from the residence page, then contact us to arrange your check-in and stay." },
     ],
   };
 }
@@ -471,7 +471,6 @@ export default function Home() {
         <div className="container horizon-map-grid"><div className="horizon-map-copy"><span className="horizon-section-index">{copy.mapKicker}</span><h2>{copy.mapTitle}</h2><p>{copy.mapText}</p><a className="horizon-quiet-btn" href="#collection">{copy.explore}<Icon name="arrow" /></a></div><div className="horizon-map-zone"><DeferredMap locations={properties} lang={lang} /></div></div>
       </section>}
 
-      <section className="horizon-partnership-section"><div className="container horizon-partnership-grid"><div><span className="horizon-kicker">{copy.partnershipKicker}</span><h2>{copy.partnershipTitle}</h2></div><div><p>{copy.partnershipText}</p><Link className="horizon-primary-btn" to="/contact">{copy.partnershipCta}<Icon name="arrow" /></Link></div></div></section>
     </div>
   );
 }

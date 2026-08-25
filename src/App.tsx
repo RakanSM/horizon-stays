@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Services = lazy(() => import("./pages/Services"));
+const Policies = lazy(() => import("./pages/Policies"));
 const AvailabilityCalendar = lazy(() => import("./pages/AvailabilityCalendar"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminProperties = lazy(() => import("./pages/admin/AdminProperties"));
@@ -57,6 +59,20 @@ const TITLES: Record<string, Record<string, string>> = {
     zh: "联系我们 | Horizon Stays",
     fr: "Contact | Horizon Stays",
     es: "Contacto | Horizon Stays",
+  },
+  "/services": {
+    ar: "خدماتنا | Horizon Stays",
+    en: "Services | Horizon Stays",
+    zh: "服务 | Horizon Stays",
+    fr: "Services | Horizon Stays",
+    es: "Servicios | Horizon Stays",
+  },
+  "/policies": {
+    ar: "السياسات وشروط الحجز | Horizon Stays",
+    en: "Policies & Booking Terms | Horizon Stays",
+    zh: "政策与预订条款 | Horizon Stays",
+    fr: "Politiques et conditions | Horizon Stays",
+    es: "Políticas y condiciones | Horizon Stays",
   },
   "/calendar": {
     ar: "تقويم التوفر | Horizon Stays",
@@ -236,20 +252,15 @@ function AppShell() {
                 {t("nav_properties")}
               </NavLink>
             )}
-            {featureFlags.nav_about && (
-              <NavLink to="/about" className={({ isActive }) => (isActive ? "active" : "")}>
-                {t("nav_about")}
-              </NavLink>
-            )}
             {featureFlags.nav_contact && (
               <NavLink to="/contact" className={({ isActive }) => (isActive ? "active" : "")}>
                 {t("nav_contact")}
               </NavLink>
             )}
             {featureFlags.booking_whatsapp && (
-              <a href={WHATSAPP} target="_blank" rel="noreferrer" className="horizon-nav-book">
+              <Link to="/#collection" className="horizon-nav-book">
                 {lang === "ar" && content.ctaText ? content.ctaText : t("book_now")}
-              </a>
+              </Link>
             )}
           </nav>
           <div className="horizon-header-tools">
@@ -269,6 +280,8 @@ function AppShell() {
             <Route path="/" element={<Home />} />
             <Route path="/property/:slug" element={featureFlags.nav_properties ? <PropertyDetail /> : <Navigate to="/" replace />} />
             <Route path="/about" element={featureFlags.nav_about ? <About /> : <Navigate to="/" replace />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/policies" element={<Policies />} />
             <Route path="/contact" element={featureFlags.nav_contact ? <Contact /> : <Navigate to="/" replace />} />
             <Route path="/calendar" element={<AvailabilityCalendar />} />
             <Route path="/cleaner" element={featureFlags.page_cleaner ? <Cleaner /> : <Navigate to="/" replace />} />
@@ -288,6 +301,8 @@ function AppShell() {
             <nav className="footer-nav horizon-footer-nav" aria-label={lang === "ar" ? "روابط الموقع" : "Site links"}>
               {featureFlags.nav_properties && <Link to="/">{t("nav_properties")}</Link>}
               {featureFlags.nav_about && <Link to="/about">{t("nav_about")}</Link>}
+              <Link to="/services">{lang === "ar" ? "خدماتنا" : "Services"}</Link>
+              <Link to="/policies">{lang === "ar" ? "السياسات" : "Policies"}</Link>
               {featureFlags.nav_contact && <Link to="/contact">{t("nav_contact")}</Link>}
               <a href="tel:920035843">920035843</a>
             </nav>

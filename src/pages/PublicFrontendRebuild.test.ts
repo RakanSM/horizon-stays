@@ -60,6 +60,9 @@ describe("public frontend rebuild", () => {
     expect(detail).toContain("date-price-comparison");
     expect(detail).toContain("date-price-breakdown");
     expect(detail).toContain("Before dates");
+    expect(detail).toContain("booking-policy-agreement");
+    expect(detail).toContain("policyAccepted");
+    expect(detail).toContain('to="/policies"');
   });
 
   it("loads the public frontend layer after legacy styles so public routes are isolated", () => {

@@ -37,6 +37,7 @@ export default function PropertyDetail() {
   const [checkOut, setCheckOut] = useState<string | null>(null);
   const [rangeError, setRangeError] = useState<string | null>(null);
   const [priceQuote, setPriceQuote] = useState<PropertyPriceQuote | null>(null);
+  const [policyAccepted, setPolicyAccepted] = useState(false);
   const bookBoxRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -464,14 +465,29 @@ export default function PropertyDetail() {
               </button>
             )}
 
-            {featureFlags.booking_whatsapp && <a
+            <div className="booking-policy-agreement">
+              <input
+                id="booking-policy-agreement"
+                type="checkbox"
+                checked={policyAccepted}
+                onChange={(event) => setPolicyAccepted(event.target.checked)}
+              />
+              <label htmlFor="booking-policy-agreement">
+                {lang === "ar" ? "أقر بأنني قرأت وأوافق على" : "I have read and agree to the"}{" "}
+                <Link to="/policies" target="_blank" rel="noreferrer">{lang === "ar" ? "السياسات وشروط الحجز" : "policies and booking terms"}</Link>.
+              </label>
+            </div>
+
+            {featureFlags.booking_whatsapp && (policyAccepted ? <a
               href={`https://wa.me/966920035843?text=${encodeURIComponent(waText)}`}
               target="_blank"
               rel="noreferrer"
               className="btn btn-gold"
             >
               {t("book_whatsapp")}
-            </a>}
+            </a> : <button type="button" className="btn btn-gold booking-policy-continue" disabled aria-describedby="booking-policy-agreement">
+              {lang === "ar" ? "وافق على السياسات للمتابعة" : "Agree to policies to continue"}
+            </button>)}
             <div className="bb-note">{lang === "ar" ? "السعر النهائي يحسب تلقائياً حسب التواريخ المختارة." : "Your final price is calculated automatically from the selected dates."}</div>
           </div>
         </aside>
@@ -496,14 +512,14 @@ export default function PropertyDetail() {
             </>
           )}
         </div>
-        <a
+        {policyAccepted ? <a
           href={`https://wa.me/966920035843?text=${encodeURIComponent(waText)}`}
           target="_blank"
           rel="noreferrer"
           className="btn btn-gold mbb-btn"
         >
           {t("book_whatsapp")}
-        </a>
+        </a> : <button type="button" className="btn btn-gold mbb-btn booking-policy-continue" disabled>{lang === "ar" ? "اقرأ السياسات" : "Review policies"}</button>}
       </div>}
     </div>
   );
