@@ -98,6 +98,19 @@ describe("public frontend rebuild", () => {
     expect(styles).not.toContain('#0e1613');
   });
 
+  it("keeps a language-aware public typography scale for Arabic and English", () => {
+    const styles = readSource("src/public-rebuild.css");
+    const i18n = readSource("src/lib/i18n.tsx");
+    expect(styles).toContain(':root[lang="ar"]');
+    expect(styles).toContain(':root[lang="en"]');
+    expect(styles).toContain('--h-public-display');
+    expect(styles).toContain('"IBM Plex Sans Arabic"');
+    expect(styles).toContain('"Space Grotesk"');
+    expect(styles).toContain('.horizon-public-shell .horizon-hero h1');
+    expect(styles).toContain('.horizon-public-shell .horizon-section-head h2');
+    expect(i18n).toContain('document.documentElement.lang = lang');
+  });
+
   it("keeps the commercial registration as text and the trust certificate behind an accessible popup", () => {
     const app = readSource("src/App.tsx");
     const styles = readSource("src/public-rebuild.css");

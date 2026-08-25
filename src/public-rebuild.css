@@ -857,3 +857,88 @@ body:has(.horizon-public-shell) #root,
   .horizon-trust-dialog { padding: 20px 14px 14px; }
   .horizon-trust-heading { margin-bottom: 16px; padding-inline-end: 36px; }
 }
+
+/* Bilingual typography — one deliberate reading scale for Horizon public routes. */
+:root[lang="ar"] {
+  --h-public-body: "IBM Plex Sans Arabic", "Tajawal", sans-serif;
+  --h-public-display: "IBM Plex Sans Arabic", "Tajawal", sans-serif;
+  --h-public-label: "IBM Plex Sans Arabic", "Tajawal", sans-serif;
+}
+
+:root[lang="en"] {
+  --h-public-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --h-public-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --h-public-label: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.horizon-shell-header,
+.horizon-public-shell,
+.horizon-footer {
+  font-family: var(--h-public-body, var(--font-body));
+  text-wrap: pretty;
+}
+
+.horizon-public-shell :is(h1, h2, h3, h4),
+.horizon-footer :is(h1, h2, h3, h4) {
+  font-family: var(--h-public-display, var(--font-display));
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.horizon-public-shell :is(.horizon-kicker, .horizon-section-index, .horizon-catalogue-cue, .map-frame-kicker),
+.horizon-shell-header .horizon-nav a,
+.horizon-footer .horizon-footer-nav a {
+  font-family: var(--h-public-label, var(--font-body));
+}
+
+.horizon-shell-header .horizon-nav a { font-size: .82rem; line-height: 1.45; }
+.horizon-shell-header .lang-toggle,.horizon-shell-header .mode-toggle { font-size: .78rem; line-height: 1.2; }
+.horizon-public-shell .horizon-kicker,.horizon-public-shell .horizon-section-index { font-size: .68rem; line-height: 1.5; letter-spacing: .13em; }
+.horizon-public-shell .horizon-hero h1 { max-width: 12ch; font-size: clamp(2.9rem, 5.45vw, 5.9rem); line-height: 1; letter-spacing: -.045em; }
+.horizon-public-shell .horizon-hero-lead { max-width: 48ch; font-size: clamp(.98rem, 1.12vw, 1.08rem); line-height: 1.82; }
+.horizon-public-shell .horizon-hero-note span { max-width: 17ch; font-size: .78rem; line-height: 1.6; }
+.horizon-public-shell .horizon-search-field > span { font-size: .69rem; line-height: 1.45; }
+.horizon-public-shell .horizon-search-field select,.horizon-public-shell .horizon-search-submit { font-size: .86rem; line-height: 1.3; }
+.horizon-public-shell .horizon-section-head h2 { font-size: clamp(2.1rem, 3.75vw, 3.85rem); line-height: 1.06; letter-spacing: -.04em; }
+.horizon-public-shell .horizon-section-head p { font-size: .98rem; line-height: 1.78; }
+.horizon-public-shell .horizon-property-card h3 { font-size: clamp(1.25rem, 1.65vw, 1.62rem); line-height: 1.18; letter-spacing: -.018em; }
+.horizon-public-shell .horizon-property-card-type,.horizon-public-shell .horizon-property-card-meta p { font-size: .75rem; line-height: 1.5; }
+.horizon-public-shell .horizon-property-card-price b { font-family: var(--h-public-label, var(--font-latin)); font-size: 1rem; }
+.horizon-public-shell .horizon-property-card-price span { font-size: .69rem; }
+.horizon-public-shell .horizon-card-reveal { font-size: .78rem; line-height: 1.58; }
+.horizon-public-shell .horizon-card-reveal>span,.horizon-public-shell .horizon-card-book,.horizon-public-shell .horizon-card-detail { font-size: .72rem; line-height: 1.35; }
+.horizon-public-shell .horizon-story-big { font-size: clamp(2.4rem, 4.65vw, 4.85rem); line-height: 1.05; letter-spacing: -.045em; }
+.horizon-public-shell .horizon-story-item h3 { font-size: 1.08rem; line-height: 1.35; }
+.horizon-public-shell .horizon-story-item p { font-size: .9rem; line-height: 1.72; }
+.horizon-public-shell .horizon-scene-static-copy h2 { font-size: clamp(2.8rem, 5.45vw, 5.85rem); line-height: .98; letter-spacing: -.055em; }
+.horizon-public-shell .horizon-scene-static-copy p { font-size: .96rem; line-height: 1.78; }
+.horizon-public-shell .horizon-scene-panel-copy h3 { font-size: clamp(1.7rem, 2.65vw, 2.75rem); line-height: 1.04; letter-spacing: -.04em; }
+.horizon-public-shell .horizon-scene-panel-copy p { font-size: .84rem; line-height: 1.7; }
+.horizon-public-shell .map-frame-head h2,.horizon-public-shell .map-frame-side-panel-empty strong { line-height: 1.16; }
+.horizon-public-shell .map-pin-card-title-row strong { font-size: .88rem; line-height: 1.35; }
+.horizon-public-shell .map-pin-card-copy p { font-size: .75rem; line-height: 1.55; }
+.horizon-footer .horizon-footer-intro p { font-size: .87rem; line-height: 1.75; }
+.horizon-footer .horizon-footer-nav a { font-size: .82rem; line-height: 1.55; }
+
+:root[lang="ar"] .horizon-shell-header,
+:root[lang="ar"] .horizon-public-shell,
+:root[lang="ar"] .horizon-footer { letter-spacing: 0; }
+:root[lang="ar"] .horizon-public-shell .horizon-kicker,
+:root[lang="ar"] .horizon-public-shell .horizon-section-index,
+:root[lang="ar"] .horizon-public-shell .horizon-catalogue-cue { letter-spacing: .035em; text-transform: none; }
+:root[lang="ar"] .horizon-public-shell .horizon-hero h1 { max-width: 10.5ch; font-size: clamp(2.7rem, 5.15vw, 5.15rem); line-height: 1.18; letter-spacing: -.028em; }
+:root[lang="ar"] .horizon-public-shell .horizon-section-head h2 { line-height: 1.22; letter-spacing: -.02em; }
+:root[lang="ar"] .horizon-public-shell .horizon-property-card h3 { line-height: 1.36; letter-spacing: 0; }
+:root[lang="ar"] .horizon-public-shell .horizon-story-big { line-height: 1.22; letter-spacing: -.02em; }
+:root[lang="ar"] .horizon-public-shell .horizon-scene-static-copy h2 { max-width: 10ch; line-height: 1.2; letter-spacing: -.025em; }
+:root[lang="ar"] .horizon-public-shell .horizon-scene-panel-copy h3 { line-height: 1.28; letter-spacing: 0; }
+
+@media (max-width: 620px) {
+  .horizon-public-shell .horizon-hero h1 { font-size: clamp(2.65rem, 12.2vw, 4.2rem); }
+  .horizon-public-shell .horizon-section-head h2 { font-size: clamp(2rem, 9.6vw, 2.9rem); }
+  .horizon-public-shell .horizon-section-head p,.horizon-public-shell .horizon-hero-lead { font-size: .94rem; }
+  .horizon-public-shell .horizon-scene-static-copy h2 { font-size: clamp(2.5rem, 11.5vw, 4.1rem); }
+  .horizon-public-shell .horizon-scene-panel-copy h3 { font-size: clamp(1.55rem, 8.6vw, 2.28rem); }
+  :root[lang="ar"] .horizon-public-shell .horizon-hero h1 { font-size: clamp(2.45rem, 11.2vw, 3.9rem); }
+  :root[lang="ar"] .horizon-public-shell .horizon-scene-static-copy h2 { font-size: clamp(2.3rem, 10.8vw, 3.7rem); }
+}

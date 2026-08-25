@@ -403,3 +403,6 @@
 
 ## Side Map Card Interaction (User request Aug 25)
 - [x] T259: Replace the map-internal property popup with an external side card that previews a unit on marker hover/focus and remains pinned after marker click until replaced or dismissed. Completed: removed Leaflet popups; hover/focus previews render in an external side panel, click pins a selected unit there, and the close control clears it. Hover still previews other units above a pinned selection and returns to the selection on exit; 37 tests and the production build pass.
+
+## Bilingual Typography System Repair (User request Aug 25)
+- [x] T260: Normalize Arabic and English font families, weights, spacing, and responsive type scales across public headings, body text, controls, cards, maps, and footer content. Completed: public Arabic uses IBM Plex Sans Arabic/Tajawal with adjusted Arabic line height and sizing; English uses Space Grotesk for display labels plus a readable system body stack. Shared title, copy, card, control, map, footer, and mobile scales are normalized; 38 tests and the production build pass.
