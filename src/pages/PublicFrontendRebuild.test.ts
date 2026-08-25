@@ -135,6 +135,23 @@ describe("public frontend rebuild", () => {
     expect(styles).toContain(".option-four");
   });
 
+  it("keeps banner options 1–4 and adds four complete theme pages on options 5–8", () => {
+    const app = readSource("src/App.tsx");
+    const fullOptions = readSource("src/pages/FullThemeOptions.tsx");
+    const styles = readSource("src/full-theme-options.css");
+    for (const option of ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8"]) {
+      expect(app).toContain(`path="/${option}"`);
+    }
+    expect(fullOptions).toContain("fetchProperties");
+    expect(fullOptions).toContain("MapFrame");
+    expect(fullOptions).toContain("OptionFive");
+    expect(fullOptions).toContain("OptionSix");
+    expect(fullOptions).toContain("OptionSeven");
+    expect(fullOptions).toContain("OptionEight");
+    expect(fullOptions).not.toMatch(/testimonial|guest review|guest rating/i);
+    for (const selector of [".option-five", ".option-six", ".option-seven", ".option-eight"]) expect(styles).toContain(selector);
+  });
+
   it("keeps the commercial registration as text and the trust certificate behind an accessible popup", () => {
     const app = readSource("src/App.tsx");
     const styles = readSource("src/public-rebuild.css");

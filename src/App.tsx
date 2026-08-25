@@ -7,6 +7,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Services = lazy(() => import("./pages/Services"));
 const Policies = lazy(() => import("./pages/Policies"));
 const ThemeOption = lazy(() => import("./pages/ThemeOptions"));
+const FullThemeOption = lazy(() => import("./pages/FullThemeOptions"));
 const AvailabilityCalendar = lazy(() => import("./pages/AvailabilityCalendar"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminProperties = lazy(() => import("./pages/admin/AdminProperties"));
@@ -86,6 +87,10 @@ const TITLES: Record<string, Record<string, string>> = {
   "/option2": { ar: "الخيار 02 | Horizon Stays", en: "Option 02 | Horizon Stays", zh: "选项 02 | Horizon Stays", fr: "Option 02 | Horizon Stays", es: "Opción 02 | Horizon Stays" },
   "/option3": { ar: "الخيار 03 | Horizon Stays", en: "Option 03 | Horizon Stays", zh: "选项 03 | Horizon Stays", fr: "Option 03 | Horizon Stays", es: "Opción 03 | Horizon Stays" },
   "/option4": { ar: "الخيار 04 | Horizon Stays", en: "Option 04 | Horizon Stays", zh: "选项 04 | Horizon Stays", fr: "Option 04 | Horizon Stays", es: "Opción 04 | Horizon Stays" },
+  "/option5": { ar: "الخيار 05 | Horizon Stays", en: "Option 05 | Horizon Stays", zh: "选项 05 | Horizon Stays", fr: "Option 05 | Horizon Stays", es: "Opción 05 | Horizon Stays" },
+  "/option6": { ar: "الخيار 06 | Horizon Stays", en: "Option 06 | Horizon Stays", zh: "选项 06 | Horizon Stays", fr: "Option 06 | Horizon Stays", es: "Opción 06 | Horizon Stays" },
+  "/option7": { ar: "الخيار 07 | Horizon Stays", en: "Option 07 | Horizon Stays", zh: "选项 07 | Horizon Stays", fr: "Option 07 | Horizon Stays", es: "Opción 07 | Horizon Stays" },
+  "/option8": { ar: "الخيار 08 | Horizon Stays", en: "Option 08 | Horizon Stays", zh: "选项 08 | Horizon Stays", fr: "Option 08 | Horizon Stays", es: "Opción 08 | Horizon Stays" },
 };
 
 function PageTitle() {
@@ -295,6 +300,14 @@ function AppShell() {
             <Route path="/option/2" element={<Navigate to="/option2" replace />} />
             <Route path="/option/3" element={<Navigate to="/option3" replace />} />
             <Route path="/option/4" element={<Navigate to="/option4" replace />} />
+            <Route path="/option5" element={<FullThemeOption option="option5" />} />
+            <Route path="/option6" element={<FullThemeOption option="option6" />} />
+            <Route path="/option7" element={<FullThemeOption option="option7" />} />
+            <Route path="/option8" element={<FullThemeOption option="option8" />} />
+            <Route path="/option/5" element={<Navigate to="/option5" replace />} />
+            <Route path="/option/6" element={<Navigate to="/option6" replace />} />
+            <Route path="/option/7" element={<Navigate to="/option7" replace />} />
+            <Route path="/option/8" element={<Navigate to="/option8" replace />} />
             <Route path="/contact" element={featureFlags.nav_contact ? <Contact /> : <Navigate to="/" replace />} />
             <Route path="/calendar" element={<AvailabilityCalendar />} />
             <Route path="/cleaner" element={featureFlags.page_cleaner ? <Cleaner /> : <Navigate to="/" replace />} />
