@@ -65,6 +65,13 @@ describe("public frontend rebuild", () => {
     expect(detail).toContain('to="/policies"');
   });
 
+  it("prevents public background layers from creating horizontal page overflow", () => {
+    const styles = readSource("src/public-rebuild.css");
+    expect(styles).toContain("body:has(.horizon-public-shell) #root");
+    expect(styles).toContain(".horizon-public-shell {");
+    expect(styles).toContain("overflow-x: clip");
+  });
+
   it("loads the public frontend layer after legacy styles so public routes are isolated", () => {
     const entry = readSource("src/main.tsx");
     const styles = readSource("src/public-rebuild.css");

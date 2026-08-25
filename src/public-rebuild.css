@@ -25,6 +25,17 @@ body:has(.horizon-public-shell) {
   --header-bg: color-mix(in srgb, var(--h-paper) 89%, transparent);
   --cta-text: #fffcf7;
   background: var(--h-paper);
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+html:has(.horizon-public-shell),
+body:has(.horizon-public-shell) #root,
+.horizon-public-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
 }
 
 :root[data-mode="dark"] body:has(.horizon-public-shell) {
@@ -83,6 +94,8 @@ body:has(.horizon-public-shell) {
   border: 0;
   border-bottom: 1px solid var(--h-line);
   backdrop-filter: blur(18px);
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .horizon-header-inner {
