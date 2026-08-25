@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import { divIcon, latLngBounds, type LeafletMouseEvent, type Marker as LeafletMarker } from "leaflet";
+import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
+import { divIcon, latLngBounds } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { propertyPhotoUrls, type Property } from "../lib/supabase";
 
@@ -73,13 +73,9 @@ function MapViewport({ locations, variant }: { locations: ValidMapLocation[]; va
 function MapPinCard({
   location,
   lang,
-  onPointerEnter,
-  onPointerLeave,
 }: {
   location: ValidMapLocation;
   lang: "ar" | "en";
-  onPointerEnter: () => void;
-  onPointerLeave: () => void;
 }) {
   const [selectedPhoto, setSelectedPhoto] = useState(0);
   const photos = useMemo(
@@ -91,7 +87,7 @@ function MapPinCard({
   const description = shortDescription(location, lang);
 
   return (
-    <article className="map-pin-card" dir={lang === "ar" ? "rtl" : "ltr"} onMouseEnter={onPointerEnter} onMouseLeave={onPointerLeave}>
+    <article className="map-pin-card" dir={lang === "ar" ? "rtl" : "ltr"}>
       <div className="map-pin-card-media">
         {photos.length ? (
           <img src={photos[selectedPhoto] || photos[0]} alt={name} loading="lazy" />
@@ -140,54 +136,71 @@ function MapPinCard({
   );
 }
 
-function MarkerWithCard({
+function MapSidePanel({
   location,
   lang,
-  isActive,
-  openPin,
-  scheduleClose,
-  cancelClose,
+  pinned,
+  onClose,
+  onPointerEnter,
+  onPointerLeave,
+}: {
+  location: ValidMapLocation | null;
+  lang: "ar" | "en";
+  pinned: boolean;
+  onClose: () => void;
+  onPointerEnter: () => void;
+  onPointerLeave: () => void;
+}) {
+  const isArabic = lang === "ar";
+  return (
+    <aside className={`map-frame-side-panel ${location ? "has-location" : "is-empty"}`} dir={isArabic ? "rtl" : "ltr"} aria-live="polite" onMouseEnter={onPointerEnter} onMouseLeave={onPointerLeave}>
+      {location ? <>
+        <div className="map-frame-side-panel-head">
+          <span>{pinned ? (isArabic ? "وحدة مختارة" : "Selected stay") : (isArabic ? "معاينة الوحدة" : "Stay preview")}</span>
+          <button type="button" className="map-frame-side-panel-close" onClick={onClose} aria-label={isArabic ? "إغلاق بطاقة الوحدة" : "Close stay card"}>×</button>
+        </div>
+        <MapPinCard key={location.id} location={location} lang={lang} />
+      </> : <div className="map-frame-side-panel-empty">
+        <span>HORIZON MAP</span>
+        <strong>{isArabic ? "اختر موقعاً يناسب إقامتك." : "Find a stay that fits your trip."}</strong>
+        <p>{isArabic ? "مرر فوق علامة لمعاينة الوحدة، واضغط عليها لتثبيت البطاقة هنا." : "Hover a pin to preview a stay, then click it to keep the card here."}</p>
+      </div>}
+    </aside>
+  );
+}
+
+function MarkerWithSidePanel({
+  location,
+  pinned,
+  showPreview,
+  clearPreview,
+  pinLocation,
 }: {
   location: ValidMapLocation;
-  lang: "ar" | "en";
-  isActive: boolean;
-  openPin: () => void;
-  scheduleClose: () => void;
-  cancelClose: () => void;
+  pinned: boolean;
+  showPreview: () => void;
+  clearPreview: () => void;
+  pinLocation: () => void;
 }) {
-  const markerRef = useRef<LeafletMarker | null>(null);
-  const openFromMarker = useCallback((event?: LeafletMouseEvent) => {
-    openPin();
-    event?.target.openPopup();
-  }, [openPin]);
-
-  useEffect(() => {
-    if (isActive) markerRef.current?.openPopup();
-    else markerRef.current?.closePopup();
-  }, [isActive]);
-
   return (
     <Marker
-      ref={markerRef}
       position={[location.lat, location.lng]}
       icon={HORIZON_PIN}
       eventHandlers={{
-        mouseover: openFromMarker,
-        mouseout: scheduleClose,
-        focus: openFromMarker,
-        click: openFromMarker,
+        mouseover: showPreview,
+        mouseout: clearPreview,
+        focus: showPreview,
+        click: pinLocation,
       }}
-    >
-      <Popup className="horizon-map-popup" closeButton={false} autoPanPadding={[36, 36]} eventHandlers={{ remove: scheduleClose }}>
-        <MapPinCard location={location} lang={lang} onPointerEnter={cancelClose} onPointerLeave={scheduleClose} />
-      </Popup>
-    </Marker>
+      opacity={pinned ? 1 : undefined}
+    />
   );
 }
 
 export default function MapFrame({ locations, lang, variant = "collection" }: MapFrameProps) {
-  const [activePinId, setActivePinId] = useState<number | null>(null);
-  const closeTimer = useRef<number | null>(null);
+  const [previewPinId, setPreviewPinId] = useState<number | null>(null);
+  const [pinnedPinId, setPinnedPinId] = useState<number | null>(null);
+  const previewCloseTimer = useRef<number | null>(null);
   const validLocations = locations.reduce<ValidMapLocation[]>((accumulator, location) => {
     const lat = numericCoordinate(location.lat);
     const lng = numericCoordinate(location.lng);
@@ -216,17 +229,20 @@ export default function MapFrame({ locations, lang, variant = "collection" }: Ma
           : "Your stay in Riyadh";
   const mapUrl = primary ? pointLink(primary) : "https://www.google.com/maps/search/?api=1&query=Riyadh%2C%20Saudi%20Arabia";
   const isBrowser = typeof window !== "undefined";
-
-  const cancelClose = useCallback(() => {
-    if (closeTimer.current !== null) {
-      window.clearTimeout(closeTimer.current);
-      closeTimer.current = null;
+  const sidePinId = previewPinId ?? pinnedPinId;
+  const sideLocation = visibleLocations.find((location) => location.id === sidePinId) || null;
+  const cancelPreviewClose = useCallback(() => {
+    if (previewCloseTimer.current !== null) {
+      window.clearTimeout(previewCloseTimer.current);
+      previewCloseTimer.current = null;
     }
   }, []);
-  const scheduleClose = useCallback(() => {
-    cancelClose();
-    closeTimer.current = window.setTimeout(() => setActivePinId(null), 180);
-  }, [cancelClose]);
+  const schedulePreviewClose = useCallback(() => {
+    cancelPreviewClose();
+    previewCloseTimer.current = window.setTimeout(() => setPreviewPinId(null), 190);
+  }, [cancelPreviewClose]);
+
+  useEffect(() => () => cancelPreviewClose(), [cancelPreviewClose]);
 
   return (
     <section className={`map-frame-section map-frame-${variant}`} aria-label={title}>
@@ -242,44 +258,46 @@ export default function MapFrame({ locations, lang, variant = "collection" }: Ma
       </div>
 
       <div className="map-frame-shell">
-        {isBrowser ? (
-          <MapContainer className="horizon-leaflet-map" center={mapCenter} zoom={variant === "property" ? 13 : 11} scrollWheelZoom zoomControl aria-label={mapLabel}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <MapViewport locations={visibleLocations} variant={variant} />
-            {visibleLocations.map((location) => (
-              <MarkerWithCard
-                key={location.id}
-                location={location}
-                lang={lang}
-                isActive={activePinId === location.id}
-                openPin={() => {
-                  cancelClose();
-                  setActivePinId(location.id);
-                }}
-                scheduleClose={scheduleClose}
-                cancelClose={cancelClose}
+        <div className="map-frame-canvas">
+          {isBrowser ? (
+            <MapContainer className="horizon-leaflet-map" center={mapCenter} zoom={variant === "property" ? 13 : 11} scrollWheelZoom zoomControl aria-label={mapLabel}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-            ))}
-          </MapContainer>
-        ) : (
-          <div className="horizon-map-ssr-fallback" aria-label={mapLabel}>
-            {visibleLocations.map((location) => <MapPinCard key={location.id} location={location} lang={lang} onPointerEnter={() => {}} onPointerLeave={() => {}} />)}
+              <MapViewport locations={visibleLocations} variant={variant} />
+              {visibleLocations.map((location) => (
+                <MarkerWithSidePanel
+                  key={location.id}
+                  location={location}
+                  pinned={pinnedPinId === location.id}
+                  showPreview={() => { cancelPreviewClose(); setPreviewPinId(location.id); }}
+                  clearPreview={schedulePreviewClose}
+                  pinLocation={() => { cancelPreviewClose(); setPinnedPinId(location.id); setPreviewPinId(location.id); }}
+                />
+              ))}
+            </MapContainer>
+          ) : <div className="horizon-map-ssr-fallback" aria-label={mapLabel} />}
+          <div className="map-frame-badge">
+            <span className="map-frame-pin" aria-hidden>⌖</span>
+            <span>{mapLabel}</span>
           </div>
-        )}
-        <div className="map-frame-badge">
-          <span className="map-frame-pin" aria-hidden>⌖</span>
-          <span>{mapLabel}</span>
+          {visibleLocations.length === 0 && (
+            <div className="map-frame-fallback">
+              {lang === "ar"
+                ? "لم يُحدد موقع دقيق لهذه الوحدة بعد؛ نعرض نطاق الرياض التقريبي حالياً."
+                : "A precise location has not been set for this stay yet; the Riyadh area is shown for now."}
+            </div>
+          )}
         </div>
-        {visibleLocations.length === 0 && (
-          <div className="map-frame-fallback">
-            {lang === "ar"
-              ? "لم يُحدد موقع دقيق لهذه الوحدة بعد؛ نعرض نطاق الرياض التقريبي حالياً."
-              : "A precise location has not been set for this stay yet; the Riyadh area is shown for now."}
-          </div>
-        )}
+        <MapSidePanel
+          location={sideLocation}
+          lang={lang}
+          pinned={pinnedPinId !== null}
+          onClose={() => { cancelPreviewClose(); setPinnedPinId(null); setPreviewPinId(null); }}
+          onPointerEnter={cancelPreviewClose}
+          onPointerLeave={schedulePreviewClose}
+        />
       </div>
     </section>
   );

@@ -400,3 +400,6 @@
 
 ## Public Horizontal Overflow Repair (User request Aug 25)
 - [x] T258: Identify and remove the public horizontal overflow that allows the page background to scroll beyond its content, while preserving the scene media and responsive layout. Completed: constrained the public body, root, shell, and header to the viewport width with clipping only on the x-axis; 36 tests and the production build pass.
+
+## Side Map Card Interaction (User request Aug 25)
+- [x] T259: Replace the map-internal property popup with an external side card that previews a unit on marker hover/focus and remains pinned after marker click until replaced or dismissed. Completed: removed Leaflet popups; hover/focus previews render in an external side panel, click pins a selected unit there, and the close control clears it. Hover still previews other units above a pinned selection and returns to the selection on exit; 37 tests and the production build pass.

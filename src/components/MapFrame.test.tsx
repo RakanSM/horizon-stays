@@ -13,12 +13,23 @@ describe("MapFrame", () => {
     expect(source).not.toContain("export/embed.html");
   });
 
-  it("provides an Airbnb-style pin card with gallery browsing, a price, and a booking action", () => {
+  it("provides a side card with gallery browsing, a price, and a booking action", () => {
+    expect(source).toContain("MapSidePanel");
+    expect(source).toContain("map-frame-side-panel");
     expect(source).toContain("map-pin-card-photo-strip");
     expect(source).toContain("propertyPhotoUrls");
     expect(source).toContain('to={`/property/${location.slug}#availability`}');
     expect(source).toContain('"Book now"');
     expect(source).toContain("shortDescription");
+    expect(source).not.toContain("<Popup");
+  });
+
+  it("previews a marker on hover and keeps the side card selected after click", () => {
+    expect(source).toContain("previewPinId");
+    expect(source).toContain("pinnedPinId");
+    expect(source).toContain("mouseover: showPreview");
+    expect(source).toContain("click: pinLocation");
+    expect(source).toContain("setPinnedPinId(location.id)");
   });
 
   it("does not restore the collection chip list below the map", () => {
