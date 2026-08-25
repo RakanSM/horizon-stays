@@ -73,6 +73,20 @@ describe("public frontend rebuild", () => {
     expect(app).toContain("theme.mode");
   });
 
+  it("keeps the commercial registration as text and the trust certificate behind an accessible popup", () => {
+    const app = readSource("src/App.tsx");
+    const styles = readSource("src/public-rebuild.css");
+    expect(app).toContain("7050485445");
+    expect(app).toContain("horizon-commercial-registration");
+    expect(app).toContain("horizon-trust-trigger");
+    expect(app).toContain('role="dialog"');
+    expect(app).toContain("0000305469");
+    expect(app).toContain("horizon-verified-certificate-clean_b7bc1d80.png");
+    expect(styles).toContain(".horizon-trust-overlay");
+    expect(styles).toContain("background: var(--h-electric); box-shadow: 0 0 0 5px color-mix(in srgb, var(--h-electric) 22%, transparent);");
+    expect(styles).not.toContain("#39b178");
+  });
+
   it("keeps TTLock lock management isolated to an admin-only route", () => {
     const app = readSource("src/App.tsx");
     const locks = readSource("src/pages/admin/AdminLocks.tsx");

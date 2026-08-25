@@ -371,8 +371,14 @@
 - [x] T241: Replace the public scene’s blue background/glow palette with a dark violet palette while preserving readable typography, image contrast, motion, and responsive/reduced-motion behavior. Completed: replaced the electric blue and deep blue-black field with violet `#a879f7` and night-violet `#170d2b`, updated the scene media fallback and overlay tones, and added regression coverage. The full test suite and production build pass.
 
 ## Dark-Mode Green Contrast Fix (User request Aug 24)
-- [ ] T242: Raise contrast for green text and status elements in the dark public experience while preserving their semantic availability/success meaning.
+- [x] T242: Raise contrast for green text and status elements in the dark public experience while preserving their semantic availability/success meaning. Completed: the lone public availability indicator now uses Horizon’s electric lavender instead of green, with a matching lavender halo that remains visible on the dark scene.
 
 ## Airbnb-Verified Map Accuracy (User request Aug 24)
 - [x] T243: Inventory current Horizon property coordinates and map links, then verify each Airbnb listing association and location evidence in the logged-in host session without changing Airbnb data. Completed: 17 associations are confirmed from read-only host evidence; 7 stored Airbnb links do not match their Horizon unit and one matching listing remains detail-pending. No Airbnb data was changed.
 - [x] T244: Apply only confirmed coordinate and direction-link corrections to Horizon, then verify public map pins and property maps without fabricating or inferring a precise address. Completed: applied 15 verified, neighbourhood-level coordinate corrections and verified four corrected live property maps. The seven mismatched channel links and one detail-pending listing were intentionally left unchanged rather than guessed.
+
+## Brand Contrast, Commercial Registration & Trust Certificate (User request Aug 24)
+- [x] T245: Replace the public green accent/status treatment with a high-contrast colour appropriate to Horizon’s violet-night palette, including dark-mode states. Completed: replaced the green availability dot with the same high-contrast electric lavender used by Horizon's dark scene.
+- [x] T246: Add commercial registration number 7050485445 to the public footer in Arabic and English as non-interactive text only. Completed: the footer displays the CR number as plain text without a link or click handler.
+- [x] T247: Add an accessible public «موثّق» trigger as the only interactive trust element; its responsive popup must show the certificate number and supplied certificate image. Completed: added keyboard-dismissible dialog behaviour, an overlay click-to-close path, certificate number 0000305469, and a responsive certificate image layout.
+- [x] T248: Create and use an edited verification image that removes only the specified «العودة إلى الاستعلام عن متجر إلكتروني موثّق» phrase while preserving all other certificate content. Completed: generated and uploaded the edited certificate asset, which is used by the public trust popup. All 33 tests and the production build pass.

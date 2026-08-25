@@ -98,6 +98,7 @@ export default function App() {
 function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [trustOpen, setTrustOpen] = useState(false);
   const location = useLocation();
   const { content, featureFlags, theme, variant, toggleVariant } = useTheme();
   const { lang, t, setLang } = useLang();
@@ -108,7 +109,17 @@ function AppShell() {
   useEffect(() => {
     setMenuOpen(false);
     setLangOpen(false);
+    setTrustOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!trustOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setTrustOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [trustOpen]);
 
   if (isEditor) {
     return (
@@ -283,11 +294,26 @@ function AppShell() {
           </div>
           <div className="horizon-footer-bottom">
             <span>{lang === "ar" ? "الرياض، المملكة العربية السعودية" : "Riyadh, Saudi Arabia"}</span>
-            <span>{lang === "ar" ? "السجل التجاري والترخيص متاحان عند الطلب" : "Commercial registration and licence available on request"}</span>
+            <span className="horizon-commercial-registration">{lang === "ar" ? "السجل التجاري: 7050485445" : "CR No. 7050485445"}</span>
+            <button type="button" className="horizon-trust-trigger" onClick={() => setTrustOpen(true)} aria-haspopup="dialog">
+              <span aria-hidden="true">✓</span>{lang === "ar" ? "موثّق" : "Verified"}
+            </button>
             <span>© {new Date().getFullYear()} Horizon Stays</span>
           </div>
         </div>
       </footer>
+
+      {trustOpen && <div className="horizon-trust-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setTrustOpen(false); }}>
+        <section className="horizon-trust-dialog" role="dialog" aria-modal="true" aria-labelledby="horizon-trust-title">
+          <button type="button" className="horizon-trust-close" onClick={() => setTrustOpen(false)} aria-label={lang === "ar" ? "إغلاق شهادة التوثيق" : "Close verification certificate"}>×</button>
+          <div className="horizon-trust-heading">
+            <span>{lang === "ar" ? "HORIZON / التحقق التجاري" : "HORIZON / BUSINESS VERIFICATION"}</span>
+            <h2 id="horizon-trust-title">{lang === "ar" ? "متجر موثّق" : "Verified store"}</h2>
+            <p>{lang === "ar" ? "رقم شهادة التوثيق: 0000305469" : "Verification certificate no. 0000305469"}</p>
+          </div>
+          <img src="/manus-storage/horizon-verified-certificate-clean_b7bc1d80.png" alt={lang === "ar" ? "صورة شهادة توثيق Horizon Stays" : "Horizon Stays verification certificate"} />
+        </section>
+      </div>}
 
       {featureFlags.booking_whatsapp && <a href={WHATSAPP} target="_blank" rel="noreferrer" className="wa-float" aria-label="WhatsApp">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff">

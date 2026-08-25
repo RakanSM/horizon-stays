@@ -229,6 +229,21 @@ body:has(.horizon-public-shell) {
 .horizon-footer-nav a { color: color-mix(in srgb, var(--h-white) 72%, transparent); padding: 0; font-size: 0.82rem; }
 .horizon-footer-nav a:hover { color: var(--h-accent); }
 .horizon-footer-bottom { display: flex; justify-content: space-between; gap: 18px; margin-top: 62px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.16); color: color-mix(in srgb, var(--h-white) 54%, transparent); font-size: 0.67rem; }
+.horizon-commercial-registration { direction: ltr; unicode-bidi: embed; }
+.horizon-trust-trigger { display: inline-flex; align-items: center; gap: 7px; padding: 5px 9px; color: var(--h-white); border: 1px solid color-mix(in srgb, var(--h-electric) 65%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--h-electric) 22%, transparent); font: inherit; font-weight: 700; letter-spacing: .02em; transition: transform 160ms var(--ease-out), background 180ms var(--ease-out), border-color 180ms var(--ease-out); }
+.horizon-trust-trigger span { display: grid; place-items: center; width: 14px; height: 14px; color: var(--h-space); border-radius: 50%; background: var(--h-electric); font-size: .65rem; line-height: 1; }
+.horizon-trust-trigger:hover,.horizon-trust-trigger:focus-visible { background: color-mix(in srgb, var(--h-electric) 40%, transparent); border-color: var(--h-electric); }
+.horizon-trust-trigger:active { transform: scale(.97); }
+.horizon-trust-overlay { position: fixed; z-index: 200; inset: 0; display: grid; place-items: center; padding: clamp(16px, 4vw, 48px); background: rgba(10, 6, 18, .78); backdrop-filter: blur(12px); }
+.horizon-trust-dialog { position: relative; width: min(100%, 1040px); max-height: min(880px, calc(100svh - 32px)); overflow: auto; padding: clamp(20px, 3.5vw, 36px); color: var(--h-white); background: linear-gradient(145deg, #211239, #140b28); border: 1px solid color-mix(in srgb, var(--h-electric) 54%, transparent); box-shadow: 0 36px 120px rgba(0,0,0,.45); }
+.horizon-trust-heading { margin-bottom: 22px; padding-inline-end: 44px; }
+.horizon-trust-heading > span { color: var(--h-electric); font-family: var(--font-latin); font-size: .67rem; font-weight: 700; letter-spacing: .16em; }
+.horizon-trust-heading h2 { margin: 9px 0 6px; color: var(--h-white); font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3.3rem); line-height: 1; }
+.horizon-trust-heading p { color: color-mix(in srgb, var(--h-white) 70%, transparent); font-size: .86rem; }
+.horizon-trust-dialog img { display: block; width: 100%; height: auto; border: 1px solid rgba(255,255,255,.2); background: #fff; }
+.horizon-trust-close { position: absolute; top: 16px; inset-inline-end: 16px; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; color: var(--h-white); border: 1px solid rgba(255,255,255,.32); border-radius: 50%; background: rgba(255,255,255,.08); font-size: 1.45rem; line-height: 1; transition: background 180ms var(--ease-out), transform 160ms var(--ease-out); }
+.horizon-trust-close:hover,.horizon-trust-close:focus-visible { background: color-mix(in srgb, var(--h-electric) 38%, transparent); }
+.horizon-trust-close:active { transform: scale(.96); }
 
 .horizon-public .empty-state { color: var(--h-ink-soft); }
 .horizon-public .skeleton { background: linear-gradient(90deg, var(--h-sand) 25%, var(--h-white) 50%, var(--h-sand) 75%); background-size: 200% 100%; border-radius: 0; }
@@ -381,7 +396,7 @@ body:has(.horizon-public-shell) {
 .horizon-signal-note { align-items: end; }
 .horizon-signal-note > div:first-child { display: flex; align-items: end; gap: 12px; }
 .horizon-hero-signal { display: inline-flex; align-items: center; gap: 8px; color: var(--h-ink-soft); font-size: .72rem; }
-.horizon-hero-signal i { width: 7px; height: 7px; border-radius: 99px; background: #39b178; box-shadow: 0 0 0 5px rgba(57,177,120,.12); }
+.horizon-hero-signal i { width: 7px; height: 7px; border-radius: 99px; background: var(--h-electric); box-shadow: 0 0 0 5px color-mix(in srgb, var(--h-electric) 22%, transparent); }
 .horizon-cinematic-index { position: absolute; z-index: 2; top: 22px; inset-inline-start: 23px; color: #fff; font-family: var(--font-latin); letter-spacing: .22em; font-size: .7rem; }
 .horizon-orbit { position: absolute; z-index: -1; border: 1px solid color-mix(in srgb, var(--h-electric) 16%, transparent); border-radius: 50%; pointer-events: none; }
 .horizon-orbit-a { width: 440px; height: 440px; inset: 18% -250px auto auto; }
@@ -686,4 +701,9 @@ body:has(.horizon-public-shell) {
 @media (prefers-reduced-motion: reduce) {
   .horizon-future-public .horizon-property-card { transition: none; }
   .horizon-scene-panel { opacity: 1; transform: none; transition: none; }
+}
+
+@media (max-width: 620px) {
+  .horizon-trust-dialog { padding: 20px 14px 14px; }
+  .horizon-trust-heading { margin-bottom: 16px; padding-inline-end: 36px; }
 }
