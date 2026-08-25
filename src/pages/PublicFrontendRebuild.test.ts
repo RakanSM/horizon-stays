@@ -73,6 +73,16 @@ describe("public frontend rebuild", () => {
     expect(app).toContain("theme.mode");
   });
 
+  it("uses a plum dark-mode foundation rather than the previous dark green palette", () => {
+    const styles = readSource("src/public-rebuild.css");
+    expect(styles).toContain('--h-paper: #181021');
+    expect(styles).toContain('--h-deep: #0f0918');
+    expect(styles).toContain('--h-ink: #261a34');
+    expect(styles).not.toContain('#15201d');
+    expect(styles).not.toContain('#1e2d28');
+    expect(styles).not.toContain('#0e1613');
+  });
+
   it("keeps the commercial registration as text and the trust certificate behind an accessible popup", () => {
     const app = readSource("src/App.tsx");
     const styles = readSource("src/public-rebuild.css");

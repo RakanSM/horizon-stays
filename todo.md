@@ -382,3 +382,6 @@
 - [x] T246: Add commercial registration number 7050485445 to the public footer in Arabic and English as non-interactive text only. Completed: the footer displays the CR number as plain text without a link or click handler.
 - [x] T247: Add an accessible public «موثّق» trigger as the only interactive trust element; its responsive popup must show the certificate number and supplied certificate image. Completed: added keyboard-dismissible dialog behaviour, an overlay click-to-close path, certificate number 0000305469, and a responsive certificate image layout.
 - [x] T248: Create and use an edited verification image that removes only the specified «العودة إلى الاستعلام عن متجر إلكتروني موثّق» phrase while preserving all other certificate content. Completed: generated and uploaded the edited certificate asset, which is used by the public trust popup. All 33 tests and the production build pass.
+
+## Remaining Dark Green Removal (User request Aug 25)
+- [x] T249: Identify and replace any remaining dark-green public visual treatment with a non-green Horizon-compatible accent, then verify dark-mode legibility and production rendering. Completed: replaced the public dark-green foundations, overlays, card treatments, and search shadows with deep plum and violet tones; 34 tests and the production build pass.

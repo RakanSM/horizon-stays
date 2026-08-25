@@ -4,26 +4,26 @@
 body:has(.horizon-public-shell) {
   --h-paper: #f5f1ea;
   --h-sand: #e7ded1;
-  --h-ink: #17201d;
-  --h-ink-soft: #4f5b55;
-  --h-line: rgba(23, 32, 29, 0.14);
+  --h-ink: #261a34;
+  --h-ink-soft: #62586c;
+  --h-line: rgba(38, 26, 52, 0.14);
   --h-accent: #b8552f;
   --h-accent-soft: #fae6d9;
-  --h-deep: #1b2924;
+  --h-deep: #2a1a3a;
   --h-white: #fffcf7;
   background: var(--h-paper);
 }
 
 :root[data-mode="dark"] body:has(.horizon-public-shell) {
-  --h-paper: #15201d;
-  --h-sand: #1e2d28;
-  --h-ink: #f6f0e7;
-  --h-ink-soft: #bdc8bd;
-  --h-line: rgba(246, 240, 231, 0.16);
+  --h-paper: #181021;
+  --h-sand: #251a31;
+  --h-ink: #f9f4fb;
+  --h-ink-soft: #cfc4d7;
+  --h-line: rgba(249, 244, 251, 0.16);
   --h-accent: #ef8a5c;
   --h-accent-soft: #3c2820;
-  --h-deep: #0e1613;
-  --h-white: #1c2924;
+  --h-deep: #0f0918;
+  --h-white: #23182e;
 }
 
 .horizon-public {
@@ -115,7 +115,7 @@ body:has(.horizon-public-shell) {
 .horizon-header-tools { display: flex; justify-content: flex-end; align-items: center; gap: 7px; }
 .horizon-shell-header .mode-toggle,.horizon-shell-header .lang-toggle { min-height: 34px; background: transparent; border: 1px solid var(--h-line); border-radius: 99px; color: var(--h-ink); box-shadow: none; }
 .horizon-shell-header .lang-toggle { padding: 5px 10px; }
-.horizon-shell-header .lang-dropdown { background: var(--h-white); border: 1px solid var(--h-line); box-shadow: 0 18px 36px rgba(20, 29, 25, 0.13); }
+.horizon-shell-header .lang-dropdown { background: var(--h-white); border: 1px solid var(--h-line); box-shadow: 0 18px 36px rgba(31, 20, 44, 0.13); }
 .horizon-shell-header .lang-dropdown button { color: var(--h-ink); }
 .horizon-shell-header .lang-dropdown button:hover,.horizon-shell-header .lang-dropdown button.active { background: var(--h-accent-soft); color: var(--h-ink); }
 
@@ -146,7 +146,7 @@ body:has(.horizon-public-shell) {
 .horizon-hero-note span { max-width: 150px; color: var(--h-ink-soft); font-size: 0.76rem; line-height: 1.55; }
 .horizon-hero-media { position: relative; min-height: 100%; overflow: hidden; background: var(--h-sand); }
 .horizon-hero-media img { width: 100%; height: 100%; min-height: 580px; object-fit: cover; filter: saturate(0.82) contrast(1.04); }
-.horizon-hero-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 56%, rgba(16, 30, 25, 0.5)); }
+.horizon-hero-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 56%, rgba(31, 18, 45, 0.5)); }
 .horizon-hero-media-caption { position: absolute; z-index: 2; bottom: 24px; inset-inline: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; color: #fffdf8; }
 .horizon-hero-media-caption span { font-size: 0.75rem; opacity: 0.86; }
 .horizon-hero-media-caption b { display: block; font-size: clamp(1rem, 1.9vw, 1.35rem); line-height: 1.25; }
@@ -176,9 +176,9 @@ body:has(.horizon-public-shell) {
 .horizon-card-media,.horizon-card-media img { position: absolute; inset: 0; width: 100%; height: 100%; }
 .horizon-card-media { z-index: 0; }
 .horizon-property-card img { object-fit: cover; transition: transform 650ms var(--ease-out), filter 300ms var(--ease-out); filter: saturate(0.76); }
-.horizon-property-card::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(20, 31, 26, 0.04) 25%, rgba(10, 19, 15, 0.9) 100%); transition: background 260ms var(--ease-out); }
+.horizon-property-card::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(31, 18, 45, 0.04) 25%, rgba(14, 8, 23, 0.9) 100%); transition: background 260ms var(--ease-out); }
 .horizon-property-card:hover img,.horizon-property-card:focus-within img { transform: scale(1.045); filter: saturate(1); }
-.horizon-property-card:hover::after,.horizon-property-card:focus-within::after { background: linear-gradient(180deg, rgba(9, 19, 14, 0.42), rgba(9, 19, 14, 0.94)); }
+.horizon-property-card:hover::after,.horizon-property-card:focus-within::after { background: linear-gradient(180deg, rgba(16, 9, 25, 0.42), rgba(16, 9, 25, 0.94)); }
 .horizon-property-card-main { position: absolute; z-index: 2; inset: auto 0 0; padding: 24px; color: #fffdf8; }
 .horizon-property-card-type { display: inline-flex; margin-bottom: 10px; padding: 5px 9px; border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; font-size: 0.68rem; backdrop-filter: blur(8px); }
 .horizon-property-card h3 { max-width: 340px; font-family: var(--font-display); font-size: clamp(1.22rem, 2vw, 1.7rem); font-weight: 700; line-height: 1.18; }
@@ -187,15 +187,15 @@ body:has(.horizon-public-shell) {
 .horizon-property-card-price { text-align: end; white-space: nowrap; }
 .horizon-property-card-price b { display: block; font-family: var(--font-latin); font-size: 1rem; }
 .horizon-property-card-price span { font-size: 0.68rem; opacity: 0.76; }
-.horizon-favorite-button { position: absolute; z-index: 5; top: 16px; inset-inline-end: 16px; width: 38px; height: 38px; border: 1px solid rgba(255,255,255,0.44); border-radius: 50%; background: rgba(11,20,16,0.28); color: #fffdf8; backdrop-filter: blur(10px); font-family: Arial,sans-serif; font-size: 22px; line-height: 1; transition: background 180ms var(--ease-out), color 180ms var(--ease-out), transform 160ms var(--ease-out); }
+.horizon-favorite-button { position: absolute; z-index: 5; top: 16px; inset-inline-end: 16px; width: 38px; height: 38px; border: 1px solid rgba(255,255,255,0.44); border-radius: 50%; background: rgba(20,11,31,0.28); color: #fffdf8; backdrop-filter: blur(10px); font-family: Arial,sans-serif; font-size: 22px; line-height: 1; transition: background 180ms var(--ease-out), color 180ms var(--ease-out), transform 160ms var(--ease-out); }
 .horizon-favorite-button:hover,.horizon-favorite-button:focus-visible,.horizon-favorite-button.active { background: #fffdf8; color: #b4504b; }
 .horizon-favorite-button:active { transform: scale(.94); }
 .horizon-card-reveal { position: absolute; z-index: 4; inset: 24px 24px auto; display: grid; gap: 11px; color: #fffdf8; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out); }
-.horizon-card-reveal>span { width: max-content; max-width: 100%; padding: 5px 8px; border: 1px solid rgba(255,255,255,.28); background: rgba(10,19,15,.26); font-size: .67rem; letter-spacing: .03em; backdrop-filter: blur(8px); }
+.horizon-card-reveal>span { width: max-content; max-width: 100%; padding: 5px 8px; border: 1px solid rgba(255,255,255,.28); background: rgba(14,8,23,.26); font-size: .67rem; letter-spacing: .03em; backdrop-filter: blur(8px); }
 .horizon-card-reveal p { max-width: 440px; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: .8rem; line-height: 1.65; color: rgba(255,253,248,.82); }
 .horizon-card-reveal-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .horizon-card-book,.horizon-card-detail { display: inline-flex; min-height: 34px; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid rgba(255,255,255,.42); font-size: .7rem; font-weight: 700; transition: transform 160ms var(--ease-out), background 180ms var(--ease-out); }
-.horizon-card-book { background: #fffdf8; color: var(--h-ink); border-color: #fffdf8; }.horizon-card-book svg { width: 14px; height: 14px; }.horizon-card-detail { color: #fffdf8; background: rgba(11,20,16,.22); }.horizon-card-book:hover,.horizon-card-detail:hover { transform: translateY(-2px); }.horizon-property-card:hover .horizon-card-reveal,.horizon-property-card:focus-within .horizon-card-reveal { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.horizon-card-book { background: #fffdf8; color: var(--h-ink); border-color: #fffdf8; }.horizon-card-book svg { width: 14px; height: 14px; }.horizon-card-detail { color: #fffdf8; background: rgba(20,11,31,.22); }.horizon-card-book:hover,.horizon-card-detail:hover { transform: translateY(-2px); }.horizon-property-card:hover .horizon-card-reveal,.horizon-property-card:focus-within .horizon-card-reveal { opacity: 1; transform: translateY(0); pointer-events: auto; }
 .horizon-show-more { display: flex; justify-content: center; margin-top: 36px; }
 .horizon-show-more button { background: transparent; }
 
@@ -403,7 +403,7 @@ body:has(.horizon-public-shell) {
 .horizon-orbit-b { width: 260px; height: 260px; inset: auto auto -128px 9%; border-color: color-mix(in srgb, var(--h-accent) 17%, transparent); }
 
 .horizon-search-wrap { position: relative; z-index: 4; margin-top: clamp(-40px, -4vw, -58px); }
-.horizon-search-module { display: grid; grid-template-columns: 1.15fr 1.45fr .78fr 1fr auto; align-items: stretch; padding: 10px; color: var(--h-ink); background: color-mix(in srgb, var(--h-white) 91%, transparent); border: 1px solid var(--h-line); box-shadow: 0 22px 45px rgba(13, 24, 20, .13); backdrop-filter: blur(18px); }
+.horizon-search-module { display: grid; grid-template-columns: 1.15fr 1.45fr .78fr 1fr auto; align-items: stretch; padding: 10px; color: var(--h-ink); background: color-mix(in srgb, var(--h-white) 91%, transparent); border: 1px solid var(--h-line); box-shadow: 0 22px 45px rgba(28, 17, 42, .13); backdrop-filter: blur(18px); }
 .horizon-search-field { min-width: 0; padding: 8px 15px; border-inline-end: 1px solid var(--h-line); }
 .horizon-search-field > span { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; color: var(--h-ink-soft); font-size: .65rem; font-weight: 700; letter-spacing: .04em; }
 .horizon-search-field svg { width: 14px; height: 14px; color: var(--h-electric); }
@@ -416,7 +416,7 @@ body:has(.horizon-public-shell) {
 .horizon-range-trigger span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .horizon-range-trigger i { flex: 0 0 auto; width: 7px; height: 7px; margin-inline-end: 2px; border-right: 1.5px solid var(--h-electric); border-bottom: 1.5px solid var(--h-electric); transform: rotate(45deg) translateY(-2px); }
 .horizon-range-trigger:focus-visible,.horizon-range-popover button:focus-visible { outline: 2px solid var(--h-electric); outline-offset: 3px; }
-.horizon-range-popover { position: absolute; z-index: 30; top: calc(100% + 16px); inset-inline-start: -15px; width: min(336px, calc(100vw - 32px)); padding: 14px; color: var(--h-ink); background: var(--h-white); border: 1px solid var(--h-line); box-shadow: 0 20px 46px rgba(13, 24, 20, .2); }
+.horizon-range-popover { position: absolute; z-index: 30; top: calc(100% + 16px); inset-inline-start: -15px; width: min(336px, calc(100vw - 32px)); padding: 14px; color: var(--h-ink); background: var(--h-white); border: 1px solid var(--h-line); box-shadow: 0 20px 46px rgba(28, 17, 42, .2); }
 .horizon-range-header { display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; gap: 6px; margin-bottom: 12px; }
 .horizon-range-header strong { color: var(--h-ink); font-family: var(--font-latin); font-size: .84rem; font-weight: 700; text-align: center; }
 .horizon-range-header button { display: grid; place-items: center; width: 32px; height: 32px; color: var(--h-ink); background: transparent; border: 1px solid var(--h-line); border-radius: 50%; cursor: pointer; }
@@ -444,7 +444,7 @@ body:has(.horizon-public-shell) {
 .horizon-split-head h2 { white-space: pre-line; }
 .horizon-destination-rail { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .horizon-destination-card { position: relative; display: flex; min-height: 390px; overflow: hidden; color: #fff; background: var(--h-space); }
-.horizon-destination-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,13,17,.03), rgba(6,13,17,.88)); }
+.horizon-destination-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,8,24,.03), rgba(15,8,24,.88)); }
 .horizon-destination-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.68) contrast(1.05); transition: transform 650ms var(--ease-out), filter 300ms var(--ease-out); }
 .horizon-destination-card:hover img { transform: scale(1.07); filter: saturate(1); }
 .horizon-destination-card-count { position: absolute; z-index: 1; top: 17px; inset-inline-start: 17px; font-family: var(--font-latin); font-size: .68rem; letter-spacing: .13em; }
