@@ -409,3 +409,10 @@
 
 ## Gold & Brown Brand Palette Restoration (User request Aug 25)
 - [x] T261: Restore the public Horizon color system to a refined gold-and-warm-brown palette in light and dark modes, including public accents, map treatment, motion scene, and trust surface while retaining accessible contrast. Completed: replaced public violet foundations and overlays with warm gold, cream, espresso, and brown tokens in both modes; map pins, trust dialog, scenes, search, and controls share the restored palette. All 38 tests and the production build pass.
+
+## Four Distinct Public Theme Options (User request Aug 25)
+- [x] T262: Build `/option1` as a cinematic editorial landing page with an immersive full-bleed residence banner, clear booking entry, and verified-property preview. Completed: full-bleed campaign layout with a contact-sheet rail of verified stay imagery.
+- [x] T263: Build `/option2` as a structured urban guide with modular destination navigation, availability-first cards, and a concise booking funnel. Completed: selectable residence index, factual side rail, and direct stay route.
+- [x] T264: Build `/option3` as a warm hospitality journal with an art-directed residence story, flexible editorial sections, and direct stay selection. Completed: editorial masthead, featured story image, practical note, and journal rail.
+- [x] T265: Build `/option4` as a bright discovery board with an interactive visual gallery, concise filters, and card-led stay comparison. Completed: interactive stay switcher, verified gallery mosaic, and comparison-oriented decision card.
+- [x] T266: Add and verify the `/option1`, `/option2`, `/option3`, and `/option4` routes without changing the live primary homepage or using invented reviews, ratings, or property data. Completed: all four routes load against live property data, preserve the existing primary homepage, and passed local browser checks, 39 tests, and the production build.

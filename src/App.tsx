@@ -6,6 +6,7 @@ const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Services = lazy(() => import("./pages/Services"));
 const Policies = lazy(() => import("./pages/Policies"));
+const ThemeOption = lazy(() => import("./pages/ThemeOptions"));
 const AvailabilityCalendar = lazy(() => import("./pages/AvailabilityCalendar"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminProperties = lazy(() => import("./pages/admin/AdminProperties"));
@@ -81,6 +82,10 @@ const TITLES: Record<string, Record<string, string>> = {
     fr: "Calendrier de disponibilité | Horizon Stays",
     es: "Calendario de disponibilidad | Horizon Stays",
   },
+  "/option1": { ar: "الخيار 01 | Horizon Stays", en: "Option 01 | Horizon Stays", zh: "选项 01 | Horizon Stays", fr: "Option 01 | Horizon Stays", es: "Opción 01 | Horizon Stays" },
+  "/option2": { ar: "الخيار 02 | Horizon Stays", en: "Option 02 | Horizon Stays", zh: "选项 02 | Horizon Stays", fr: "Option 02 | Horizon Stays", es: "Opción 02 | Horizon Stays" },
+  "/option3": { ar: "الخيار 03 | Horizon Stays", en: "Option 03 | Horizon Stays", zh: "选项 03 | Horizon Stays", fr: "Option 03 | Horizon Stays", es: "Opción 03 | Horizon Stays" },
+  "/option4": { ar: "الخيار 04 | Horizon Stays", en: "Option 04 | Horizon Stays", zh: "选项 04 | Horizon Stays", fr: "Option 04 | Horizon Stays", es: "Opción 04 | Horizon Stays" },
 };
 
 function PageTitle() {
@@ -282,6 +287,14 @@ function AppShell() {
             <Route path="/about" element={featureFlags.nav_about ? <About /> : <Navigate to="/" replace />} />
             <Route path="/services" element={<Services />} />
             <Route path="/policies" element={<Policies />} />
+            <Route path="/option1" element={<ThemeOption option="option1" />} />
+            <Route path="/option2" element={<ThemeOption option="option2" />} />
+            <Route path="/option3" element={<ThemeOption option="option3" />} />
+            <Route path="/option4" element={<ThemeOption option="option4" />} />
+            <Route path="/option/1" element={<Navigate to="/option1" replace />} />
+            <Route path="/option/2" element={<Navigate to="/option2" replace />} />
+            <Route path="/option/3" element={<Navigate to="/option3" replace />} />
+            <Route path="/option/4" element={<Navigate to="/option4" replace />} />
             <Route path="/contact" element={featureFlags.nav_contact ? <Contact /> : <Navigate to="/" replace />} />
             <Route path="/calendar" element={<AvailabilityCalendar />} />
             <Route path="/cleaner" element={featureFlags.page_cleaner ? <Cleaner /> : <Navigate to="/" replace />} />

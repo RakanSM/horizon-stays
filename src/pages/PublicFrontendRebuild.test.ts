@@ -115,6 +115,26 @@ describe("public frontend rebuild", () => {
     expect(i18n).toContain('document.documentElement.lang = lang');
   });
 
+  it("offers four genuinely distinct public theme-option routes using verified property data only", () => {
+    const app = readSource("src/App.tsx");
+    const options = readSource("src/pages/ThemeOptions.tsx");
+    const styles = readSource("src/theme-options.css");
+    for (const option of ["option1", "option2", "option3", "option4"]) {
+      expect(app).toContain(`path="/${option}"`);
+    }
+    expect(options).toContain('option === "option1"');
+    expect(options).toContain('option === "option2"');
+    expect(options).toContain('option === "option3"');
+    expect(options).toContain("return <OptionFour");
+    expect(options).toContain("fetchProperties");
+    expect(options).toContain("propertyPhotos");
+    expect(options).not.toMatch(/testimonial|guest review|guest rating/i);
+    expect(styles).toContain(".option-one");
+    expect(styles).toContain(".option-two");
+    expect(styles).toContain(".option-three");
+    expect(styles).toContain(".option-four");
+  });
+
   it("keeps the commercial registration as text and the trust certificate behind an accessible popup", () => {
     const app = readSource("src/App.tsx");
     const styles = readSource("src/public-rebuild.css");
