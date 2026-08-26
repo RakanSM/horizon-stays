@@ -13,3 +13,7 @@ The page loaded locally in Arabic as a distinct district-led theme. Its opening 
 ## Option 18 — Horizon Portfolio
 
 The full portfolio page loaded locally in Arabic after property data resolved. Its immersive hero, single direct action, real residence cards, booking path, and interactive map all render as a complete page. The visible hero counter had advanced to `05 / 06`, providing a second observed confirmation of the shared image rotation.
+
+## Production spot check
+
+After deployment `dpl_HTxjP1vNzNH8n5pmgTKAPsTCGX4u` reached `READY`, the English routes `/option9` and `/option18` were opened at `https://horizonstay-sa.com`. Both delivered their distinct full-screen hero compositions, verified property names/prices, at-most-three action limit, factual property cards, and the interactive neighbourhood-level map. Option 09 presented the three-action market hero; Option 18 presented the one-action immersive portfolio hero.
