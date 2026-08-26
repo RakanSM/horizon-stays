@@ -152,6 +152,22 @@ describe("public frontend rebuild", () => {
     for (const selector of [".option-five", ".option-six", ".option-seven", ".option-eight"]) expect(styles).toContain(selector);
   });
 
+  it("offers ten more full-page options with fixed scenes and a 4-second verified-image hero", () => {
+    const app = readSource("src/App.tsx");
+    const extended = readSource("src/pages/ExtendedThemeOptions.tsx");
+    const styles = readSource("src/extended-theme-options.css");
+    for (let number = 9; number <= 18; number += 1) expect(app).toContain(`path="/option${number}"`);
+    expect(extended).toContain("setInterval");
+    expect(extended).toContain("4000");
+    expect(extended).toContain("prefers-reduced-motion");
+    expect(extended).toContain("fetchProperties");
+    expect(extended).toContain("MapFrame");
+    expect(extended).not.toMatch(/testimonial|guest review|guest rating/i);
+    expect(styles).toContain(".extended-fixed-background");
+    expect(styles).toContain("min-height:max(720px,calc(100svh - 76px))");
+    expect(styles).toContain("@media (prefers-reduced-motion:reduce)");
+  });
+
   it("keeps the commercial registration as text and the trust certificate behind an accessible popup", () => {
     const app = readSource("src/App.tsx");
     const styles = readSource("src/public-rebuild.css");
